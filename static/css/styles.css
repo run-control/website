@@ -16,7 +16,7 @@
   /* Lighten the overlay so that the animated network remains clearly visible.
      A lower opacity lets the moving lines and the nebula-to-network gradient shine through
      without sacrificing text contrast. */
-  --color-dark-overlay: rgba(0, 15, 30, 0.5);
+  --color-dark-overlay: rgba(0, 15, 30, 0);
   --font-family: 'Inter', sans-serif;
 }
 
@@ -42,7 +42,7 @@ body::before {
   background: url("../assets/bg-custom.png") center/cover no-repeat;
   z-index: -2;
   /* Increase opacity slightly so the nebula-to-network image is more visible. */
-  opacity: 0.4;
+  opacity: 0;
   animation: scrollBackground 90s linear infinite;
 }
 
@@ -583,9 +583,10 @@ a:hover {
 
 /* Footer */
 .footer {
-  background: rgba(255, 255, 255, 0.1);
+  
   padding: 2rem 1rem;
   color: #d1d5db;
+  background: linear-gradient(to bottom, #010c1f 0%, #00172C 100%);
 }
 
 .footer-grid {
