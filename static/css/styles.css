@@ -1,0 +1,674 @@
+/* Vectari static site styles */
+/* Define brand colors as CSS variables for easy theming */
+:root {
+  /* Update the primary dark navy to match the darkest band of the logo background.
+     Using a slightly deeper tone helps the cropped logo blend seamlessly into the navbar. */
+  /* Adjust the primary dark navy to more closely match the darkest area of the logo's background. */
+  --color-navy: #00172C;
+  --color-blue: #0076d1; /* medium blue similar to logo */
+  --color-teal: #10B5A6;
+  --color-orange: #FF6A3D;
+  --color-light: #f5f7fa;
+  /* Reduce opacity on the overlay so the starry background and animated network are visible. */
+  /* Further reduce opacity of the overlay so the background graphic and animation are clearly visible. */
+  /* Make the overlay even lighter so the animated network is noticeable */
+  /* Provide a semi-transparent dark overlay to improve text contrast against the animated network. */
+  /* Lighten the overlay so that the animated network remains clearly visible.
+     A lower opacity lets the moving lines and the nebula-to-network gradient shine through
+     without sacrificing text contrast. */
+  --color-dark-overlay: rgba(0, 15, 30, 0.5);
+  --font-family: 'Inter', sans-serif;
+}
+
+/*
+ * Animated nebula background
+ *
+ * In addition to the network canvas, we slowly pan the starry nebula image across the viewport
+ * to add subtle motion reminiscent of ForgePath. The image repeats and moves on both x and y
+ * axes, creating a gentle drift effect. The opacity is low so it does not distract from
+ * foreground content.
+ */
+/* Nebula + vector background
+ * A blue nebula on the left transitions to an orange network on the right. The image
+ * scrolls slowly for subtle motion. The opacity keeps it from overwhelming
+ * the content while still conveying depth and energy. */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 200%;
+  height: 200%;
+  background: url("../assets/bg-custom.png") center/cover no-repeat;
+  z-index: -2;
+  /* Increase opacity slightly so the nebula-to-network image is more visible. */
+  opacity: 0.4;
+  animation: scrollBackground 90s linear infinite;
+}
+
+@keyframes scrollBackground {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    /* Move diagonally to add depth. Adjust percentages for subtler or stronger movement. */
+    transform: translate3d(-50%, -20%, 0);
+  }
+}
+
+/* Reset and base styles */
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-family);
+  color: var(--color-navy);
+  /* Use a solid background color instead of the static nebula image. The animated network will still play via the canvas. */
+  background: var(--color-navy);
+}
+
+h1, h2, h3, h4, h5 {
+  margin-top: 0;
+  line-height: 1.3;
+}
+
+p {
+  line-height: 1.6;
+  margin: 0.5rem 0;
+}
+
+a {
+  color: var(--color-blue);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Canvas covers the full viewport */
+#net-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* Place the network canvas just below the content overlay but above the page background. */
+  z-index: 0;
+  /* Allow mouse interactions to pass through the canvas so underlying links remain clickable. */
+  pointer-events: none;
+  /* The canvas is used solely for the animated network lines. The nebula background is handled by body::before. */
+}
+
+/* Previously a pseudo element applied the background. It has been removed now since the body itself sets the background. */
+
+/* Overlay wrapper to darken the background and contain all content */
+.overlay {
+  position: relative;
+  z-index: 1;
+  background: var(--color-dark-overlay);
+  color: white;
+  min-height: 100vh;
+}
+
+/* Announcement bar */
+.announcement {
+  background: var(--color-navy);
+  color: #ffffff;
+  text-align: center;
+  padding: 0.3rem 1rem;
+  font-size: 0.8rem;
+}
+
+/* Navigation */
+.navbar {
+  position: sticky;
+  top: 0;
+  /* Make the nav bar match the dark logo background */
+  /* Use a gradient that mirrors the logo background from deep navy to lighter navy. */
+  background: linear-gradient(to bottom, #010c1f 0%, #00172C 100%);
+  border-bottom: none;
+  z-index: 100;
+}
+
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0.5rem 1rem;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: white;
+  font-weight: 600;
+  font-size: 1.4rem;
+}
+
+/* Logo inside the nav. When using the square V mark only */
+.nav-brand .logo {
+  width: 36px;
+  height: 36px;
+}
+
+/* Full logo bar with text; scale down via height while maintaining aspect ratio */
+.nav-brand .logo-full {
+  height: 36px;
+  width: auto;
+}
+
+.brand-name {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.nav-links {
+  display: none;
+}
+
+/* Show nav links on medium screens */
+@media (min-width: 768px) {
+  .nav-links {
+    display: flex;
+    gap: 1.5rem;
+  }
+}
+
+.nav-links a {
+  color: white;
+  font-size: 0.9rem;
+  transition: opacity 0.2s;
+}
+
+.nav-links a:hover {
+  opacity: 0.8;
+}
+
+.cta-button {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  background: var(--color-orange);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.85rem;
+  border: 2px solid var(--color-orange);
+  transition: background 0.2s;
+}
+
+.cta-button:hover {
+  background: transparent;
+  color: var(--color-orange);
+}
+
+/* Hero section */
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: left;
+  min-height: 80vh;
+  padding: 4rem 1rem;
+}
+
+.hero-content {
+  max-width: 600px;
+}
+
+.hero h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 1rem;
+}
+
+.hero .highlight {
+  color: var(--color-orange);
+}
+
+.hero p {
+  font-size: 1.125rem;
+  margin-bottom: 1.5rem;
+  color: #e5e7eb;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.button {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  border: 2px solid transparent;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+}
+
+.button.primary {
+  background: var(--color-orange);
+  color: #ffffff;
+  border-color: var(--color-orange);
+}
+
+.button.primary:hover {
+  background: transparent;
+  color: var(--color-orange);
+}
+
+.button.secondary {
+  background: transparent;
+  color: var(--color-orange);
+  border-color: var(--color-orange);
+}
+
+.button.secondary:hover {
+  background: var(--color-orange);
+  color: #ffffff;
+}
+
+/* Section styling */
+.section {
+  padding: 4rem 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section.bg-light {
+  background: rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.section h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #ffffff;
+}
+
+.section p,
+.section li,
+.section blockquote,
+.section cite {
+  color: #d1d5db;
+}
+
+/* Cards grid */
+.cards {
+  display: grid;
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.cards.two { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+.cards.three { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+.cards.four { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+
+.card {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 1rem;
+  padding: 1.25rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  color: #f3f4f6;
+  cursor: pointer;
+  position: relative;
+}
+
+.card h3 {
+  margin-top: 0;
+  font-size: 1.2rem;
+  color: var(--color-orange);
+}
+
+.card p {
+  font-size: 0.95rem;
+  margin-top: 0.5rem;
+}
+
+/* Hidden details inside cards that reveal on click */
+.card-details {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  margin-top: 0.5rem;
+}
+
+.card.active .card-details {
+  /* Enough space for typical text length; adjust as needed */
+  max-height: 200px;
+}
+
+/* Specific tweaks for the compliance/framework cards to reduce the “bubble within a bubble” effect.
+   These cards use a slightly less opaque background and lighter border so they blend better
+   into the section background. The back‑drop blur gives a glass‑like feel without overwhelming
+   the page. */
+.framework-cards .card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(2px);
+}
+
+/* Framework grid */
+.framework-grid {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  margin-top: 2rem;
+}
+
+.framework-grid span {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.75rem;
+  font-size: 0.8rem;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.05);
+  color: #e5e7eb;
+}
+
+/* Interactive framework items
+   Convert simple spans into clickable items that reveal additional details on click.
+   Use the same basic appearance as existing spans but with pointer cursor. */
+.framework-item {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.75rem;
+  font-size: 0.8rem;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.05);
+  color: #e5e7eb;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.framework-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Hidden details inside framework items */
+.framework-details {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  color: #cbd5e1;
+}
+
+.framework-item.active .framework-details {
+  /* Allow enough space for multi-line details */
+  max-height: 150px;
+}
+
+/* Contact section */
+/* Contact section styles */
+.contact-section {
+  /* Darker backdrop for the entire contact area */
+  /* Darken the overall contact section slightly to contrast with the brighter background. */
+  background: rgba(0, 15, 30, 0.75);
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 4rem 1rem;
+}
+
+/* Container for info + form */
+/*
+ * Contact container layout
+ *
+ * ForgePath’s contact card splits the information and the form into two panels. We use a
+ * responsive flex layout rather than CSS grid to ensure consistent column widths and to
+ * avoid awkward squeezing of fields on medium screens. On small screens the panels stack
+ * vertically. The card is tinted dark for contrast and framed with a subtle border.
+ */
+.contact-container {
+  background: rgba(0, 16, 32, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 1rem;
+  padding: 2rem;
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+@media (max-width: 767px) {
+  .contact-container {
+    flex-direction: column;
+  }
+}
+
+/* Contact info styling – allocate roughly 40% of horizontal space on large screens */
+.contact-info {
+  flex: 1 1 40%;
+  min-width: 250px;
+  color: #ffffff;
+}
+
+/* Add a divider between info and form on larger screens */
+.contact-info {
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+  padding-right: 2rem;
+  margin-right: 2rem;
+}
+
+@media (max-width: 767px) {
+  .contact-info {
+    border-right: none;
+    padding-right: 0;
+    margin-right: 0;
+    margin-bottom: 1.5rem;
+  }
+}
+
+/* Contact form panel – takes remaining space */
+.contact-form {
+  flex: 1 1 50%;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Contact info styling */
+.contact-info h2 {
+  margin-top: 0;
+  font-size: 1.8rem;
+  color: #ffffff;
+  margin-bottom: 1rem;
+}
+
+.contact-info p {
+  color: #d1d5db;
+  margin-bottom: 0.5rem;
+}
+
+/* Emphasise labels (Phone, Email, Headquarters) within the contact info */
+.contact-info strong {
+  color: var(--color-orange);
+  font-weight: 600;
+}
+
+@media (min-width: 768px) {
+  /* (Removed older divider definition; the divider is now defined with a fixed opacity above) */
+}
+
+/* Emphasize phone and email in the contact info */
+.contact-info .phone,
+.contact-info .email {
+  color: var(--color-orange);
+  font-weight: 600;
+}
+
+.contact-form label {
+  font-size: 0.85rem;
+  margin-bottom: 0.25rem;
+  color: #ffffff;
+}
+
+.contact-form input,
+.contact-form select,
+.contact-form textarea {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.contact-form input::placeholder,
+.contact-form textarea::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.contact-form button {
+  background: var(--color-orange);
+  color: #ffffff;
+  padding: 0.75rem 1.5rem;
+  border: 2px solid var(--color-orange);
+  border-radius: 9999px;
+  font-weight: 600;
+  margin-top: 1rem;
+  width: fit-content;
+  transition: background 0.2s, color 0.2s;
+}
+
+.contact-form button:hover {
+  background: transparent;
+  color: var(--color-orange);
+}
+
+/* Style the select element and its options so the drop‑down list remains readable on a dark theme. */
+.contact-form select {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.contact-form select option {
+  background-color: #00172C;
+  color: #ffffff;
+}
+
+/* Form grid layout */
+.form-grid {
+  display: grid;
+  /* Increase spacing between form fields for better separation */
+  column-gap: 1.5rem;
+  /* Increase row spacing so vertically stacked fields (e.g. name and email) have more breathing room. */
+  row-gap: 1.25rem;
+}
+
+.form-grid .full {
+  grid-column: span 1;
+}
+
+@media (min-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .form-grid .full {
+    /* Span across all columns explicitly to ensure the element takes the full width */
+    grid-column: 1 / -1;
+  }
+}
+
+/* Footer */
+.footer {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2rem 1rem;
+  color: #d1d5db;
+}
+
+.footer-grid {
+  display: grid;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .footer-grid {
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+  }
+}
+
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: 280px;
+}
+
+.footer-brand .logo.small {
+  /* Increase the footer logo size now that the brand text has been removed */
+  width: 64px;
+  height: 64px;
+}
+
+.footer-brand .brand-name {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--color-orange);
+}
+
+.footer-column h4 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  color: #ffffff;
+  font-size: 1rem;
+}
+
+.footer-column ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+}
+
+.footer-column li {
+  font-size: 0.85rem;
+  color: #d1d5db;
+}
+
+.footer-column a {
+  color: var(--color-orange);
+}
+
+.copy {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+/* Thank you page */
+.thank-you {
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  text-align: center;
+  color: #ffffff;
+}
+
+.thank-you h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.thank-you p {
+  font-size: 1.1rem;
+  color: #d1d5db;
+  margin-bottom: 2rem;
+}

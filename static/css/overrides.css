@@ -1,0 +1,16 @@
+
+/* Safe nebula background on <html>, transparent body */
+html { background: url("../assets/bg.jpg") center / cover no-repeat fixed !important; }
+body { background: transparent !important; }
+
+/* Remove global pseudo-overlays */
+html::after, body::after { content: none !important; display: none !important; background: none !important; opacity: 0 !important; }
+
+/* Tame hero/light tints */
+section.hero, .hero,
+section.hero::before, .hero::before,
+section.hero::after, .hero::after,
+.section.bg-light, .section[class*="bg-light"] {
+  background: transparent !important;
+  background-image: none !important;
+}

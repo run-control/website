@@ -1,0 +1,45 @@
+
+/* Frameworks v8.1: taller cards for more content and bigger reveal */
+#frameworks .card{
+  position:relative;
+  min-height: 360px;
+  overflow:hidden;
+}
+#frameworks .card h3,
+#frameworks .card .framework-title{
+  margin:0;
+  padding:12px 16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  cursor:pointer;
+  user-select:none;
+  line-height:1.2;
+}
+#frameworks .card h3::after,
+#frameworks .card .framework-title::after{
+  content:"▾";
+  font-weight:700;
+  margin-left:8px;
+  transition: transform .15s ease;
+}
+#frameworks .card[aria-expanded="true"] h3::after,
+#frameworks .card[aria-expanded="true"] .framework-title::after{
+  transform: rotate(180deg);
+}
+#frameworks .card .reveal{
+  position:absolute;
+  left:12px; right:12px; top:60px; bottom:12px;
+  padding:14px 16px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.08);
+  background: rgba(9,18,28,.90);
+  color:#d8e6ef;
+  overflow:auto;
+  box-sizing:border-box;
+  display:none;
+}
+#frameworks .card[aria-expanded="true"] .reveal{ display:block; }
+#frameworks .card .reveal p{ margin:0 0 .8rem 0; line-height:1.6; }
+#frameworks .card .reveal ul{ margin:.6rem 0 .85rem 1.2rem; }
+#frameworks .card .reveal li{ margin:.3rem 0; }
