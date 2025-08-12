@@ -219,8 +219,15 @@ a:hover {
 }
 
 .hero h1 {
-  font-size: 2.5rem;
+  font-size: 10rem;
   font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+}
+
+.hero h2 {
+  font-size: 2.5rem;
+  font-weight: 600;
   color: #ffffff;
   margin-bottom: 1rem;
 }
