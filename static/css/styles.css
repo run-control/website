@@ -212,11 +212,11 @@ a:hover {
 /* Hero section */
 .hero {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   text-align: center;
   min-height: 80vh;
-  padding: 4rem 1rem;
+  padding: 2rem 1rem;
 }
 
 .hero-content {
