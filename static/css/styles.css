@@ -209,13 +209,15 @@ a:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  text-align: left;
+  text-align: center;
   min-height: 80vh;
   padding: 4rem 1rem;
 }
 
 .hero-content {
-  max-width: 600px;
+  width: 100%;
+  max-width: none;
+  text-align: center;
 }
 
 .hero h1 {
@@ -223,6 +225,7 @@ a:hover {
   font-weight: 800;
   color: #ffffff;
   margin-bottom: 0.5rem;
+  text-align: center;
 }
 
 .hero h2 {
@@ -246,6 +249,7 @@ a:hover {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
+  justify-content: center;
   margin-bottom: 0.5rem;
 }
 
