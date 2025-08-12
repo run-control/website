@@ -343,13 +343,23 @@ a:hover {
   background: rgba(255, 255, 255, 0.9);
   color: var(--color-navy);
   padding: 0.75rem 1rem;
-  border-left: 4px solid var(--color-blue);
-  border-radius: 4px;
+  border-left: 4px solid var(--color-orange);
+  border-radius: 8px;
+  cursor: pointer;
 }
 
 .vector-step.visible {
   opacity: 1;
   transform: translateX(0);
+}
+
+.vector-detail {
+  display: none;
+  margin-top: 0.5rem;
+}
+
+.vector-step.expanded .vector-detail {
+  display: block;
 }
 
 .card {

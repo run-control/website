@@ -25,6 +25,11 @@ document.addEventListener('DOMContentLoaded', function () {
   const vectorSection = document.querySelector('#vector');
   if (vectorSection) {
     const steps = vectorSection.querySelectorAll('.vector-step');
+    steps.forEach((step) => {
+      step.addEventListener('click', () => {
+        step.classList.toggle('expanded');
+      });
+    });
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
