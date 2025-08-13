@@ -63,6 +63,108 @@
         </div>
       </div>
     </section>
+    <!-- Trust Bar: tweak :root vars for colors, --trust-speed for scroll speed, and edit <li> badges -->
+    <section class="trust-bar" aria-label="Trust &amp; assurance">
+      <div class="trust-viewport">
+        <ul class="trust-track" role="list">
+          <li class="trust-badge" tabindex="0">CISO-Led</li>
+          <li class="trust-badge" tabindex="0">Proven Leadership</li>
+          <li class="trust-badge" tabindex="0">Certified Experts</li>
+          <li class="trust-badge" tabindex="0">Industry Experts</li>
+          <li class="trust-badge" tabindex="0">US-Based</li>
+          <li class="trust-badge" tabindex="0">Insured</li>
+          <li class="trust-badge" tabindex="0">Background-Checked</li>
+          <li class="trust-badge" tabindex="0">NIST-Aligned</li>
+          <li class="trust-badge" tabindex="0">Evidence Packs</li>
+          <li class="trust-badge" tabindex="0">24/7 Monitoring</li>
+          <li class="trust-badge" tabindex="0">IR Playbooks</li>
+          <li class="trust-badge" tabindex="0">Least Privilege</li>
+          <li class="trust-badge" tabindex="0">MFA Everywhere</li>
+          <li class="trust-badge" tabindex="0">Encrypted Data</li>
+          <li class="trust-badge" tabindex="0">Vendor Reviews</li>
+          <li class="trust-badge" tabindex="0">Audit-Ready</li>
+          <li class="trust-badge" tabindex="0">DPA Ready</li>
+          <li class="trust-badge" tabindex="0">Utah LLC</li>
+        </ul>
+        <ul class="trust-track trust-track--clone" aria-hidden="true"></ul>
+      </div>
+      <style>
+        :root {
+          --trust-bg: #0b132b;
+          --trust-fg: #e5e7eb;
+          --trust-chip-bg: #0f1a34;
+          --trust-chip-border: #1f2a44;
+          --trust-accent: #2a9d8f;
+          --trust-gap: 2rem;
+          --trust-speed: 40s;
+        }
+        .trust-bar {
+          background: var(--trust-bg);
+          color: var(--trust-fg);
+          height: 3.5rem;
+          display: flex;
+          align-items: center;
+        }
+        .trust-viewport {
+          overflow: hidden;
+          width: 100%;
+          display: flex;
+          mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+          -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+        }
+        .trust-track {
+          display: flex;
+          gap: var(--trust-gap);
+          flex-shrink: 0;
+          animation: trust-scroll var(--trust-speed) linear infinite;
+        }
+        .trust-bar:hover .trust-track,
+        .trust-bar:focus-within .trust-track {
+          animation-play-state: paused;
+        }
+        .trust-badge {
+          list-style: none;
+          flex: none;
+          background: var(--trust-chip-bg);
+          border: 1px solid var(--trust-chip-border);
+          border-radius: 9999px;
+          padding: 0.25rem 0.75rem;
+          font-size: clamp(0.75rem, 2vw, 0.95rem);
+          letter-spacing: 0.05em;
+          text-transform: uppercase;
+          white-space: nowrap;
+          line-height: 1;
+          height: 2rem;
+          display: flex;
+          align-items: center;
+          outline: 0;
+        }
+        .trust-badge:focus {
+          outline: 2px solid var(--trust-accent);
+          outline-offset: 2px;
+        }
+        @keyframes trust-scroll {
+          from { transform: translateX(0); }
+          to { transform: translateX(-100%); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .trust-track {
+            animation: none;
+            flex-wrap: wrap;
+            justify-content: center;
+          }
+          .trust-track--clone {
+            display: none;
+          }
+        }
+      </style>
+      <script>
+        document.addEventListener('DOMContentLoaded', () => {
+          const track = document.querySelector('.trust-track');
+          document.querySelector('.trust-track--clone').innerHTML = track.innerHTML;
+        });
+      </script>
+    </section>
     <!-- VECTOR Assessment section -->
       <section id="vector" class="section">
         <div class="vector-content">
