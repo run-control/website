@@ -334,7 +334,7 @@ a:hover {
 #vector {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(to bottom, rgba(0, 118, 209, 0.6) 0%, #000 50%, #000 100%);
+  background-color: #000;
 }
 
 #vector .vector-content {
