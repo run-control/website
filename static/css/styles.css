@@ -281,6 +281,52 @@ a:hover {
   display: block;
 }
 
+/* Problems we solve */
+#problems {
+  padding: 4rem 1rem;
+  width: 100%;
+  margin: 0;
+  text-align: center;
+  background: transparent;
+}
+
+#problems ul {
+  list-style: none;
+  padding: 0;
+  margin: 2rem 0 0;
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-auto-rows: 1fr;
+}
+
+#problems li {
+  display: flex;
+}
+
+#problems article {
+  text-align: center;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+#problems svg {
+  display: block;
+  margin: 0 auto 0.5rem;
+  color: var(--color-blue);
+}
+
+#problems h2,
+#problems h3 {
+  color: var(--color-orange);
+}
+
+#problems p {
+  color: #fff;
+}
+
 /* Cards grid */
 .cards {
   display: grid;
