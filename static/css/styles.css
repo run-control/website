@@ -346,6 +346,8 @@ a:hover {
   height: auto;
   max-width: 120%;
   opacity: 0.4;
+  /* Soften video edges into the surrounding background */
+  box-shadow: 0 0 80px 40px #000 inset;
   z-index: 0;
   pointer-events: none;
 }
