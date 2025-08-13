@@ -21,6 +21,9 @@
 }
 
 /* Reset and base styles */
+*,*::before,*::after {
+  box-sizing: border-box;
+}
 html, body {
   margin: 0;
   padding: 0;
@@ -28,6 +31,8 @@ html, body {
   color: var(--color-navy);
   /* Use a solid black background for now. */
   background: #000;
+  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 /* Fluid type scale for better readability on all screens */
