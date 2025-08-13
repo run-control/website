@@ -300,9 +300,21 @@ a:hover {
   padding: 0;
   margin: 2rem 0 0;
   display: grid;
-  gap: 1.5rem;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--gap, 1.5rem);
+  grid-template-columns: 1fr;
   grid-auto-rows: 1fr;
+}
+
+@media (min-width: 768px) {
+  #problems ul {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1600px) {
+  #problems ul {
+    grid-template-columns: repeat(6, 1fr);
+  }
 }
 
 #problems li {
