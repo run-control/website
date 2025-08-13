@@ -1,7 +1,7 @@
 
-/* Safe nebula background on <html>, transparent body */
-html { background: url("../assets/bg.jpg") center / cover no-repeat fixed !important; }
-body { background: transparent !important; }
+/* Use a solid black background across the page */
+html { background: #000 !important; }
+body { background: #000 !important; }
 
 /* Remove global pseudo-overlays */
 html::after, body::after { content: none !important; display: none !important; background: none !important; opacity: 0 !important; }

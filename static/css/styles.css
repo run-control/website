@@ -26,8 +26,8 @@ html, body {
   padding: 0;
   font-family: var(--font-family);
   color: var(--color-navy);
-  /* Use a solid background color instead of the static nebula image. The animated network will still play via the canvas. */
-  background: var(--color-navy);
+  /* Use a solid black background for now. */
+  background: #000;
 }
 
 /* Fluid type scale for better readability on all screens */
@@ -162,13 +162,16 @@ a:hover {
   position: relative;
   overflow: hidden;
   display: flex;
-  align-items: flex-start;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
   text-align: center;
-  min-height: 80vh;
-  padding: 2rem 1rem;
+  min-height: calc(100vh - 64px); /* subtract sticky navbar height */
+  padding: 0 1rem;
+  box-sizing: border-box;
 }
 
+/* Background video fills the hero and sits behind content */
 .hero-bg {
   position: absolute;
   top: 0;
@@ -183,6 +186,7 @@ a:hover {
   width: 100%;
   max-width: none;
   text-align: center;
+  padding-top: 2rem;
 }
 
 .hero h1 {
