@@ -157,6 +157,163 @@
         });
       </script>
     </section>
+    <!-- Problems we solve -->
+    <section id="problems" aria-label="Problems we solve">
+      <h2>Problems we solve</h2>
+      <p>Six recurring security headaches we tackle for growing teams.</p>
+      <!-- Update card copy or icons below as needed -->
+      <ul role="list" class="grid">
+        <li>
+          <article tabindex="0" aria-labelledby="p1">
+            <!-- shield icon -->
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false" aria-hidden="true">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            <h3 id="p1">Audit pressure &amp; questionnaires</h3>
+            <p>Evidence on demand, not fire drills.</p>
+          </article>
+        </li>
+        <li>
+          <article tabindex="0" aria-labelledby="p2">
+            <!-- layers icon -->
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false" aria-hidden="true">
+              <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+              <polyline points="2 12 12 17 22 12"/>
+              <polyline points="2 17 12 22 22 17"/>
+            </svg>
+            <h3 id="p2">Too many tools, no owner</h3>
+            <p>One accountable program that ties strategy to daily ops.</p>
+          </article>
+        </li>
+        <li>
+          <article tabindex="0" aria-labelledby="p3">
+            <!-- user-tie icon -->
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false" aria-hidden="true">
+              <circle cx="12" cy="7" r="4"/>
+              <path d="M4 21v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2"/>
+              <path d="M12 11v4"/>
+              <path d="M10 15l2 3 2-3"/>
+            </svg>
+            <h3 id="p3">No security leader, no headcount</h3>
+            <p>CISO-level guidance without hiring a team.</p>
+          </article>
+        </li>
+        <li>
+          <article tabindex="0" aria-labelledby="p4">
+            <!-- checklist/verify icon -->
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false" aria-hidden="true">
+              <path d="M9 11l3 3L22 4"/>
+              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+            </svg>
+            <h3 id="p4">Who verifies your MSP?</h3>
+            <p>Independent oversight: guardrails, patch/EDR validation, documented evidence.</p>
+          </article>
+        </li>
+        <li>
+          <article tabindex="0" aria-labelledby="p5">
+            <!-- link-check icon -->
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false" aria-hidden="true">
+              <path d="M15 7h3a5 5 0 0 1 0 10h-3"/>
+              <path d="M9 17H6a5 5 0 0 1 0-10h3"/>
+              <path d="M8 12h8"/>
+              <polyline points="16 18 18 20 22 16"/>
+            </svg>
+            <h3 id="p5">Access &amp; vendor risk feels fuzzy</h3>
+            <p>Reviews on a cadence you can show.</p>
+          </article>
+        </li>
+        <li>
+          <article tabindex="0" aria-labelledby="p6">
+            <!-- siren icon -->
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false" aria-hidden="true">
+              <path d="M6 18h12l1-6a7 7 0 0 0-14 0l1 6z"/>
+              <line x1="4" y1="22" x2="20" y2="22"/>
+              <path d="M6 8V2"/>
+              <path d="M18 8V2"/>
+              <path d="M2 12h2"/>
+              <path d="M20 12h2"/>
+            </svg>
+            <h3 id="p6">Are we incident-ready?</h3>
+            <p>IR plan, on-call leadership, and quick drills.</p>
+          </article>
+        </li>
+      </ul>
+      <div class="cta-row">
+        <a href="#how-we-start" class="cta-primary">See how we start</a>
+        <a href="#contact" class="cta-link">Schedule a 20-min fit call</a>
+      </div>
+    </section>
+    <style>
+      /* design tokens and layout - tweak colors/spacing here */
+      :root{
+        --bg:#0b0b0b; /* section bg */
+        --fg:#e5e7eb; /* main text */
+        --muted:#9aa3b2; /* secondary text */
+        --card:#111318; /* card surface */
+        --border:#1f2430; /* fallback border */
+        --navy:#0b132b;
+        --teal:#2a9d8f;
+        --orange:#f4a261;
+        --radius:16px;
+        --gap:1.25rem;
+      }
+      #problems{
+        background:var(--bg);
+        color:var(--fg);
+        padding:clamp(1.25rem,3vw,2rem);
+        margin:clamp(2rem,6vw,4rem) auto;
+        max-width:1120px;
+      }
+      #problems h2{font-size:clamp(1.5rem,4vw,2rem);font-weight:600;margin:0;}
+      #problems>p{color:var(--muted);margin:.25rem 0 var(--gap);} /* change intro copy above */
+      .grid{display:grid;gap:var(--gap);grid-template-columns:1fr;}
+      @media(min-width:640px){.grid{grid-template-columns:repeat(2,1fr);}}
+      @media(min-width:1024px){.grid{grid-template-columns:repeat(3,1fr);}}
+      .grid article{
+        background:var(--card);
+        border:1px solid var(--border); /* fallback if gradient unsupported */
+        border-radius:var(--radius);
+        padding:clamp(1rem,2vw,1.5rem);
+        display:flex;flex-direction:column;gap:.75rem;
+        position:relative;overflow:hidden;
+        opacity:0;transform:translateY(12px);
+        transition:opacity .6s,transform .6s,box-shadow .3s;
+        outline:0;
+      }
+      .grid article::before{
+        content:"";position:absolute;inset:0;padding:1px;border-radius:inherit;
+        background:conic-gradient(var(--navy),var(--teal),var(--orange),var(--navy));
+        -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+        -webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;
+      }
+      .grid svg{width:32px;height:32px;color:var(--teal);}
+      .grid h3{font-size:clamp(1.1rem,2.5vw,1.25rem);margin:0;font-weight:600;}
+      .grid p{color:var(--muted);margin:0;}
+      .grid article.is-visible{opacity:1;transform:none;}
+      .grid article:is(:hover,:focus-visible){
+        box-shadow:0 8px 16px -4px rgba(0,0,0,.6),0 0 8px 2px var(--teal);
+        transform:translateY(-4px); /* adjust hover lift */
+      }
+      .cta-row{display:flex;flex-wrap:wrap;gap:1rem;margin-top:var(--gap);}
+      .cta-primary{
+        background:var(--teal);color:var(--bg);text-decoration:none;
+        padding:.75rem 1.25rem;border-radius:8px;font-weight:600;display:inline-block;
+      }
+      .cta-primary:focus-visible{outline:2px solid var(--orange);outline-offset:2px;}
+      .cta-link{color:var(--muted);text-decoration:underline;align-self:center;}
+      .cta-link:focus-visible{outline:2px solid var(--orange);outline-offset:2px;}
+      @media(prefers-reduced-motion:reduce){.grid article{transition:none;transform:none;}}
+    </style>
+    <script>
+      // IntersectionObserver for reveal - adjust threshold/timing below
+      document.addEventListener('DOMContentLoaded',()=>{
+        const cards=document.querySelectorAll('#problems article');
+        const observer=new IntersectionObserver(entries=>{
+          entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('is-visible');observer.unobserve(e.target);}});
+        },{threshold:0.15});
+        cards.forEach(card=>observer.observe(card));
+      });
+    </script>
     <!-- VECTOR Assessment section -->
       <section id="vector" class="section">
         <div class="vector-content">
