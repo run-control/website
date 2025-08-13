@@ -422,10 +422,9 @@ a:hover {
 /* Contact section */
 /* Contact section styles */
 .contact-section {
-  /* Darker backdrop for the entire contact area */
-  /* Darken the overall contact section slightly to contrast with the brighter background. */
-  background: rgba(0, 15, 30, 0.75);
-  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  /* Remove the tinted box effect behind the contact form */
+  background: transparent;
+  border-top: none;
   padding: 4rem 1rem;
 }
 
