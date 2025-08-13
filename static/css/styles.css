@@ -272,6 +272,15 @@ a:hover {
   color: #d1d5db;
 }
 
+.testimonial blockquote,
+.testimonial cite {
+  text-align: center;
+}
+
+.testimonial cite {
+  display: block;
+}
+
 /* Cards grid */
 .cards {
   display: grid;
