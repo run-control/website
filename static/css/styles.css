@@ -20,42 +20,6 @@
   --font-family: 'Inter', sans-serif;
 }
 
-/*
- * Animated nebula background
- *
- * In addition to the network canvas, we slowly pan the starry nebula image across the viewport
- * to add subtle motion reminiscent of ForgePath. The image repeats and moves on both x and y
- * axes, creating a gentle drift effect. The opacity is low so it does not distract from
- * foreground content.
- */
-/* Nebula + vector background
- * A blue nebula on the left transitions to an orange network on the right. The image
- * scrolls slowly for subtle motion. The opacity keeps it from overwhelming
- * the content while still conveying depth and energy. */
-body::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 200%;
-  height: 200%;
-  background: url("../assets/bg-custom.png") center/cover no-repeat;
-  z-index: -2;
-  /* Increase opacity slightly so the nebula-to-network image is more visible. */
-  opacity: 0;
-  animation: scrollBackground 90s linear infinite;
-}
-
-@keyframes scrollBackground {
-  from {
-    transform: translate3d(0, 0, 0);
-  }
-  to {
-    /* Move diagonally to add depth. Adjust percentages for subtler or stronger movement. */
-    transform: translate3d(-50%, -20%, 0);
-  }
-}
-
 /* Reset and base styles */
 html, body {
   margin: 0;
@@ -89,22 +53,6 @@ a {
 a:hover {
   text-decoration: underline;
 }
-
-/* Canvas covers the full viewport */
-#net-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  /* Place the network canvas just below the content overlay but above the page background. */
-  z-index: 0;
-  /* Allow mouse interactions to pass through the canvas so underlying links remain clickable. */
-  pointer-events: none;
-  /* The canvas is used solely for the animated network lines. The nebula background is handled by body::before. */
-}
-
-/* Previously a pseudo element applied the background. It has been removed now since the body itself sets the background. */
 
 /* Overlay wrapper to darken the background and contain all content */
 .overlay {
@@ -211,12 +159,24 @@ a:hover {
 
 /* Hero section */
 .hero {
+  position: relative;
+  overflow: hidden;
   display: flex;
   align-items: flex-start;
   justify-content: center;
   text-align: center;
   min-height: 80vh;
   padding: 2rem 1rem;
+}
+
+.hero-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
 }
 
 .hero-content {
