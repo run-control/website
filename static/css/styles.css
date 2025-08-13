@@ -341,10 +341,10 @@ a:hover {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 800px;
+  width: 1200px;
   aspect-ratio: 8 / 3;
   height: auto;
-  max-width: 80%;
+  max-width: 120%;
   opacity: 0.4;
   z-index: 0;
   pointer-events: none;
