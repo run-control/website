@@ -259,6 +259,34 @@ a:hover {
   margin-bottom: 0.5rem;
 }
 
+/* Trust bar */
+.trust-bar {
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.1);
+  white-space: nowrap;
+}
+
+.trust-bar .marquee {
+  display: inline-block;
+  animation: trust-scroll 30s linear infinite;
+}
+
+.trust-bar span {
+  display: inline-block;
+  padding: 0 1.5rem;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+@keyframes trust-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
 .button {
   display: inline-block;
   padding: 0.75rem 1.5rem;
