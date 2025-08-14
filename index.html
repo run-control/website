@@ -353,7 +353,6 @@
               </ul>
             </div>
           </div>
-          <a class="see-start" href="#how">See how we start</a>
         </div>
         <div id="panel-operations" role="tabpanel" aria-labelledby="tab-operations" hidden>
           <div class="panel-content">
@@ -378,7 +377,6 @@
               </ul>
             </div>
           </div>
-          <a class="see-start" href="#how">See how we start</a>
         </div>
         <div id="panel-audit" role="tabpanel" aria-labelledby="tab-audit" hidden>
           <div class="panel-content">
@@ -403,7 +401,6 @@
               </ul>
             </div>
           </div>
-          <a class="see-start" href="#how">See how we start</a>
         </div>
         <div id="panel-incident" role="tabpanel" aria-labelledby="tab-incident" hidden>
           <div class="panel-content">
@@ -428,7 +425,6 @@
               </ul>
             </div>
           </div>
-          <a class="see-start" href="#how">See how we start</a>
         </div>
         <div id="panel-ai" role="tabpanel" aria-labelledby="tab-ai" hidden>
           <div class="panel-content">
@@ -454,7 +450,9 @@
               </ul>
             </div>
           </div>
-          <a class="see-start" href="#how">See how we start</a>
+        </div>
+        <div class="cta-wrapper">
+          <a href="https://outlook.office.com/book/VectariIntroduction@vectari.co/?ismsaljsauthenabled" class="cta-button">Schedule a Call</a>
         </div>
       </div>
     </section>
@@ -473,22 +471,22 @@
         background:var(--bg);
         color:var(--fg);
       }
-      #what-we-do .container{max-inline-size:var(--container);margin-inline:auto;padding:clamp(16px,4vw,32px);}
-      #what-we-do h2{font-size:clamp(1.5rem,4vw,2rem);font-weight:600;margin:0 0 1rem;color:var(--orange);}
-      #what-we-do .tabs{display:flex;flex-wrap:wrap;gap:.5rem;list-style:none;margin:0 0 1rem;padding:0;}
+      #what-we-do .container{max-inline-size:var(--container);margin-inline:auto;padding:clamp(16px,4vw,32px);text-align:center;}
+      #what-we-do h2{font-size:clamp(1.5rem,4vw,2rem);font-weight:600;margin:0 0 1rem;color:var(--orange);text-align:center;}
+      #what-we-do .tabs{display:flex;flex-wrap:wrap;gap:.5rem;list-style:none;margin:0 0 1rem;padding:0;justify-content:center;}
       #what-we-do [role="tab"]{border:1px solid var(--border);background:transparent;border-radius:9999px;padding:.5rem 1rem;color:var(--fg);cursor:pointer;font:inherit;}
       #what-we-do [role="tab"][aria-selected="true"]{background:var(--teal);color:var(--bg);}
       #what-we-do [role="tab"]:focus-visible{outline:2px solid var(--orange);outline-offset:2px;}
       #what-we-do [role="tabpanel"]{background:var(--card);border-radius:var(--radius);outline:1px solid var(--border);padding:clamp(16px,4vw,32px);margin-top:1rem;}
       #what-we-do .panel-content{display:flex;flex-direction:column;gap:1.5rem;}
       #what-we-do .left{flex:1;display:flex;flex-direction:column;gap:1rem;}
+
       #what-we-do .outcomes{margin:0;padding-left:1.25rem;display:flex;flex-direction:column;gap:.5rem;color:var(--fg);}
       #what-we-do .chips{display:flex;flex-direction:column;gap:.5rem;}
       #what-we-do .facts-label{margin:0;color:var(--muted);font-size:.875rem;}
       #what-we-do .facts{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:.5rem;}
       #what-we-do .facts li{border:1px solid var(--border);border-radius:9999px;padding:.25rem .75rem;background:var(--navy);align-self:flex-start;}
-      #what-we-do .see-start{display:inline-block;margin-top:1rem;font-size:.875rem;color:var(--teal);text-decoration:underline;}
-      #what-we-do .see-start:focus-visible{outline:2px solid var(--orange);outline-offset:2px;}
+      #what-we-do .cta-wrapper{margin-top:2rem;text-align:center;}
       @media(min-width:900px){#what-we-do .panel-content{flex-direction:row;}}
       @media(prefers-reduced-motion:reduce){#what-we-do [role="tab"],#what-we-do [role="tabpanel"]{transition:none;}}
     </style>
