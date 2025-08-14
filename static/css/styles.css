@@ -33,6 +33,7 @@ html, body {
   background: #000;
   overflow-x: hidden;
   overflow-x: clip;
+  scroll-behavior: smooth;
 }
 
 /* Fluid type scale for better readability on all screens */
