@@ -18,6 +18,13 @@
      without sacrificing text contrast. */
   --color-dark-overlay: rgba(0, 15, 30, 0);
   --font-family: 'Inter', sans-serif;
+  --header-h: 3.5rem;
+}
+
+@media (max-width: 767px) {
+  :root {
+    --header-h: 4rem;
+  }
 }
 
 /* Reset and base styles */
@@ -38,6 +45,12 @@ html, body {
 /* Fluid type scale for better readability on all screens */
 html {
   font-size: clamp(14px, calc(14px + 0.5vw), 18px);
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--header-h);
+}
+
+section[id] {
+  scroll-margin-top: var(--header-h);
 }
 
 h1, h2, h3, h4, h5 {
