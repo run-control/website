@@ -20,10 +20,4 @@ document.addEventListener('DOMContentLoaded', function () {
       item.classList.toggle('active');
     });
   });
-
-  // Smoothly handle discrete mouse-wheel steps
-  window.addEventListener('wheel', function (event) {
-    event.preventDefault();
-    window.scrollBy({ top: event.deltaY, left: 0, behavior: 'smooth' });
-  }, { passive: false });
 });
