@@ -11,10 +11,21 @@
   --fw-accent: #ff6d3a;
 }
 #frameworks{ display:none; }
-section#frameworks-carousel{ position: relative; padding: 28px 0 6px; }
-section#frameworks-carousel .section-head{ margin: 0 0 8px 0; padding: 0 12px; }
-section#frameworks-carousel .section-head h2{ font-size: 2rem; margin:0 0 6px 0; }
-section#frameworks-carousel .section-head p{ margin: 0; color:#a9c0cf; max-width: 920px; }
+section#frameworks-carousel{
+  position: relative;
+  padding: 4rem 0;
+  text-align: center;
+}
+section#frameworks-carousel .section-head{
+  margin: 0 0 8px 0;
+  padding: 0;
+}
+section#frameworks-carousel .section-head h2{
+  font-size: 2rem;
+  margin: 0 0 6px 0;
+  color: var(--color-orange);
+}
+section#frameworks-carousel .section-head p{ margin: 0 auto; color:#a9c0cf; max-width: 920px; }
 
 .carousel{
   position: relative; overflow: hidden; padding: 6px 0 10px;
