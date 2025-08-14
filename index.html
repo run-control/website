@@ -31,12 +31,8 @@
 <link rel="stylesheet" href="static/css/fw-constrain.css">
 </head>
 <body>
-  <!-- Canvas used for the animated network background -->
   <!-- Top‑level wrapper with overlay to improve text readability -->
   <div class="overlay">
-    <!-- Top bar -->
-    <div class="announcement">
-    </div>
     <!-- Navigation -->
     <header class="navbar">
       <div class="nav-inner">
@@ -45,162 +41,510 @@
           <img src="static/assets/logo-bar.png" alt="Vectari logo" class="logo-full">
         </div>
         <nav class="nav-links">
-          <a href="#services">Services</a>
-          <a href="#industries">Industries</a>
-          <a href="#frameworks">Frameworks</a>
-          <a href="#why">Why Vectari</a>
-          <a href="#contact">Contact</a>
+          <a href="#problems">Challenges</a>
+          <a href="#what-we-do">Services</a>
+          <a href="#frameworks-carousel">Compliance</a>
         </nav>
         <a href="https://outlook.office.com/book/VectariIntroduction@vectari.co/?ismsaljsauthenabled" class="cta-button">Schedule a Call</a>
       </div>
     </header>
-    <!-- Hero section -->
+    <!-- Hero section with video background -->
     <section class="hero">
+      <video class="hero-bg" autoplay loop muted playsinline>
+        <source src="backgrounds/bg-1.mp4" type="video/mp4">
+      </video>
       <div class="hero-content">
         <h1><span class="highlight">Cybersecurity</span></h1>
         <h2 class="hero-tagline">Handled...</h2>
-        <p>We build and run tailored security programs so you can stay compliant, close deals, and rest easy.</p>
+        <p>We build and run tailored security programs so you can stay compliant, reduce risk, and rest easy.</p>
         <div class="hero-actions">
           <a href="https://outlook.office.com/book/VectariIntroduction@vectari.co/?ismsaljsauthenabled" class="button primary">Talk to a Security Expert</a>
         </div>
       </div>
     </section>
-    <!-- VECTOR Assessment section -->
-      <section id="vector" class="section bg-light">
-        <h2>VECTOR Assessment</h2>
-        <p>Our VECTOR assessment is designed to quickly pinpoint gaps in your organization.</p>
-        <div class="vector-steps">
-          <div class="vector-step">
-            <div class="vector-title"><strong>V</strong>isibility</div>
-            <div class="vector-detail">Visibility across your AI, app, data, and access controls exposes blind spots early.</div>
-          </div>
-          <div class="vector-step">
-            <div class="vector-title"><strong>E</strong>ngineering</div>
-            <div class="vector-detail">Engineering reviews ensure your architecture and controls are built for resilience from day one.</div>
-          </div>
-          <div class="vector-step">
-            <div class="vector-title"><strong>C</strong>ompliance</div>
-            <div class="vector-detail">Compliance mapping shows how your policies meet industry and regulatory requirements.</div>
-          </div>
-          <div class="vector-step">
-            <div class="vector-title"><strong>T</strong>hreats</div>
-            <div class="vector-detail">Threat analysis highlights likely attack paths and adversaries so you can prepare.</div>
-          </div>
-          <div class="vector-step">
-            <div class="vector-title"><strong>O</strong>rganization</div>
-            <div class="vector-detail">Organizational insight connects leadership, culture, and staffing to security success.</div>
-          </div>
-          <div class="vector-step">
-            <div class="vector-title"><strong>R</strong>isk</div>
-            <div class="vector-detail">Risk scoring helps prioritize remediation based on business impact and likelihood.</div>
+    <!-- Trust Bar: tweak :root vars for colors, --trust-speed for scroll speed, and edit <li> badges -->
+    <section class="trust-bar" aria-label="Trust &amp; assurance">
+      <div class="trust-viewport">
+        <ul class="trust-track" role="list">
+          <li class="trust-badge" tabindex="0">CISO-led</li>
+          <li class="trust-badge" tabindex="0">Enterprise experience</li>
+          <li class="trust-badge" tabindex="0">US-based</li>
+          <li class="trust-badge" tabindex="0">Vendor-neutral</li>
+          <li class="trust-badge" tabindex="0">Customer-first</li>
+          <li class="trust-badge" tabindex="0">Clear SLAs</li>
+          <li class="trust-badge" tabindex="0">Responsible AI</li>
+          <li class="trust-badge" tabindex="0">Risk-driven</li>
+          <li class="trust-badge" tabindex="0">Audit experience</li>
+          <li class="trust-badge" tabindex="0">MSP friendly</li>
+        </ul>
+        <ul class="trust-track trust-track--clone" aria-hidden="true"></ul>
+      </div>
+      <style>
+        :root {
+            --trust-bg: #000000;
+          --trust-fg: #e5e7eb;
+          --trust-chip-bg: #0f1a34;
+          --trust-chip-border: #1f2a44;
+          --trust-accent: #2a9d8f;
+          --trust-gap: 2rem;
+          --trust-speed: 80s;
+        }
+        .trust-bar {
+          background: var(--trust-bg);
+          color: var(--trust-fg);
+          height: 3.5rem;
+          display: flex;
+          align-items: center;
+          margin-top: 1rem;
+        }
+        .trust-viewport {
+          overflow: hidden;
+          width: 100%;
+          display: flex;
+          mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+          -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+        }
+        .trust-track {
+          display: flex;
+          gap: var(--trust-gap);
+          flex-shrink: 0;
+          animation: trust-scroll var(--trust-speed) linear infinite;
+        }
+        .trust-bar:hover .trust-track,
+        .trust-bar:focus-within .trust-track {
+          animation-play-state: paused;
+        }
+        .trust-badge {
+          list-style: none;
+          flex: none;
+          background: var(--trust-chip-bg);
+          border: 1px solid var(--trust-chip-border);
+          border-radius: 9999px;
+          padding: 0.25rem 0.75rem;
+          font-size: clamp(0.75rem, 2vw, 0.95rem);
+          letter-spacing: 0.05em;
+          white-space: nowrap;
+          line-height: 1;
+          height: 2rem;
+          display: flex;
+          align-items: center;
+          outline: 0;
+        }
+        .trust-badge:focus {
+          outline: 2px solid var(--trust-accent);
+          outline-offset: 2px;
+        }
+        @keyframes trust-scroll {
+          from { transform: translateX(0); }
+          to { transform: translateX(-100%); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .trust-track {
+            animation: none;
+            flex-wrap: wrap;
+            justify-content: center;
+          }
+          .trust-track--clone {
+            display: none;
+          }
+        }
+      </style>
+      <script>
+        document.addEventListener('DOMContentLoaded', () => {
+          const track = document.querySelector('.trust-track');
+          document.querySelector('.trust-track--clone').innerHTML = track.innerHTML;
+        });
+      </script>
+    </section>
+    <!-- Problems we solve -->
+    <section id="problems" aria-label="Problems we solve">
+      <h2>Problems we solve</h2>
+      <p>Recurring security headaches we tackle for growing teams.</p>
+      <!-- Update card copy or icons below as needed -->
+      <ul role="list" class="grid">
+        <li>
+          <article tabindex="0" aria-labelledby="p1">
+            <!-- shield icon -->
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false" aria-hidden="true">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            <h3 id="p1">Risk Blind Spots</h3>
+            <p>Clear 90-day plan; know top risks.</p>
+          </article>
+        </li>
+        <li>
+          <article tabindex="0" aria-labelledby="p2">
+            <!-- layers icon -->
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false" aria-hidden="true">
+              <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+              <polyline points="2 12 12 17 22 12"/>
+              <polyline points="2 17 12 22 22 17"/>
+            </svg>
+            <h3 id="p2">Audit &amp; Cert Prep</h3>
+            <p>Evidence on hand; faster reviews.</p>
+          </article>
+        </li>
+        <li>
+          <article tabindex="0" aria-labelledby="p3">
+            <!-- user-tie icon -->
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false" aria-hidden="true">
+              <circle cx="12" cy="7" r="4"/>
+              <path d="M4 21v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2"/>
+              <path d="M12 11v4"/>
+              <path d="M10 15l2 3 2-3"/>
+            </svg>
+            <h3 id="p3">No Security Team</h3>
+            <p>Fractional CISO + operators; no headcount.</p>
+          </article>
+        </li>
+        <li>
+          <article tabindex="0" aria-labelledby="p4">
+            <!-- checklist/verify icon -->
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false" aria-hidden="true">
+              <path d="M9 11l3 3L22 4"/>
+              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+            </svg>
+            <h3 id="p4">MSP Oversight</h3>
+            <p>Independent verification; documented controls.</p>
+          </article>
+        </li>
+        <li>
+          <article tabindex="0" aria-labelledby="p5">
+            <!-- siren icon -->
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false" aria-hidden="true">
+              <path d="M6 18h12l1-6a7 7 0 0 0-14 0l1 6z"/>
+              <line x1="4" y1="22" x2="20" y2="22"/>
+              <path d="M6 8V2"/>
+              <path d="M18 8V2"/>
+              <path d="M2 12h2"/>
+              <path d="M20 12h2"/>
+            </svg>
+            <h3 id="p5">Incident Readiness</h3>
+            <p>IR plan + on-call; quicker recovery.</p>
+          </article>
+        </li>
+        <li>
+          <article tabindex="0" aria-labelledby="p6">
+            <!-- link-check icon -->
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false" aria-hidden="true">
+              <path d="M15 7h3a5 5 0 0 1 0 10h-3"/>
+              <path d="M9 17H6a5 5 0 0 1 0-10h3"/>
+              <path d="M8 12h8"/>
+              <polyline points="16 18 18 20 22 16"/>
+            </svg>
+            <h3 id="p6">Vendor &amp; Access Reviews</h3>
+            <p>Risk scored; documented follow-ups.</p>
+          </article>
+        </li>
+      </ul>
+      <div class="cta-row">
+        <a href="https://outlook.office.com/book/VectariIntroduction@vectari.co/?ismsaljsauthenabled" class="cta-button">Schedule a Call</a>
+        <span class="cta-note">to see if we can help you.</span>
+      </div>
+    </section>
+    <style>
+      /* design tokens and layout - tweak colors/spacing here */
+      :root{
+        --bg:#000; /* section bg */
+        --fg:#ffffff; /* main text */
+        --card:transparent; /* card surface */
+        --border:#1f2430; /* fallback border */
+        --navy:var(--color-navy);
+        --blue:var(--color-blue);
+        --orange:var(--color-orange);
+        --radius:16px;
+        --gap:1.25rem;
+      }
+      #problems{
+        background:var(--bg);
+        color:var(--fg);
+        margin-block-start:clamp(1rem,4vw,2rem);
+        margin-block-end:clamp(2rem,6vw,4rem);
+        margin-inline:auto;
+        padding-block:clamp(1.25rem,3vw,2rem);
+        padding-inline:clamp(1rem,5vw,2.5rem);
+        inline-size:100%;
+        max-inline-size:1600px;
+      }
+      #problems h2{font-size:clamp(1.5rem,4vw,2rem);font-weight:600;margin:0;color:var(--orange);}
+      #problems>p{color:var(--fg);margin:.25rem 0 var(--gap);} /* change intro copy above */
+      .grid{list-style:none;padding:0;margin:0;display:grid;gap:var(--gap);grid-auto-rows:1fr;}
+      .grid li{display:flex;}
+      .grid article{
+        background:var(--card);
+        border:1px solid var(--border); /* fallback if gradient unsupported */
+        border-radius:var(--radius);
+        padding:clamp(1rem,2vw,1.5rem);
+        display:flex;flex-direction:column;gap:.75rem;
+        position:relative;overflow:hidden;
+        opacity:0;transform:translateY(12px);
+        transition:opacity .6s,transform .6s,box-shadow .3s;
+        outline:0;
+        flex:1;
+        min-inline-size:220px;
+      }
+      .grid article::before{
+        content:"";position:absolute;inset:0;padding:1px;border-radius:inherit;
+        background:conic-gradient(var(--navy),var(--blue),var(--orange),var(--navy));
+        -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+        -webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;
+      }
+      .grid svg{width:32px;height:32px;color:var(--blue);}
+      .grid h3{font-size:clamp(1rem,2.3vw,1.2rem);margin:0;font-weight:600;color:var(--orange);}
+      .grid p{color:var(--fg);margin:0;}
+      .grid article.is-visible{opacity:1;transform:none;}
+      .grid article:is(:hover,:focus-visible){
+        box-shadow:0 8px 16px -4px rgba(0,0,0,.6),0 0 8px 2px var(--blue);
+        transform:translateY(-4px); /* adjust hover lift */
+      }
+      .cta-row{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:var(--gap);justify-content:center;align-items:center;text-align:center;}
+      .cta-note{color:var(--fg);}
+      @media(prefers-reduced-motion:reduce){.grid article{transition:none;transform:none;}}
+    </style>
+    <script>
+      // IntersectionObserver for reveal - adjust threshold/timing below
+      document.addEventListener('DOMContentLoaded',()=>{
+        const cards=document.querySelectorAll('#problems article');
+        const observer=new IntersectionObserver(entries=>{
+          entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('is-visible');observer.unobserve(e.target);}});
+        },{threshold:0.15});
+        cards.forEach(card=>observer.observe(card));
+      });
+    </script>
+    <hr class="section-divider">
+    <!-- What we do section -->
+    <section id="what-we-do" aria-label="What we do">
+      <div class="container">
+        <h2>What we do</h2>
+        <div class="tabs" role="tablist" aria-label="Services">
+          <button id="tab-leadership" role="tab" aria-controls="panel-leadership" aria-selected="true">Security Leadership</button>
+          <button id="tab-operations" role="tab" aria-controls="panel-operations" tabindex="-1">Security Operations</button>
+          <button id="tab-audit" role="tab" aria-controls="panel-audit" tabindex="-1">Audit Readiness</button>
+          <button id="tab-incident" role="tab" aria-controls="panel-incident" tabindex="-1">Incident Preparedness</button>
+          <button id="tab-ai" role="tab" aria-controls="panel-ai" tabindex="-1">AI Governance</button>
+        </div>
+        <div id="panel-leadership" role="tabpanel" aria-labelledby="tab-leadership">
+          <div class="panel-content">
+            <div class="left">
+              <p class="promise">What our security leaders handle in your organization:</p>
+              <ul class="outcomes">
+                <li><strong>90-day plan</strong> — risk-led roadmap you can defend</li>
+                <li><strong>Board-ready KPIs</strong> — briefings in plain English</li>
+                <li><strong>MSP guardrails</strong> — independent oversight &amp; separation of duties</li>
+                <li><strong>Usable policies</strong> — standards + light training that stick</li>
+                <li><strong>Scheduled reviews</strong> — access &amp; vendors on cadence</li>
+                <li><strong>Trust Center</strong> — artifacts ready for audits &amp; questionnaires</li>
+                <li><strong>IR readiness</strong> — plan, roles, drills, on-call leadership</li>
+                <li><strong>Identity &amp; devices</strong> — SSO/M365 &amp; EDR aligned to least-privilege</li>
+                <li><strong>Customer questionnaires</strong> — handled; auditor coordination</li>
+              </ul>
+            </div>
+            <div class="chips">
+              <p class="facts-label">Leadership Criteria</p>
+              <ul class="facts" role="list">
+                <li>15+ years experience</li>
+                <li>Proven leadership history</li>
+                <li>Multi-industry expertise</li>
+                <li>US-based, background-checked</li>
+                <li>Board experienced</li>
+                <li>Tech savvy</li>
+                <li>Risk focused</li>
+              </ul>
+            </div>
           </div>
         </div>
-        <div class="vector-cta">
-          <a href="https://outlook.office.com/book/VectariIntroduction@vectari.co/?ismsaljsauthenabled" class="button primary">Book Free Assessment</a>
-        </div>
-      </section>
-    <!-- Services section -->
-    <section id="services" class="section">
-      <h2>Security Solutions that Scale with You</h2>
-      <p>We’re vendor‑agnostic and outcome‑obsessed. Choose a retainer, fractional leader, or fixed‑scope projects—then dial up or down as needs change.</p>
-      <div class="cards three">
-        <!-- Reordered service cards: Governance, Risk & Compliance first -->
-        <div class="card">
-          <h3>Governance, Risk &amp; Compliance</h3>
-          <p>SOC 2, HIPAA, FTC Safeguards, PCI, NIST 800‑171/53, ISO 27001.</p>
-          <div class="card-details">
-            <p>Ensure your organization meets industry standards, including SOC 2, HIPAA, PCI DSS, and NIST frameworks, with a comprehensive compliance program tailored to your needs. (replace)</p>
+        <div id="panel-operations" role="tabpanel" aria-labelledby="tab-operations" hidden>
+          <div class="panel-content">
+            <div class="left">
+              <p class="promise">What our security operations leaders handle in your organization:</p>
+              <ul class="outcomes">
+                <li><strong>24/7 monitoring</strong> — continuous oversight of systems and alerts</li>
+                <li><strong>Threat detection</strong> — proactive identification of suspicious activity</li>
+                <li><strong>Patch &amp; update cadence</strong> — OS, applications, and firmware maintained</li>
+                <li><strong>Vulnerability management</strong> — scanning, prioritization, and remediation</li>
+                <li><strong>Access control enforcement</strong> — least privilege, regular account cleanup</li>
+                <li><strong>Log management</strong> — centralized collection, review, and retention</li>
+                <li><strong>Tool integration</strong> — EDR, SIEM, and automation workflows aligned</li>
+                <li><strong>Service provider oversight</strong> — SLAs, change management, and incident handoffs</li>
+              </ul>
+            </div>
+            <div class="chips">
+              <p class="facts-label">Operational Priorities</p>
+              <ul class="facts" role="list">
+                <li>24/7 monitoring</li>
+                <li>Threat detection</li>
+                <li>Patch cadence</li>
+                <li>Vulnerability SLAs</li>
+                <li>Access controls</li>
+                <li>Integrated toolset</li>
+                <li>Tailored solutions</li>
+                <li>Scalable design</li>
+              </ul>
+            </div>
           </div>
         </div>
-        <div class="card">
-          <h3>Managed Security &amp; Monitoring</h3>
-          <p>MDR, phishing simulations, security awareness, and third‑party risk.</p>
-          <div class="card-details">
-            <p>Managed detection and response services provide constant monitoring, real‑time alerting, and regular testing to keep your organization secure. (replace)</p>
+        <div id="panel-audit" role="tabpanel" aria-labelledby="tab-audit" hidden>
+          <div class="panel-content">
+            <div class="left">
+              <p class="promise">What our audit readiness leaders handle in your organization:</p>
+              <ul class="outcomes">
+                <li><strong>Evidence library</strong> — artifacts centralized and mapped to controls</li>
+                <li><strong>Pre-audit gap analysis</strong> — identify missing pieces before auditors do</li>
+                <li><strong>Control validation</strong> — verify procedures align to stated policies</li>
+                <li><strong>User attestations</strong> — ensure employee acknowledgments are tracked</li>
+                <li><strong>Third-party attestations</strong> — vendor compliance proof collection</li>
+                <li><strong>Data retention proof</strong> — logs, reports, and historical records organized</li>
+                <li><strong>Mock audits</strong> — simulated auditor sessions for confidence building</li>
+                <li><strong>Remediation plans</strong> — prioritized fixes with timelines</li>
+              </ul>
+            </div>
+            <div class="chips">
+              <p class="facts-label">Readiness Criteria</p>
+              <ul class="facts" role="list">
+                <li>Evidence mapped</li>
+                <li>Gap analysis done</li>
+                <li>Controls validated</li>
+                <li>Vendor attestations</li>
+                <li>Logs organized</li>
+                <li>Mock audits</li>
+                <li>Remediation plan</li>
+              </ul>
+            </div>
           </div>
         </div>
-        <div class="card">
-          <h3>AI Security &amp; Governance</h3>
-          <p>AI RMF, model risks, policy, AI pen testing, and CAIO‑as‑a‑Service.</p>
-          <div class="card-details">
-            <p>Develop safe and compliant AI solutions with risk mitigation strategies, policy frameworks, model testing, and advisory CAIO‑as‑a‑Service engagements. (replace)</p>
+        <div id="panel-incident" role="tabpanel" aria-labelledby="tab-incident" hidden>
+          <div class="panel-content">
+            <div class="left">
+              <p class="promise">What our incident preparedness leaders handle in your organization:</p>
+              <ul class="outcomes">
+                <li><strong>Incident response plan</strong> — tailored playbooks for likely scenarios</li>
+                <li><strong>Team readiness</strong> — on-call rosters, training, and role assignments</li>
+                <li><strong>Tabletop exercises</strong> — realistic simulations to uncover weaknesses</li>
+                <li><strong>Communication protocols</strong> — internal, regulatory, and customer-facing</li>
+                <li><strong>Forensics readiness</strong> — tooling and procedures to preserve evidence</li>
+                <li><strong>Post-incident review</strong> — lessons learned and prevention steps</li>
+                <li><strong>Chain-of-custody procedures</strong> — legal defensibility in investigations</li>
+                <li><strong>Service restoration priorities</strong> — alignment to business impact</li>
+              </ul>
+            </div>
+            <div class="chips">
+              <p class="facts-label">Preparedness Benchmarks</p>
+              <ul class="facts" role="list">
+                <li>IR plan ready</li>
+                <li>Trained response team</li>
+                <li>Tested comms protocols</li>
+                <li>Tabletop exercises</li>
+                <li>Forensics capable</li>
+                <li>Recovery priorities</li>
+              </ul>
+            </div>
           </div>
         </div>
-        <div class="card">
-          <h3>Digital Forensics &amp; Incident Response</h3>
-          <p>Retainers, ransomware readiness/response, IR plans, and tabletop exercises.</p>
-          <!-- Hidden details will appear when the card is clicked -->
-          <div class="card-details">
-            <p>Our DFIR services help you prepare for, detect, and respond to incidents quickly, minimizing downtime and data loss. Add further details or edit as needed. (replace)</p>
+        <div id="panel-ai" role="tabpanel" aria-labelledby="tab-ai" hidden>
+          <div class="panel-content">
+            <div class="left">
+              <p class="promise">What our AI governance leaders handle in your organization:</p>
+              <ul class="outcomes">
+                <li><strong>AI policy framework</strong> — acceptable use, oversight, and accountability</li>
+                <li><strong>Model risk assessments</strong> — bias, accuracy, and security evaluation</li>
+                <li><strong>Data governance</strong> — training data sourcing, consent, and retention</li>
+                <li><strong>Compliance alignment</strong> — AI-specific regulations and emerging laws</li>
+                <li><strong>Access &amp; usage controls</strong> — role-based permissions for AI tools</li>
+                <li><strong>Audit trails</strong> — detailed logs of prompts, outputs, and decisions</li>
+                <li><strong>Third-party AI oversight</strong> — vendor model evaluations and safeguards</li>
+                <li><strong>Ethical review board setup</strong> — cross-functional decision accountability</li>
+              </ul>
+            </div>
+            <div class="chips">
+              <p class="facts-label">Governance Standards</p>
+              <ul class="facts" role="list">
+                <li>AI use policy</li>
+                <li>Risk assessments</li>
+                <li>Data governance</li>
+                <li>Regulatory compliance</li>
+                <li>Usage logging</li>
+                <li>Ethical reviews</li>
+              </ul>
+            </div>
           </div>
         </div>
-        <div class="card">
-          <h3>Identity &amp; Access</h3>
-          <p>SSO/MFA design, privileged access, access reviews, and zero trust.</p>
-          <div class="card-details">
-            <p>We design and implement identity management solutions, including Single Sign‑On (SSO), Multi‑Factor Authentication (MFA), and Zero Trust Architecture to secure access across your organization. (replace)</p>
-          </div>
-        </div>
-        <div class="card">
-          <h3>Application &amp; Cloud Security</h3>
-          <p>Secure SDLC, code &amp; cloud reviews, AWS/Azure/Google hardening.</p>
-          <div class="card-details">
-            <p>Secure your applications and cloud environments from the code to deployment with code reviews, runtime scanning, and compliance enforcement for AWS, Azure, and Google Cloud. (replace)</p>
-          </div>
+        <div class="cta-wrapper">
+          <a href="https://outlook.office.com/book/VectariIntroduction@vectari.co/?ismsaljsauthenabled" class="cta-button">Schedule a Call</a>
         </div>
       </div>
     </section>
-    <!-- Industries section -->
-    <section id="industries" class="section bg-light">
-      <h2>Industries We Secure</h2>
-      <p>Financial services, healthcare, legal, education, Gov/contractors, SaaS, and high‑growth startups. We learn your business and meet you where you are.</p>
-      <div class="cards three">
-        <div class="card">
-          <h3>Banking &amp; Finance</h3>
-          <p>Outcome‑oriented projects, clear roadmaps, measurable risk reduction.</p>
-          <div class="card-details">
-            <p>We help financial institutions navigate regulatory requirements, fraud prevention, and secure digital transformation. (replace)</p>
-          </div>
-        </div>
-        <div class="card">
-          <h3>Healthcare</h3>
-          <p>Outcome‑oriented projects, clear roadmaps, measurable risk reduction.</p>
-          <div class="card-details">
-            <p>Secure patient data, maintain HIPAA compliance, and protect critical systems with our tailored healthcare services. (replace)</p>
-          </div>
-        </div>
-        <div class="card">
-          <h3>Government &amp; Contractors</h3>
-          <p>Outcome‑oriented projects, clear roadmaps, measurable risk reduction.</p>
-          <div class="card-details">
-            <p>We assist government entities and contractors in meeting NIST, CMMC, and other federal compliance standards while reducing risk. (replace)</p>
-          </div>
-        </div>
-        <div class="card">
-          <h3>Education &amp; Research</h3>
-          <p>Outcome‑oriented projects, clear roadmaps, measurable risk reduction.</p>
-          <div class="card-details">
-            <p>Protect intellectual property, secure research networks, and comply with FERPA and other education‑specific regulations. (replace)</p>
-          </div>
-        </div>
-        <div class="card">
-          <h3>Legal</h3>
-          <p>Outcome‑oriented projects, clear roadmaps, measurable risk reduction.</p>
-          <div class="card-details">
-            <p>Law firms and legal teams benefit from secure client communication, e‑discovery protection, and compliance with professional obligations. (replace)</p>
-          </div>
-        </div>
-        <div class="card">
-          <h3>SaaS &amp; Tech</h3>
-          <p>Outcome‑oriented projects, clear roadmaps, measurable risk reduction.</p>
-          <div class="card-details">
-            <p>Startups and technology companies can scale securely with our expertise in cloud environments, SDLC, and AI security. (replace)</p>
-          </div>
-        </div>
-      </div>
-    </section>
+    <style>
+      #what-we-do{
+        --bg:#000;
+        --fg:#e5e7eb;
+        --muted:#9aa3b2;
+        --card:#111318;
+        --border:#1f2430;
+        --navy:var(--color-navy);
+        --teal:var(--color-blue);
+        --orange:var(--color-orange);
+        --radius:16px;
+        --container:1120px;
+        background:var(--bg);
+        color:var(--fg);
+      }
+      #what-we-do .container{max-inline-size:var(--container);margin-inline:auto;padding:clamp(16px,4vw,32px);text-align:center;}
+      #what-we-do h2{font-size:clamp(1.5rem,4vw,2rem);font-weight:600;margin:0 0 1rem;color:var(--orange);}
+      #what-we-do .tabs{display:flex;flex-wrap:wrap;gap:.5rem;list-style:none;margin:0 0 1rem;padding:0;justify-content:center;}
+      #what-we-do [role="tab"]{border:1px solid var(--border);background:transparent;border-radius:9999px;padding:.5rem 1rem;color:var(--fg);cursor:pointer;font:inherit;}
+      #what-we-do [role="tab"][aria-selected="true"]{background:var(--teal);color:var(--bg);}
+      #what-we-do [role="tab"]:focus-visible{outline:2px solid var(--orange);outline-offset:2px;}
+      #what-we-do [role="tabpanel"]{background:var(--card);border-radius:var(--radius);outline:1px solid var(--border);padding:clamp(16px,4vw,32px);margin-top:1rem;}
+      #what-we-do .panel-content{display:flex;flex-direction:column;gap:1.5rem;text-align:left;}
+      #what-we-do .left{flex:1;display:flex;flex-direction:column;gap:1rem;}
+      #what-we-do .outcomes{margin:0;padding-left:1.25rem;display:flex;flex-direction:column;gap:.5rem;color:var(--fg);}
+      #what-we-do .chips{display:flex;flex-direction:column;gap:.5rem;}
+      #what-we-do .facts-label{margin:0;color:var(--muted);font-size:.875rem;}
+      #what-we-do .facts{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:.5rem;}
+      #what-we-do .facts li{border:1px solid var(--border);border-radius:9999px;padding:.25rem .75rem;background:var(--navy);align-self:flex-start;}
+      #what-we-do .cta-wrapper{margin-top:2rem;}
+      @media(min-width:900px){
+        #what-we-do .panel-content{flex-direction:row;}
+        #what-we-do .panel-content .left{padding-right:1.5rem;border-right:1px solid var(--border);}
+        #what-we-do .panel-content .chips{padding-left:1.5rem;}
+      }
+      @media(prefers-reduced-motion:reduce){#what-we-do [role="tab"],#what-we-do [role="tabpanel"]{transition:none;}}
+    </style>
+    <script>
+      document.addEventListener('DOMContentLoaded',()=>{
+        const section=document.getElementById('what-we-do');
+        const tabs=section.querySelectorAll('[role="tab"]');
+        const panels=section.querySelectorAll('[role="tabpanel"]');
+        function activate(tab){
+          tabs.forEach(t=>{
+            const selected=t===tab;
+            t.setAttribute('aria-selected',selected);
+            if(selected){t.removeAttribute('tabindex');}else{t.setAttribute('tabindex','-1');}
+          });
+          panels.forEach(p=>{p.hidden=p.id!==tab.getAttribute('aria-controls');});
+        }
+        tabs.forEach((tab)=>{
+          tab.addEventListener('click',()=>activate(tab));
+          tab.addEventListener('keydown',e=>{
+            const idx=[...tabs].indexOf(tab);
+            if(e.key==='ArrowRight'||e.key==='ArrowLeft'){
+              e.preventDefault();
+              const dir=e.key==='ArrowRight'?1:-1;
+              const next=(idx+dir+tabs.length)%tabs.length;
+              tabs[next].focus();
+            }
+            if(e.key==='Enter'||e.key===' '){
+              e.preventDefault();
+              activate(tab);
+            }
+          });
+        });
+        activate(tabs[0]);
+      });
+    </script>
+    <hr class="section-divider">
     <!-- Frameworks section -->
-    
+
 <section id="frameworks-carousel" class="section">
   <div class="fw-bound">
   <div class="section-head">
@@ -214,81 +558,58 @@
 </section>
 <!-- end frameworks-carousel -->
 
-    <!-- Why Vectari section -->
-    <section id="why" class="section bg-light">
-      <h2>Why Vectari</h2>
-      <div class="cards four">
-        <div class="card">
-          <h3>Vendor‑agnostic</h3>
-          <p>No resell pressure. We pick what fits your environment and budget.</p>
-          <div class="card-details"><p>We remain neutral when recommending solutions, ensuring that your needs—not vendor quotas—drive our technology choices. (replace)</p></div>
-        </div>
-        <div class="card">
-          <h3>Flexible models</h3>
-          <p>Fractional CISO, retainers, and fixed‑scope projects that scale.</p>
-          <div class="card-details"><p>Choose from engagement models that suit your growth—from ad‑hoc projects to fully managed programs—with the ability to adjust as your business evolves. (replace)</p></div>
-        </div>
-        <div class="card">
-          <h3>Hands‑on help</h3>
-          <p>We work side‑by‑side with your team to implement and mature controls.</p>
-          <div class="card-details"><p>Our consultants embed with your team, providing real‑world guidance and implementation support rather than just handing over a report. (replace)</p></div>
-        </div>
-        <div class="card">
-          <h3>Audit‑ready always</h3>
-          <p>Evidence workflows and continuous improvement make audits boring.</p>
-          <div class="card-details"><p>Stay continuously audit‑ready with our evidence management workflows, reducing last‑minute scrambling and ensuring peace of mind. (replace)</p></div>
-        </div>
-      </div>
-    </section>
     <!-- Testimonials section -->
-    <section class="section">
-      <h2>Clients on Vectari</h2>
-      <blockquote>“Vectari delivered outstanding service on our network and app security tests. Their flexibility and clear guidance kept us on schedule.”</blockquote>
-      <cite>— Cloud Systems &amp; Security Manager, Healthcare SaaS</cite>
+    <section class="section testimonial">
+      <h2>Testimonial</h2>
+      <blockquote>“Vectari delivered outstanding service, getting us compliant and automating quite a bit of tedious work.”</blockquote>
+      <cite>— Owner, wealth management firm</cite>
     </section>
     <!-- Contact section -->
     <section id="contact" class="section contact-section">
-      <div class="contact-container">
-        <div class="contact-info">
-          <h2>Ready to get started?</h2>
-          <p>Reach out to schedule an intro call or request your free VECTOR Assessment. We respond within one business day.</p>
-          <p><strong>Phone:</strong> <span class="phone">(301) 246‑0601</span></p>
-          <p><strong>Email:</strong> <span class="email">info@vectari.co</span></p>
-          <p><strong>Headquarters:</strong> St. George, Utah • Serving clients nationwide</p>
-        </div>
-        <form name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/thank-you.html" class="contact-form">
-          <!-- Netlify form name -->
-          <input type="hidden" name="form-name" value="contact">
-          <!-- Honeypot field -->
-          <input type="hidden" name="bot-field">
-          <div class="form-grid">
-            <div>
-              <label for="name">Your name</label>
-              <input id="name" name="name" placeholder="First Last" required />
-            </div>
-            <div>
-              <label for="email">Email</label>
-              <input id="email" type="email" name="email" placeholder="you@company.com" required />
-            </div>
-            <div class="full">
-              <label for="interest">I’m interested in…</label>
-              <select id="interest" name="interest">
-                <option>Governance, Risk &amp; Compliance</option>
-                <option>Managed Security &amp; Monitoring</option>
-                <option>AI Security &amp; Governance</option>
-                <option>Digital Forensics &amp; Incident Response</option>
-                <option>Identity &amp; Access</option>
-                <option>Application &amp; Cloud Security</option>
-              </select>
-            </div>
-            <div class="full">
-              <label for="message">Message</label>
-              <textarea id="message" name="message" rows="4" placeholder="Tell us about your goals or challenges…"></textarea>
-            </div>
+      <video class="contact-bg" autoplay loop muted playsinline>
+        <source src="backgrounds/blackvectors.mp4" type="video/mp4">
+      </video>
+      <div class="contact-overlay">
+        <div class="contact-columns">
+          <div class="contact-info">
+            <h2>Ready to get started?</h2>
+            <p>Reach out to schedule an intro call. We respond within one business day.</p>
+            <p><strong>Phone:</strong> <span class="phone">(301) 246‑0601</span></p>
+            <p><strong>Email:</strong> <span class="email">info@vectari.co</span></p>
+            <p><strong>Headquarters:</strong> St. George, Utah • Serving clients nationwide</p>
           </div>
-          <button type="submit" class="button primary">Send Message</button>
-          <small>By submitting, you agree to our privacy policy.</small>
-        </form>
+          <form name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/thank-you.html" class="contact-form">
+            <input type="hidden" name="form-name" value="contact">
+            <input type="hidden" name="bot-field">
+            <div class="form-grid">
+              <div>
+                <label for="name">Your name</label>
+                <input id="name" name="name" placeholder="First Last" required />
+              </div>
+              <div>
+                <label for="email">Email</label>
+                <input id="email" type="email" name="email" placeholder="you@company.com" required />
+              </div>
+              <div class="full">
+                <label for="interest">I’m interested in…</label>
+                <select id="interest" name="interest">
+                  <option>Governance, Risk &amp; Compliance</option>
+                  <option>Managed Security &amp; Monitoring</option>
+                  <option>AI Security &amp; Governance</option>
+                  <option>Digital Forensics &amp; Incident Response</option>
+                  <option>Identity &amp; Access</option>
+                  <option>Application &amp; Cloud Security</option>
+                </select>
+              </div>
+              <div class="full">
+                <label for="message">Message</label>
+                <textarea id="message" name="message" rows="4" placeholder="Tell us about your goals or challenges…"></textarea>
+              </div>
+            </div>
+            <button type="submit" class="button primary">Send Message</button>
+            <small>By submitting, you agree to our privacy policy.</small>
+          </form>
+        </div>
       </div>
     </section>
     <!-- Footer -->
