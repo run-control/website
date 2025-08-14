@@ -264,6 +264,12 @@ a:hover {
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+.section-divider {
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 0;
+}
+
 .section h2 {
   font-size: 2rem;
   margin-bottom: 1rem;
