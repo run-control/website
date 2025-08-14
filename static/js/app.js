@@ -20,26 +20,4 @@ document.addEventListener('DOMContentLoaded', function () {
       item.classList.toggle('active');
     });
   });
-
-  // Reveal VECTOR steps sequentially when the section enters the viewport
-  const vectorSection = document.querySelector('#vector');
-  if (vectorSection) {
-    const steps = vectorSection.querySelectorAll('.vector-step');
-    steps.forEach((step) => {
-      step.addEventListener('click', () => {
-        step.classList.toggle('expanded');
-      });
-    });
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          steps.forEach((step, index) => {
-            setTimeout(() => step.classList.add('visible'), index * 400);
-          });
-          observer.disconnect();
-        }
-      });
-    }, { threshold: 0.5 });
-    observer.observe(vectorSection);
-  }
 });
