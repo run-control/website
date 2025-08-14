@@ -252,10 +252,6 @@ a:hover {
 }
 
 /* Section styling */
-section + section {
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
 .section {
   padding: 4rem 1rem;
   max-width: 1200px;
@@ -264,6 +260,8 @@ section + section {
 
 .section.bg-light {
   background: rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .section h2 {
