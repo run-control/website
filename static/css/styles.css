@@ -294,11 +294,17 @@ a:hover {
 
 /* Problems we solve */
 #problems {
-  padding: 4rem 1rem;
+  /* Reduce top padding so anchor links land closer to the section heading */
+  padding: 28px 1rem 4rem;
   width: 100%;
   margin: 0;
   text-align: center;
   background: transparent;
+}
+
+/* Align the services section similarly for consistent anchor positioning */
+#what-we-do {
+  padding: 28px 1rem 4rem;
 }
 
 #problems ul {
