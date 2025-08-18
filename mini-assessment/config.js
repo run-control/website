@@ -27,7 +27,11 @@ window.ASSESSMENT_CONFIG = {
     seeResults: "See Results",
     next: "Next",
     startOver: "Retake assessment",
-    gapsTitle: "Where you lost points",
+    gapsTitle: "Opportunities for improvement",
+    severityCritical: "Critical",
+    severityMajor: "Major",
+    severityMinor: "Minor",
+    noGaps: "No immediate gaps detected",
   },
   wizard: {
     autoAdvance: true,

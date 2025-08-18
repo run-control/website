@@ -260,23 +260,62 @@
       }
       .gaps {
         margin-top: 16px;
+      }
+      .gap-group + .gap-group {
+        margin-top: 16px;
+      }
+      .gap-group h5 {
+        margin: 0 0 8px;
+        font-size: 1rem;
+        font-weight: 600;
+      }
+      .gap-group ul {
+        margin: 0;
         padding: 0;
         list-style: none;
       }
-      .gaps li {
+      .gap-item {
         margin-bottom: 8px;
         display: flex;
         align-items: flex-start;
         gap: 8px;
+        opacity: 0;
+        transition: opacity 0.4s ease-in;
       }
-      .gaps li::before {
+      .gap-item::before {
         content: "";
         width: 6px;
         height: 6px;
         border-radius: 50%;
-        background: var(--accent-blue);
         margin-top: 6px;
         flex-shrink: 0;
+      }
+      .gap-item.show {
+        opacity: 1;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .gap-item {
+          opacity: 1;
+          transition: none;
+        }
+      }
+      .severity-0 h5 {
+        color: var(--color-risk-high);
+      }
+      .severity-1 h5 {
+        color: var(--color-risk-medium);
+      }
+      .severity-2 h5 {
+        color: var(--color-risk-low);
+      }
+      .severity-0 .gap-item::before {
+        background: var(--color-risk-high);
+      }
+      .severity-1 .gap-item::before {
+        background: var(--color-risk-medium);
+      }
+      .severity-2 .gap-item::before {
+        background: var(--color-risk-low);
       }
       .cta-button {
         display: inline-block;
@@ -374,7 +413,7 @@
             <h3 id="result-headline" class="fade-line"></h3>
             <p id="result-message" class="fade-line"></p>
             <h4 id="gaps-title" class="fade-line" hidden></h4>
-            <ul id="gaps" class="gaps fade-line" hidden></ul>
+            <div id="gaps" class="gaps fade-line" hidden></div>
             <a
               id="cta"
               class="cta-button fade-line"

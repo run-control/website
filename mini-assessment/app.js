@@ -79,7 +79,7 @@
   restartBtn.textContent =
     (config.texts && config.texts.startOver) || "Retake assessment";
   gapsTitleEl.textContent =
-    (config.texts && config.texts.gapsTitle) || "Where you lost points";
+    (config.texts && config.texts.gapsTitle) || "Opportunities for improvement";
   ctaEl.textContent = (config.cta && config.cta.text) || "";
   ctaEl.href = (config.cta && config.cta.url) || "#";
 
@@ -305,13 +305,13 @@
   }
   function complete(opts = {}) {
     let total = 0;
-    const gaps = [];
+    const gapsBySeverity = { 0: [], 1: [], 2: [] };
     fieldsets.forEach((wrap, i) => {
       const sel = wrap.querySelector("input:checked");
       const val = parseInt(sel.value, 10);
       total += val;
       if (val < 3) {
-        gaps.push({
+        gapsBySeverity[val].push({
           q: config.questions[i].text,
           a: sel.dataset.option,
           risk: sel.dataset.risk,
@@ -351,17 +351,43 @@
     gaugeContainer.setAttribute("role", "img");
 
     gapsEl.innerHTML = "";
-    gaps.forEach((g) => {
-      const li = document.createElement("li");
-      li.textContent = `${g.q} – ${g.a}: ${g.risk || ""}`;
-      gapsEl.appendChild(li);
+    const severityMap = {
+      0: { label: (config.texts && config.texts.severityCritical) || "Critical" },
+      1: { label: (config.texts && config.texts.severityMajor) || "Major" },
+      2: { label: (config.texts && config.texts.severityMinor) || "Minor" },
+    };
+    const order = [0, 1, 2];
+    let totalGaps = 0;
+    order.forEach((sev) => {
+      const list = gapsBySeverity[sev];
+      if (!list.length) return;
+      const group = document.createElement("section");
+      group.className = `gap-group severity-${sev}`;
+      const h = document.createElement("h5");
+      h.textContent = `${severityMap[sev].label} (${list.length})`;
+      group.appendChild(h);
+      const ul = document.createElement("ul");
+      ul.setAttribute("role", "list");
+      list.forEach((g) => {
+        const li = document.createElement("li");
+        li.className = "gap-item";
+        li.textContent = `${g.q} – ${g.a}: ${g.risk || ""}`;
+        ul.appendChild(li);
+      });
+      group.appendChild(ul);
+      gapsEl.appendChild(group);
+      totalGaps += list.length;
     });
-    if (gaps.length) {
+    if (totalGaps) {
       gapsTitleEl.hidden = false;
       gapsEl.hidden = false;
     } else {
-      gapsTitleEl.hidden = true;
-      gapsEl.hidden = true;
+      gapsTitleEl.hidden = false;
+      gapsEl.hidden = false;
+      const p = document.createElement("p");
+      p.textContent =
+        (config.texts && config.texts.noGaps) || "No immediate gaps detected";
+      gapsEl.appendChild(p);
     }
     form.style.display = "none";
     nextBtn.style.display = "none";
@@ -385,8 +411,25 @@
         el.classList.add("show");
       }
     });
+    setTimeout(() => {
+      const items = gapsEl.querySelectorAll(".gap-item");
+      items.forEach((li, idx) => {
+        if (prefers) {
+          li.classList.add("show");
+        } else {
+          li.style.transitionDelay = `${idx * 60}ms`;
+          li.classList.add("show");
+        }
+      });
+    }, prefers ? 0 : 1600);
     if (window.dataLayer) {
-      window.dataLayer.push({ event: "assessment_complete", score: total });
+      window.dataLayer.push({
+        event: "assessment_complete",
+        score: total,
+        critical_gaps: gapsBySeverity[0].length,
+        major_gaps: gapsBySeverity[1].length,
+        minor_gaps: gapsBySeverity[2].length,
+      });
     }
     if (useHistory && opts.updateHistory !== false) {
       const url = new URL(window.location);
