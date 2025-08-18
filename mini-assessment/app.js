@@ -5,29 +5,47 @@
     return;
   }
   const root = document.documentElement;
-  const setVar = (name, value) => {
-    if (value) root.style.setProperty(name, value);
-  };
-  setVar("--color-bg", config.brand && config.brand.background);
-  setVar("--color-text", config.brand && config.brand.text);
-  setVar("--color-card-bg", config.brand && config.brand.cardBg);
-  setVar("--color-card-text", config.brand && config.brand.cardText);
-  setVar("--color-button-text", config.brand && config.brand.buttonText);
-  setVar("--color-primary", config.brand && config.brand.primary);
-  setVar("--color-accent", config.brand && config.brand.accent);
-  setVar("--color-risk-high", config.brand && config.brand.riskHigh);
-  setVar("--color-risk-medium", config.brand && config.brand.riskMedium);
-  setVar("--color-risk-low", config.brand && config.brand.riskLow);
-  setVar("--dial-color", config.brand && config.brand.primary);
+  const brand = Object.assign(
+    {
+      bg: "#000000",
+      surface: "#0A0A0A",
+      surfaceElev: "#0E0E0E",
+      text: "#FFFFFF",
+      muted: "#A9B1BC",
+      accentOrange: "#FF8A00",
+      accentBlue: "#00AEEF",
+      border: "rgba(0,174,239,0.35)",
+      radius: "18px",
+      shadow: "0 8px 30px rgba(0,0,0,0.45)",
+    },
+    config.brand || {},
+  );
+  const setVar = (name, value) =>
+    value !== undefined && root.style.setProperty(name, value);
+  Object.entries({
+    "--bg": brand.bg,
+    "--surface": brand.surface,
+    "--surface-elev": brand.surfaceElev,
+    "--text": brand.text,
+    "--muted": brand.muted,
+    "--accent-orange": brand.accentOrange,
+    "--accent-blue": brand.accentBlue,
+    "--border": brand.border,
+    "--radius": brand.radius,
+    "--shadow": brand.shadow,
+    "--color-risk-high": brand.riskHigh,
+    "--color-risk-medium": brand.riskMedium,
+    "--color-risk-low": brand.riskLow,
+    "--dial-color": brand.accentBlue,
+  }).forEach(([k, v]) => setVar(k, v));
 
   const logoEl = document.getElementById("site-logo");
   const taglineEl = document.getElementById("site-tagline");
-  if (logoEl && config.header && config.header.logo)
-    logoEl.src = config.header.logo;
-  if (taglineEl && config.header && config.header.tagline)
-    taglineEl.textContent = config.header.tagline;
+  if (logoEl && brand.logoUrl) logoEl.src = brand.logoUrl;
+  if (taglineEl && brand.tagline) taglineEl.textContent = brand.tagline;
 
   const form = document.getElementById("assessment-form");
+  const backBtn = document.getElementById("back");
   const nextBtn = document.getElementById("next");
   const progress = document.getElementById("progress");
   const progressText = document.getElementById("progress-text");
@@ -43,7 +61,7 @@
   const dialContainer = document.getElementById("dial");
 
   restartBtn.textContent =
-    (config.texts && config.texts.startOver) || "Start Over";
+    (config.texts && config.texts.startOver) || "Retake assessment";
   gapsTitleEl.textContent =
     (config.texts && config.texts.gapsTitle) || "Where you lost points";
   ctaEl.textContent = (config.cta && config.cta.text) || "";
@@ -137,15 +155,25 @@
         input.value = opt.score;
         if (opt.risk) input.dataset.risk = opt.risk;
         input.dataset.option = opt.label;
-        const span = document.createElement("span");
-        span.textContent = opt.label;
-        label.append(input, span);
+        const custom = document.createElement("span");
+        custom.className = "custom-radio";
+        const text = document.createElement("span");
+        text.className = "option-text";
+        text.textContent = opt.label;
+        label.append(input, custom, text);
         input.addEventListener("change", () => {
           fs.removeAttribute("aria-invalid");
+          const help = fs.querySelector(".help");
+          if (help) help.hidden = true;
           updateNextState();
         });
         fs.appendChild(label);
       });
+      const help = document.createElement("p");
+      help.className = "help";
+      help.textContent = "Please select an option.";
+      help.hidden = true;
+      fs.appendChild(help);
       form.appendChild(fs);
       fieldsets.push(fs);
     });
@@ -157,7 +185,8 @@
 
   function updateProgress() {
     progressText.textContent = `Question ${current + 1} of ${fieldsets.length}`;
-    progressBar.style.width = `${(current / fieldsets.length) * 100}%`;
+    const ratio = current / fieldsets.length;
+    progressBar.style.transform = `scaleX(${ratio})`;
     nextBtn.textContent =
       current === fieldsets.length - 1
         ? (config.texts && config.texts.seeResults) || "See Results"
@@ -172,9 +201,18 @@
 
   function showQuestion(idx) {
     current = idx;
-    fieldsets.forEach((fs, i) => (fs.hidden = i !== idx));
+    fieldsets.forEach((fs, i) => {
+      if (i === idx) {
+        fs.hidden = false;
+        requestAnimationFrame(() => fs.classList.add("active"));
+      } else {
+        fs.classList.remove("active");
+        fs.hidden = true;
+      }
+    });
     updateProgress();
     updateNextState();
+    backBtn.disabled = idx === 0;
     fieldsets[idx].scrollIntoView({ behavior: "smooth", block: "center" });
     fieldsets[idx].focus();
   }
@@ -191,12 +229,17 @@
       needle.style.transform = `rotate(${angle}deg)`;
     });
   }
+  backBtn.addEventListener("click", () => {
+    if (current > 0) showQuestion(current - 1);
+  });
 
   nextBtn.addEventListener("click", () => {
     const fs = fieldsets[current];
     const selected = fs && fs.querySelector("input:checked");
     if (!selected) {
       fs.setAttribute("aria-invalid", "true");
+      const help = fs.querySelector(".help");
+      if (help) help.hidden = false;
       fs.scrollIntoView({ behavior: "smooth", block: "center" });
       fs.focus();
       return;
@@ -261,6 +304,7 @@
     }
     form.style.display = "none";
     nextBtn.style.display = "none";
+    backBtn.style.display = "none";
     progress.hidden = true;
     results.hidden = false;
     animateDial(total);
@@ -269,15 +313,25 @@
     }
   });
 
+  form.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (!nextBtn.disabled) nextBtn.click();
+    }
+  });
+
   restartBtn.addEventListener("click", () => {
     form.reset();
     fieldsets.forEach((fs) => {
       fs.hidden = true;
       fs.removeAttribute("aria-invalid");
+      const help = fs.querySelector(".help");
+      if (help) help.hidden = true;
     });
     showQuestion(0);
     form.style.display = "";
     nextBtn.style.display = "";
+    backBtn.style.display = "";
     progress.hidden = false;
     results.hidden = true;
     gapsEl.innerHTML = "";
@@ -287,7 +341,7 @@
     needle.style.transform = "rotate(-90deg)";
     gapsTitleEl.hidden = true;
     gapsEl.hidden = true;
-    setVar("--dial-color", config.brand && config.brand.primary);
+    setVar("--dial-color", brand.accentBlue);
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
 })();

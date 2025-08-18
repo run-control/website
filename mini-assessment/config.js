@@ -1,19 +1,20 @@
 window.ASSESSMENT_CONFIG = {
   brand: {
-    background: "#000000",
-    text: "#ffffff",
-    cardBg: "#ffffff",
-    cardText: "#000000",
-    buttonText: "#ffffff",
-    primary: "#008080",
-    accent: "#ff851b",
+    logoUrl: "../static/assets/logo.png",
+    tagline: "Quick security check",
+    bg: "#000000",
+    surface: "#0A0A0A",
+    surfaceElev: "#0E0E0E",
+    text: "#FFFFFF",
+    muted: "#A9B1BC",
+    accentOrange: "#FF8A00",
+    accentBlue: "#00AEEF",
+    border: "rgba(0,174,239,0.35)",
+    radius: "18px",
+    shadow: "0 8px 30px rgba(0,0,0,0.45)",
     riskHigh: "#e53935",
     riskMedium: "#fb8c00",
     riskLow: "#43a047",
-  },
-  header: {
-    logo: "../static/assets/logo.png",
-    tagline: "Quick security check",
   },
   cta: {
     text: "Book a free consultation",
@@ -22,7 +23,7 @@ window.ASSESSMENT_CONFIG = {
   texts: {
     seeResults: "See Results",
     next: "Next",
-    startOver: "Start Over",
+    startOver: "Retake assessment",
     gapsTitle: "Where you lost points",
   },
   ranges: [
