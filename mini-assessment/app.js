@@ -18,6 +18,7 @@
       headerBarHeight: "8px",
       border: "rgba(0,174,239,0.35)",
       shadow: "0 8px 30px rgba(0,0,0,0.45)",
+      strokeWhite: "rgba(255,255,255,0.85)",
     },
     config.brand || {},
   );
@@ -35,6 +36,7 @@
     "--header-bar-height": brand.headerBarHeight,
     "--border": brand.border,
     "--shadow": brand.shadow,
+    "--stroke-white": brand.strokeWhite,
     "--color-risk-high": brand.riskHigh,
     "--color-risk-medium": brand.riskMedium,
     "--color-risk-low": brand.riskLow,

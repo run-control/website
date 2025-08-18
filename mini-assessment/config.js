@@ -13,6 +13,7 @@ window.ASSESSMENT_CONFIG = {
     headerBarHeight: "8px",
     border: "rgba(0,174,239,0.35)",
     shadow: "0 8px 30px rgba(0,0,0,0.45)",
+    strokeWhite: "rgba(255,255,255,0.85)",
     riskHigh: "#e53935",
     riskMedium: "#fb8c00",
     riskLow: "#43a047",
