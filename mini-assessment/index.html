@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mini Security Assessment</title>
+  <style>
+    :root {
+      --color-bg: #ffffff;
+      --color-primary: #000000;
+      --color-accent: #ff851b;
+      --color-risk-high: #e53935;
+      --color-risk-medium: #fb8c00;
+      --color-risk-low: #43a047;
+    }
+    body {
+      font-family: system-ui, sans-serif;
+      margin: 0;
+      background: var(--color-bg);
+      color: #fff;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+    fieldset {
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      background: #fff;
+      color: #000;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    legend {
+      font-weight: 600;
+      margin-bottom: .5rem;
+    }
+    label {
+      display: block;
+      margin-bottom: .5rem;
+    }
+    button, .cta-button {
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      padding: .75rem 1.25rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button[disabled] {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+    #results[hidden] {
+      display: none;
+    }
+    .results-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    @media (min-width: 768px) {
+      .results-content {
+        flex-direction: row;
+        align-items: flex-start;
+      }
+    }
+    #dial {
+      width: 200px;
+      height: 100px;
+    }
+    .gaps {
+      margin-top: 1rem;
+      padding-left: 1.25rem;
+    }
+    .gaps li {
+      margin-bottom: .5rem;
+    }
+    .score-display {
+      text-align:center;
+      font-size:1.5rem;
+      margin-top:.5rem;
+    }
+    .visually-hidden {
+      position: absolute;
+      left: -9999px;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <h1 class="visually-hidden" id="assessment-title">Mini Security Assessment</h1>
+    <form id="assessment-form"></form>
+    <button id="see-results" disabled></button>
+    <section id="results" hidden>
+      <div class="results-content">
+        <div id="dial"></div><div id="score" class="score-display"></div>
+        <div class="results-text">
+          <h2 id="result-headline"></h2>
+          <p id="result-message"></p>
+          <h3 id="gaps-title"></h3>
+          <ul id="gaps" class="gaps"></ul>
+          <a id="cta" class="cta-button" target="_blank" rel="noopener"></a>
+        </div>
+      </div>
+      <button id="restart"></button>
+    </section>
+  </main>
+  <script defer src="config.js"></script>
+  <script defer src="app.js"></script>
+</body>
+</html>
