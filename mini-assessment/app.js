@@ -41,7 +41,6 @@
     "--color-risk-medium": brand.riskMedium,
     "--color-risk-low": brand.riskLow,
     "--color-risk-min": brand.riskMin,
-    "--dial-color": brand.accentBlue,
   }).forEach(([k, v]) => setVar(k, v));
 
   const logoEl = document.getElementById("site-logo");
@@ -64,7 +63,7 @@
   const restartBtn = document.getElementById("restart");
   const scoreValueEl = document.getElementById("score-value");
   const scoreBandEl = document.getElementById("score-band");
-  const dialContainer = document.getElementById("dial");
+  const gaugeContainer = document.getElementById("gauge");
   const selectionLive = document.getElementById("selection-live");
 
   const wizard = config.wizard || {};
@@ -84,7 +83,7 @@
   ctaEl.textContent = (config.cta && config.cta.text) || "";
   ctaEl.href = (config.cta && config.cta.url) || "#";
 
-  // Build dial
+  // Build gauge
   function polarToCartesian(cx, cy, r, angle) {
     const rad = ((angle - 90) * Math.PI) / 180;
     return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
@@ -95,9 +94,10 @@
     const largeArc = end - start <= 180 ? 0 : 1;
     return `M ${startPt.x} ${startPt.y} A ${r} ${r} 0 ${largeArc} 0 ${endPt.x} ${endPt.y}`;
   }
-  function buildDial() {
-    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.setAttribute("viewBox", "0 0 100 100");
+  function buildGauge() {
+    const svgNS = "http://www.w3.org/2000/svg";
+    const svg = document.createElementNS(svgNS, "svg");
+    svg.setAttribute("viewBox", "0 0 200 200");
     const max = (config.questions ? config.questions.length : 0) * 3;
     const segments = [
       { size: 10, color: "--color-risk-high" },
@@ -105,36 +105,70 @@
       { size: 9, color: "--color-risk-low" },
       { size: 1, color: "--color-risk-min" },
     ];
-    let start = -90;
+    let start = -120;
     segments.forEach((seg) => {
-      const end = start + (seg.size / max) * 360;
-      const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
-      p.setAttribute("d", describeArc(50, 50, 45, start, end));
-      p.setAttribute("stroke", getComputedStyle(root).getPropertyValue(seg.color).trim());
-      p.setAttribute("stroke-width", "10");
+      const end = start + (seg.size / max) * 240;
+      const p = document.createElementNS(svgNS, "path");
+      p.setAttribute("d", describeArc(100, 100, 90, start, end));
+      p.setAttribute(
+        "stroke",
+        getComputedStyle(root).getPropertyValue(seg.color).trim(),
+      );
+      p.setAttribute("stroke-width", "20");
       p.setAttribute("fill", "none");
-      p.setAttribute("stroke-linecap", "round");
       svg.appendChild(p);
       start = end;
     });
-    const score = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-    score.setAttribute("cx", "50");
-    score.setAttribute("cy", "50");
-    score.setAttribute("r", "45");
-    score.setAttribute("fill", "none");
-    score.setAttribute("stroke", "var(--dial-color)");
-    score.setAttribute("stroke-width", "10");
-    score.setAttribute("stroke-linecap", "round");
-    score.setAttribute("transform", "rotate(-90 50 50)");
-    const circ = 2 * Math.PI * 45;
-    score.setAttribute("stroke-dasharray", circ);
-    score.setAttribute("stroke-dashoffset", circ);
-    score.classList.add("score-arc");
-    svg.appendChild(score);
-    dialContainer.appendChild(svg);
-    return score;
+    for (let i = 0; i <= max; i += 5) {
+      const angle = -120 + (i / max) * 240;
+      const outer = polarToCartesian(100, 100, 90, angle);
+      const inner = polarToCartesian(100, 100, i % 10 === 0 ? 70 : 80, angle);
+      const tick = document.createElementNS(svgNS, "line");
+      tick.setAttribute("x1", inner.x);
+      tick.setAttribute("y1", inner.y);
+      tick.setAttribute("x2", outer.x);
+      tick.setAttribute("y2", outer.y);
+      tick.setAttribute("stroke", "var(--stroke-white)");
+      tick.setAttribute("stroke-width", i % 10 === 0 ? 3 : 1.5);
+      svg.appendChild(tick);
+    }
+    [0, 10, 20, 30].forEach((val) => {
+      const angle = -120 + (val / max) * 240;
+      const pt = polarToCartesian(100, 100, 60, angle);
+      const txt = document.createElementNS(svgNS, "text");
+      txt.setAttribute("x", pt.x);
+      txt.setAttribute("y", pt.y);
+      txt.setAttribute("fill", "var(--text)");
+      txt.setAttribute("font-size", "12");
+      txt.setAttribute("text-anchor", "middle");
+      txt.setAttribute("dominant-baseline", "central");
+      txt.textContent = val;
+      svg.appendChild(txt);
+    });
+    const needleGroup = document.createElementNS(svgNS, "g");
+    needleGroup.style.transformOrigin = "100px 100px";
+    const needle = document.createElementNS(svgNS, "line");
+    needle.setAttribute("x1", "100");
+    needle.setAttribute("y1", "100");
+    needle.setAttribute("x2", "100");
+    needle.setAttribute("y2", "20");
+    needle.setAttribute("stroke", "var(--accent-blue)");
+    needle.setAttribute("stroke-width", "4");
+    needleGroup.appendChild(needle);
+    svg.appendChild(needleGroup);
+    const hub = document.createElementNS(svgNS, "circle");
+    hub.setAttribute("cx", "100");
+    hub.setAttribute("cy", "100");
+    hub.setAttribute("r", "6");
+    hub.setAttribute("fill", "var(--surface)");
+    hub.setAttribute("stroke", "var(--accent-blue)");
+    hub.setAttribute("stroke-width", "2");
+    svg.appendChild(hub);
+    gaugeContainer.appendChild(svg);
+    needleGroup.style.transform = "rotate(-120deg)";
+    return needleGroup;
   }
-  const scoreArc = buildDial();
+  const needle = buildGauge();
 
   // Render questions
   const fieldsets = [];
@@ -258,18 +292,15 @@
     showQuestion(startIdx, { replace: true });
   }
 
-  function animateDial(score) {
+  function animateGauge(score) {
     const max = fieldsets.length * 3;
-    const circ = 2 * Math.PI * 45;
-    const offset = circ * (1 - score / max);
+    const angle = -120 + (score / max) * 240;
     const prefers = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
-    scoreArc.style.transition = prefers
-      ? "none"
-      : "stroke-dashoffset 1.6s ease-out";
+    needle.style.transition = prefers ? "none" : "transform 1.6s ease-out";
     requestAnimationFrame(() => {
-      scoreArc.style.strokeDashoffset = offset;
+      needle.style.transform = `rotate(${angle}deg)`;
     });
   }
   function complete(opts = {}) {
@@ -311,14 +342,13 @@
     const zoneColor = getComputedStyle(root)
       .getPropertyValue(band.colorVar)
       .trim();
-    setVar("--dial-color", zoneColor);
     scoreBandEl.textContent = band.label;
     scoreBandEl.style.backgroundColor = zoneColor;
-    dialContainer.setAttribute(
+    gaugeContainer.setAttribute(
       "aria-label",
-      `Score ${total} out of ${max} (${band.label})`,
+      `Score ${total} out of ${max}, ${band.label}`,
     );
-    dialContainer.setAttribute("role", "img");
+    gaugeContainer.setAttribute("role", "img");
 
     gapsEl.innerHTML = "";
     gaps.forEach((g) => {
@@ -340,19 +370,19 @@
     results.hidden = false;
     results.scrollIntoView({ behavior: "smooth", block: "start" });
     results.focus();
-    animateDial(total);
+    animateGauge(total);
     const lines = results.querySelectorAll(".fade-line");
     const prefers = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
-    let delay = 0;
     lines.forEach((el) => {
       if (el.hidden) return;
       if (prefers) {
         el.classList.add("show");
+      } else if (el.id === "gaps" || el.id === "gaps-title") {
+        setTimeout(() => el.classList.add("show"), 1600);
       } else {
-        setTimeout(() => el.classList.add("show"), delay);
-        delay += 500;
+        el.classList.add("show");
       }
     });
     if (window.dataLayer) {
@@ -446,12 +476,10 @@
     scoreValueEl.textContent = "";
     scoreBandEl.textContent = "";
     results.querySelectorAll(".fade-line").forEach((el) => el.classList.remove("show"));
-    const circ = 2 * Math.PI * 45;
-    scoreArc.style.transition = "none";
-    scoreArc.style.strokeDashoffset = circ;
     gapsTitleEl.hidden = true;
     gapsEl.hidden = true;
-    setVar("--dial-color", brand.accentBlue);
+    needle.style.transition = "none";
+    needle.style.transform = "rotate(-120deg)";
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
 })();
