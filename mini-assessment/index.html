@@ -7,10 +7,11 @@
     <style>
       :root {
         line-height: 1.5;
-        --header-navy: #00172C;
         --header-bar-height: 8px;
         --radius-card: 18px;
         --radius-row: 12px;
+        --stroke-inner: 1px;
+        --glow-size: 2px;
       }
       body {
         margin: 0;
@@ -83,12 +84,13 @@
         margin: 0;
         padding: 0;
         min-inline-size: 0;
+        outline: none;
       }
       .q-card {
         background: var(--surface);
         color: var(--text);
         border-radius: var(--radius-card);
-        box-shadow: var(--shadow), 0 0 0 1px var(--border) inset;
+        box-shadow: var(--shadow), 0 0 0 var(--stroke-inner) var(--stroke-white) inset;
         padding: 20px 24px 24px;
         max-width: 720px;
         margin: 0 auto;
@@ -103,12 +105,13 @@
         transform: translateY(0);
       }
       .q-card:hover,
-      .q-card:focus-within {
-        box-shadow: var(--shadow), 0 0 0 1px var(--border) inset,
-          0 0 0 2px var(--accent-blue);
+      .q-card:focus-within,
+      .q-card:active {
+        box-shadow: var(--shadow), 0 0 0 var(--glow-size) var(--accent-blue),
+          0 0 0 var(--stroke-inner) var(--stroke-white) inset;
       }
       .q-card:has(fieldset[aria-invalid="true"]) {
-        box-shadow: var(--shadow), 0 0 0 1px var(--accent-orange) inset;
+        box-shadow: var(--shadow), 0 0 0 var(--stroke-inner) var(--accent-orange) inset;
       }
       .q-head {
         display: block;
@@ -119,7 +122,7 @@
       }
       .q-body {
         border-radius: calc(var(--radius-card) - 6px);
-        overflow: hidden;
+        overflow: clip;
       }
       label.option {
         width: 100%;
