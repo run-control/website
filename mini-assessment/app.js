@@ -12,6 +12,7 @@
   setVar('--color-risk-high', config.brand && config.brand.riskHigh);
   setVar('--color-risk-medium', config.brand && config.brand.riskMedium);
   setVar('--color-risk-low', config.brand && config.brand.riskLow);
+  setVar('--dial-color', config.brand && config.brand.primary);
 
   const form = document.getElementById('assessment-form');
   const seeBtn = document.getElementById('see-results');
@@ -63,7 +64,7 @@
     needle.setAttribute('y1','100');
     needle.setAttribute('x2','100');
     needle.setAttribute('y2','20');
-    needle.setAttribute('stroke','var(--color-primary)');
+    needle.setAttribute('stroke','var(--dial-color)');
     needle.setAttribute('stroke-width','4');
     needle.classList.add('needle');
     needle.style.transformOrigin = '100px 100px';
@@ -74,7 +75,7 @@
     center.setAttribute('cx','100');
     center.setAttribute('cy','100');
     center.setAttribute('r','5');
-    center.setAttribute('fill','var(--color-primary)');
+    center.setAttribute('fill','var(--dial-color)');
     svg.appendChild(center);
     dialContainer.appendChild(svg);
     return needle;
@@ -85,19 +86,24 @@
   if(Array.isArray(config.questions)){
     config.questions.forEach((q, idx)=>{
       const fs = document.createElement('fieldset');
+      fs.classList.add('card');
+      fs.tabIndex = -1;
       const lg = document.createElement('legend');
       lg.textContent = q.text || `Question ${idx+1}`;
       fs.appendChild(lg);
-      q.options.forEach((opt, oIdx)=>{
+      q.options.forEach((opt)=>{
         const label = document.createElement('label');
+        label.classList.add('option');
         const input = document.createElement('input');
         input.type = 'radio';
         input.name = `q${idx}`;
         input.value = opt.score;
         if(opt.risk) input.dataset.risk = opt.risk;
         input.dataset.option = opt.label;
-        label.appendChild(input);
-        label.append(document.createTextNode(opt.label));
+        const span = document.createElement('span');
+        span.textContent = opt.label;
+        label.append(input, span);
+        input.addEventListener('change',()=> fs.removeAttribute('aria-invalid'));
         fs.appendChild(label);
       });
       form.appendChild(fs);
@@ -105,12 +111,6 @@
   } else {
     form.textContent = 'Configuration error: no questions defined.';
   }
-
-  // Enable button when all answered
-  form.addEventListener('change',()=>{
-    const allAnswered = config.questions.every((q,idx)=> form.querySelector(`input[name="q${idx}"]:checked`));
-    seeBtn.disabled = !allAnswered;
-  });
 
   function animateDial(score){
     const angle = -90 + (score/30)*180;
@@ -120,6 +120,21 @@
   }
 
   seeBtn.addEventListener('click', ()=>{
+    const missing = [];
+    config.questions.forEach((q,idx)=>{
+      const selected = form.querySelector(`input[name="q${idx}"]:checked`);
+      const fs = form.querySelectorAll('fieldset')[idx];
+      if(!selected){
+        fs.setAttribute('aria-invalid','true');
+        missing.push(fs);
+      }
+    });
+    if(missing.length){
+      missing[0].scrollIntoView({behavior:'smooth', block:'center'});
+      missing[0].focus();
+      return;
+    }
+
     let total = 0;
     const gaps = [];
     config.questions.forEach((q,idx)=>{
@@ -139,12 +154,24 @@
       headlineEl.textContent = 'Score range missing';
       messageEl.textContent = 'This score has no configured message.';
     }
+    let zoneColor = getComputedStyle(root).getPropertyValue('--color-risk-low').trim();
+    if(total <= 10) zoneColor = getComputedStyle(root).getPropertyValue('--color-risk-high').trim();
+    else if(total <= 20) zoneColor = getComputedStyle(root).getPropertyValue('--color-risk-medium').trim();
+    setVar('--dial-color', zoneColor);
+
     gapsEl.innerHTML = '';
     gaps.forEach(g=>{
       const li = document.createElement('li');
       li.textContent = `${g.q} – ${g.a}: ${g.risk || ''}`;
       gapsEl.appendChild(li);
     });
+    if(gaps.length){
+      gapsTitleEl.hidden = false;
+      gapsEl.hidden = false;
+    } else {
+      gapsTitleEl.hidden = true;
+      gapsEl.hidden = true;
+    }
     form.style.display = 'none';
     seeBtn.style.display = 'none';
     results.hidden = false;
@@ -158,13 +185,16 @@
     form.reset();
     form.style.display = '';
     seeBtn.style.display = '';
-    seeBtn.disabled = true;
     results.hidden = true;
     gapsEl.innerHTML = '';
     headlineEl.textContent = '';
     messageEl.textContent = '';
     scoreEl.textContent = '';
     needle.style.transform = 'rotate(-90deg)';
+    gapsTitleEl.hidden = true;
+    gapsEl.hidden = true;
+    form.querySelectorAll('fieldset').forEach(fs=> fs.removeAttribute('aria-invalid'));
+    setVar('--dial-color', config.brand && config.brand.primary);
     window.scrollTo({top:0, behavior:'smooth'});
   });
 })();
