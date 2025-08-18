@@ -40,6 +40,7 @@
     "--color-risk-high": brand.riskHigh,
     "--color-risk-medium": brand.riskMedium,
     "--color-risk-low": brand.riskLow,
+    "--color-risk-min": brand.riskMin,
     "--dial-color": brand.accentBlue,
   }).forEach(([k, v]) => setVar(k, v));
 
@@ -61,7 +62,8 @@
   const gapsEl = document.getElementById("gaps");
   const ctaEl = document.getElementById("cta");
   const restartBtn = document.getElementById("restart");
-  const scoreEl = document.getElementById("score");
+  const scoreValueEl = document.getElementById("score-value");
+  const scoreBandEl = document.getElementById("score-band");
   const dialContainer = document.getElementById("dial");
   const selectionLive = document.getElementById("selection-live");
 
@@ -95,60 +97,44 @@
   }
   function buildDial() {
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.setAttribute("viewBox", "0 0 200 100");
-    const ranges = [
-      {
-        start: 180,
-        end: 120,
-        color: getComputedStyle(root).getPropertyValue("--color-risk-high"),
-      },
-      {
-        start: 120,
-        end: 60,
-        color: getComputedStyle(root).getPropertyValue("--color-risk-medium"),
-      },
-      {
-        start: 60,
-        end: 0,
-        color: getComputedStyle(root).getPropertyValue("--color-risk-low"),
-      },
+    svg.setAttribute("viewBox", "0 0 100 100");
+    const max = (config.questions ? config.questions.length : 0) * 3;
+    const segments = [
+      { size: 10, color: "--color-risk-high" },
+      { size: 10, color: "--color-risk-medium" },
+      { size: 9, color: "--color-risk-low" },
+      { size: 1, color: "--color-risk-min" },
     ];
-    ranges.forEach((r) => {
+    let start = -90;
+    segments.forEach((seg) => {
+      const end = start + (seg.size / max) * 360;
       const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
-      p.setAttribute("d", describeArc(100, 100, 90, r.start, r.end));
-      p.setAttribute("stroke", r.color.trim());
-      p.setAttribute("stroke-width", "15");
+      p.setAttribute("d", describeArc(50, 50, 45, start, end));
+      p.setAttribute("stroke", getComputedStyle(root).getPropertyValue(seg.color).trim());
+      p.setAttribute("stroke-width", "10");
       p.setAttribute("fill", "none");
+      p.setAttribute("stroke-linecap", "round");
       svg.appendChild(p);
+      start = end;
     });
-    const needle = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "line",
-    );
-    needle.setAttribute("x1", "100");
-    needle.setAttribute("y1", "100");
-    needle.setAttribute("x2", "100");
-    needle.setAttribute("y2", "20");
-    needle.setAttribute("stroke", "var(--dial-color)");
-    needle.setAttribute("stroke-width", "4");
-    needle.classList.add("needle");
-    needle.style.transformOrigin = "100px 100px";
-    needle.style.transform = "rotate(-90deg)";
-    needle.style.transition = "transform 1.6s ease-out";
-    svg.appendChild(needle);
-    const center = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "circle",
-    );
-    center.setAttribute("cx", "100");
-    center.setAttribute("cy", "100");
-    center.setAttribute("r", "5");
-    center.setAttribute("fill", "var(--dial-color)");
-    svg.appendChild(center);
+    const score = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    score.setAttribute("cx", "50");
+    score.setAttribute("cy", "50");
+    score.setAttribute("r", "45");
+    score.setAttribute("fill", "none");
+    score.setAttribute("stroke", "var(--dial-color)");
+    score.setAttribute("stroke-width", "10");
+    score.setAttribute("stroke-linecap", "round");
+    score.setAttribute("transform", "rotate(-90 50 50)");
+    const circ = 2 * Math.PI * 45;
+    score.setAttribute("stroke-dasharray", circ);
+    score.setAttribute("stroke-dashoffset", circ);
+    score.classList.add("score-arc");
+    svg.appendChild(score);
     dialContainer.appendChild(svg);
-    return needle;
+    return score;
   }
-  const needle = buildDial();
+  const scoreArc = buildDial();
 
   // Render questions
   const fieldsets = [];
@@ -274,9 +260,16 @@
 
   function animateDial(score) {
     const max = fieldsets.length * 3;
-    const angle = -90 + (score / max) * 180;
+    const circ = 2 * Math.PI * 45;
+    const offset = circ * (1 - score / max);
+    const prefers = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    scoreArc.style.transition = prefers
+      ? "none"
+      : "stroke-dashoffset 1.6s ease-out";
     requestAnimationFrame(() => {
-      needle.style.transform = `rotate(${angle}deg)`;
+      scoreArc.style.strokeDashoffset = offset;
     });
   }
   function complete(opts = {}) {
@@ -295,7 +288,8 @@
       }
     });
     const max = fieldsets.length * 3;
-    scoreEl.textContent = `${total}/${max}`;
+    scoreValueEl.textContent = `${total}/${max}`;
+    scoreValueEl.setAttribute("aria-label", `Score ${total} out of ${max}`);
     const range =
       config.ranges &&
       config.ranges.find((r) => total >= r.min && total <= r.max);
@@ -306,18 +300,25 @@
       headlineEl.textContent = "Score range missing";
       messageEl.textContent = "This score has no configured message.";
     }
-    let zoneColor = getComputedStyle(root)
-      .getPropertyValue("--color-risk-low")
-      .trim();
-    if (total <= 10)
-      zoneColor = getComputedStyle(root)
-        .getPropertyValue("--color-risk-high")
-        .trim();
+    let band = { label: "Low", colorVar: "--color-risk-low" };
+    if (total === max) band = { label: "Perfect", colorVar: "--color-risk-min" };
+    else if (total <= 10)
+      band = { label: "High", colorVar: "--color-risk-high" };
     else if (total <= 20)
-      zoneColor = getComputedStyle(root)
-        .getPropertyValue("--color-risk-medium")
-        .trim();
+      band = { label: "Medium", colorVar: "--color-risk-medium" };
+    else if (total <= 29) band = { label: "Low", colorVar: "--color-risk-low" };
+
+    const zoneColor = getComputedStyle(root)
+      .getPropertyValue(band.colorVar)
+      .trim();
     setVar("--dial-color", zoneColor);
+    scoreBandEl.textContent = band.label;
+    scoreBandEl.style.backgroundColor = zoneColor;
+    dialContainer.setAttribute(
+      "aria-label",
+      `Score ${total} out of ${max} (${band.label})`,
+    );
+    dialContainer.setAttribute("role", "img");
 
     gapsEl.innerHTML = "";
     gaps.forEach((g) => {
@@ -340,6 +341,20 @@
     results.scrollIntoView({ behavior: "smooth", block: "start" });
     results.focus();
     animateDial(total);
+    const lines = results.querySelectorAll(".fade-line");
+    const prefers = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    let delay = 0;
+    lines.forEach((el) => {
+      if (el.hidden) return;
+      if (prefers) {
+        el.classList.add("show");
+      } else {
+        setTimeout(() => el.classList.add("show"), delay);
+        delay += 500;
+      }
+    });
     if (window.dataLayer) {
       window.dataLayer.push({ event: "assessment_complete", score: total });
     }
@@ -428,8 +443,12 @@
     gapsEl.innerHTML = "";
     headlineEl.textContent = "";
     messageEl.textContent = "";
-    scoreEl.textContent = "";
-    needle.style.transform = "rotate(-90deg)";
+    scoreValueEl.textContent = "";
+    scoreBandEl.textContent = "";
+    results.querySelectorAll(".fade-line").forEach((el) => el.classList.remove("show"));
+    const circ = 2 * Math.PI * 45;
+    scoreArc.style.transition = "none";
+    scoreArc.style.strokeDashoffset = circ;
     gapsTitleEl.hidden = true;
     gapsEl.hidden = true;
     setVar("--dial-color", brand.accentBlue);
