@@ -1,6 +1,6 @@
 window.ASSESSMENT_CONFIG = {
   brand: {
-    logoUrl: "../static/assets/logo.png",
+    logoUrl: "../static/assets/logo-bar.png",
     tagline: "Quick security check",
     bg: "#000000",
     surface: "#0A0A0A",
