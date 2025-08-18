@@ -139,10 +139,11 @@
   const fieldsets = [];
   if (Array.isArray(config.questions)) {
     config.questions.forEach((q, idx) => {
+      const wrapper = document.createElement("div");
+      wrapper.classList.add("q-card");
+      wrapper.hidden = true;
       const fs = document.createElement("fieldset");
-      fs.classList.add("card");
       fs.tabIndex = -1;
-      fs.hidden = true;
       const lg = document.createElement("legend");
       lg.textContent = q.text || `Question ${idx + 1}`;
       fs.appendChild(lg);
@@ -155,16 +156,17 @@
         input.value = opt.score;
         if (opt.risk) input.dataset.risk = opt.risk;
         input.dataset.option = opt.label;
-        const custom = document.createElement("span");
-        custom.className = "custom-radio";
         const text = document.createElement("span");
         text.className = "option-text";
         text.textContent = opt.label;
-        label.append(input, custom, text);
+        label.append(input, text);
         input.addEventListener("change", () => {
           fs.removeAttribute("aria-invalid");
           const help = fs.querySelector(".help");
           if (help) help.hidden = true;
+          wrapper
+            .querySelectorAll("label.option")
+            .forEach((l) => l.classList.toggle("selected", l === label));
           updateNextState();
         });
         fs.appendChild(label);
@@ -174,8 +176,9 @@
       help.textContent = "Please select an option.";
       help.hidden = true;
       fs.appendChild(help);
-      form.appendChild(fs);
-      fieldsets.push(fs);
+      wrapper.appendChild(fs);
+      form.appendChild(wrapper);
+      fieldsets.push(wrapper);
     });
   } else {
     form.textContent = "Configuration error: no questions defined.";
@@ -201,20 +204,20 @@
 
   function showQuestion(idx) {
     current = idx;
-    fieldsets.forEach((fs, i) => {
+    fieldsets.forEach((wrap, i) => {
       if (i === idx) {
-        fs.hidden = false;
-        requestAnimationFrame(() => fs.classList.add("active"));
+        wrap.hidden = false;
+        requestAnimationFrame(() => wrap.classList.add("active"));
       } else {
-        fs.classList.remove("active");
-        fs.hidden = true;
+        wrap.classList.remove("active");
+        wrap.hidden = true;
       }
     });
     updateProgress();
     updateNextState();
     backBtn.disabled = idx === 0;
     fieldsets[idx].scrollIntoView({ behavior: "smooth", block: "center" });
-    fieldsets[idx].focus();
+    fieldsets[idx].querySelector("fieldset").focus();
   }
 
   if (fieldsets.length) {
@@ -234,13 +237,14 @@
   });
 
   nextBtn.addEventListener("click", () => {
-    const fs = fieldsets[current];
-    const selected = fs && fs.querySelector("input:checked");
+    const wrap = fieldsets[current];
+    const fs = wrap.querySelector("fieldset");
+    const selected = wrap && wrap.querySelector("input:checked");
     if (!selected) {
       fs.setAttribute("aria-invalid", "true");
       const help = fs.querySelector(".help");
       if (help) help.hidden = false;
-      fs.scrollIntoView({ behavior: "smooth", block: "center" });
+      wrap.scrollIntoView({ behavior: "smooth", block: "center" });
       fs.focus();
       return;
     }
@@ -252,8 +256,8 @@
 
     let total = 0;
     const gaps = [];
-    fieldsets.forEach((fs, i) => {
-      const sel = fs.querySelector("input:checked");
+    fieldsets.forEach((wrap, i) => {
+      const sel = wrap.querySelector("input:checked");
       const val = parseInt(sel.value, 10);
       total += val;
       if (val < 3) {
@@ -322,9 +326,11 @@
 
   restartBtn.addEventListener("click", () => {
     form.reset();
-    fieldsets.forEach((fs) => {
-      fs.hidden = true;
+    fieldsets.forEach((wrap) => {
+      wrap.hidden = true;
+      const fs = wrap.querySelector("fieldset");
       fs.removeAttribute("aria-invalid");
+      wrap.querySelectorAll("label.option").forEach((l) => l.classList.remove("selected"));
       const help = fs.querySelector(".help");
       if (help) help.hidden = true;
     });
