@@ -16,7 +16,8 @@ window.ASSESSMENT_CONFIG = {
     strokeWhite: "rgba(255,255,255,0.85)",
     riskHigh: "#e53935",
     riskMedium: "#fb8c00",
-    riskLow: "#43a047",
+    riskLow: "#fdd835",
+    riskMin: "#43a047",
   },
   cta: {
     text: "Book a free consultation",
