@@ -212,9 +212,10 @@
           align-items: flex-start;
         }
       }
-      #dial {
+      #gauge {
         width: 200px;
-        height: 200px;
+        height: 120px;
+        overflow: hidden;
       }
       .score-heading {
         font-weight: 700;
@@ -363,7 +364,7 @@
       </div>
       <section id="results" hidden tabindex="-1">
         <div class="results-content">
-          <div id="dial" class="fade-line"></div>
+          <div id="gauge"></div>
           <div class="results-text">
             <h2 class="score-heading fade-line">Your score</h2>
             <div class="score-row fade-line">
