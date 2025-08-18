@@ -7,7 +7,6 @@
     <style>
       :root {
         line-height: 1.5;
-        --header-bar-height: 8px;
         --radius-card: 18px;
         --radius-row: 12px;
         --stroke-inner: 1px;
@@ -22,24 +21,21 @@
         background: var(--bg);
         color: var(--text);
       }
-      .header-bar {
-        width: 100%;
-        height: var(--header-bar-height);
-        background: var(--header-navy);
+      .navbar {
+        position: sticky;
+        top: 0;
+        background: linear-gradient(to bottom, #010c1f 0%, #00172C 100%);
+        z-index: 100;
       }
-      .site-header {
-        text-align: center;
-        padding-top: clamp(8px, 3vw, 16px);
-        padding-bottom: 24px;
-        background: var(--header-navy);
+      .nav-inner {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.5rem 1rem;
       }
-      .site-header img {
-        height: clamp(48px, 10vw, 80px);
+      .nav-brand .logo-full {
+        height: 36px;
         width: auto;
-      }
-      .site-header .tagline {
-        margin-top: 8px;
-        color: var(--muted);
       }
       .container {
         flex: 1;
@@ -278,10 +274,12 @@
     </style>
   </head>
   <body>
-    <div class="header-bar"></div>
-    <header class="site-header">
-      <img id="site-logo" alt="" />
-      <p id="site-tagline" class="tagline"></p>
+    <header class="navbar">
+      <div class="nav-inner">
+        <div class="nav-brand">
+          <img id="site-logo" alt="Vectari logo" class="logo-full" />
+        </div>
+      </div>
     </header>
     <main class="container">
       <h1 class="visually-hidden" id="assessment-title">
