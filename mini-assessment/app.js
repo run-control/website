@@ -63,7 +63,7 @@
   const restartBtn = document.getElementById("restart");
   const scoreValueEl = document.getElementById("score-value");
   const scoreBandEl = document.getElementById("score-band");
-  const gaugeContainer = document.getElementById("gauge");
+  const chartContainer = document.getElementById("severity-chart");
   const selectionLive = document.getElementById("selection-live");
 
   const wizard = config.wizard || {};
@@ -83,92 +83,50 @@
   ctaEl.textContent = (config.cta && config.cta.text) || "";
   ctaEl.href = (config.cta && config.cta.url) || "#";
 
-  // Build gauge
-  function polarToCartesian(cx, cy, r, angle) {
-    const rad = ((angle - 90) * Math.PI) / 180;
-    return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
-  }
-  function describeArc(x, y, r, start, end) {
-    const startPt = polarToCartesian(x, y, r, end);
-    const endPt = polarToCartesian(x, y, r, start);
-    const largeArc = end - start <= 180 ? 0 : 1;
-    return `M ${startPt.x} ${startPt.y} A ${r} ${r} 0 ${largeArc} 0 ${endPt.x} ${endPt.y}`;
-  }
-  function buildGauge() {
-    const svgNS = "http://www.w3.org/2000/svg";
-    const svg = document.createElementNS(svgNS, "svg");
-    svg.setAttribute("viewBox", "0 0 200 200");
-    const max = (config.questions ? config.questions.length : 0) * 3;
-    const segments = [
-      { size: 10, color: "--color-risk-high" },
-      { size: 10, color: "--color-risk-medium" },
-      { size: 9, color: "--color-risk-low" },
-      { size: 1, color: "--color-risk-min" },
+  // Build severity chart
+  function buildChart() {
+    const severities = [
+      {
+        key: 0,
+        label: (config.texts && config.texts.severityCritical) || "Critical",
+        color: "--color-risk-high",
+      },
+      {
+        key: 1,
+        label: (config.texts && config.texts.severityMajor) || "Major",
+        color: "--color-risk-medium",
+      },
+      {
+        key: 2,
+        label: (config.texts && config.texts.severityMinor) || "Minor",
+        color: "--color-risk-low",
+      },
+      {
+        key: 3,
+        label: (config.texts && config.texts.severityPerfect) || "Perfect",
+        color: "--color-risk-min",
+      },
     ];
-    let start = -120;
-    segments.forEach((seg) => {
-      const end = start + (seg.size / max) * 240;
-      const p = document.createElementNS(svgNS, "path");
-      p.setAttribute("d", describeArc(100, 100, 90, start, end));
-      p.setAttribute(
-        "stroke",
-        getComputedStyle(root).getPropertyValue(seg.color).trim(),
-      );
-      p.setAttribute("stroke-width", "20");
-      p.setAttribute("fill", "none");
-      svg.appendChild(p);
-      start = end;
+    const barMap = {};
+    severities.forEach((sev) => {
+      const group = document.createElement("div");
+      group.className = "severity-bar";
+      const value = document.createElement("div");
+      value.className = "bar-value";
+      value.textContent = "0";
+      const bar = document.createElement("div");
+      bar.className = "bar-fill";
+      bar.style.backgroundColor = `var(${sev.color})`;
+      const label = document.createElement("div");
+      label.className = "bar-label";
+      label.textContent = sev.label;
+      group.append(value, bar, label);
+      chartContainer.appendChild(group);
+      barMap[sev.key] = { bar, value, label: sev.label, group };
     });
-    for (let i = 0; i <= max; i += 5) {
-      const angle = -120 + (i / max) * 240;
-      const outer = polarToCartesian(100, 100, 90, angle);
-      const inner = polarToCartesian(100, 100, i % 10 === 0 ? 70 : 80, angle);
-      const tick = document.createElementNS(svgNS, "line");
-      tick.setAttribute("x1", inner.x);
-      tick.setAttribute("y1", inner.y);
-      tick.setAttribute("x2", outer.x);
-      tick.setAttribute("y2", outer.y);
-      tick.setAttribute("stroke", "var(--stroke-white)");
-      tick.setAttribute("stroke-width", i % 10 === 0 ? 3 : 1.5);
-      svg.appendChild(tick);
-    }
-    [0, 10, 20, 30].forEach((val) => {
-      const angle = -120 + (val / max) * 240;
-      const pt = polarToCartesian(100, 100, 60, angle);
-      const txt = document.createElementNS(svgNS, "text");
-      txt.setAttribute("x", pt.x);
-      txt.setAttribute("y", pt.y);
-      txt.setAttribute("fill", "var(--text)");
-      txt.setAttribute("font-size", "12");
-      txt.setAttribute("text-anchor", "middle");
-      txt.setAttribute("dominant-baseline", "central");
-      txt.textContent = val;
-      svg.appendChild(txt);
-    });
-    const needleGroup = document.createElementNS(svgNS, "g");
-    needleGroup.style.transformOrigin = "100px 100px";
-    const needle = document.createElementNS(svgNS, "line");
-    needle.setAttribute("x1", "100");
-    needle.setAttribute("y1", "100");
-    needle.setAttribute("x2", "100");
-    needle.setAttribute("y2", "20");
-    needle.setAttribute("stroke", "var(--accent-blue)");
-    needle.setAttribute("stroke-width", "4");
-    needleGroup.appendChild(needle);
-    svg.appendChild(needleGroup);
-    const hub = document.createElementNS(svgNS, "circle");
-    hub.setAttribute("cx", "100");
-    hub.setAttribute("cy", "100");
-    hub.setAttribute("r", "6");
-    hub.setAttribute("fill", "var(--surface)");
-    hub.setAttribute("stroke", "var(--accent-blue)");
-    hub.setAttribute("stroke-width", "2");
-    svg.appendChild(hub);
-    gaugeContainer.appendChild(svg);
-    needleGroup.style.transform = "rotate(-120deg)";
-    return needleGroup;
+    return barMap;
   }
-  const needle = buildGauge();
+  const chartBars = buildChart();
 
   // Render questions
   const fieldsets = [];
@@ -292,16 +250,30 @@
     showQuestion(startIdx, { replace: true });
   }
 
-  function animateGauge(score) {
-    const max = fieldsets.length * 3;
-    const angle = -120 + (score / max) * 240;
+  function renderChart(counts) {
+    const total = fieldsets.length;
     const prefers = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
-    needle.style.transition = prefers ? "none" : "transform 1.6s ease-out";
-    requestAnimationFrame(() => {
-      needle.style.transform = `rotate(${angle}deg)`;
+    const summaries = [];
+    [0, 1, 2, 3].forEach((key) => {
+      const info = chartBars[key];
+      const count = counts[key] || 0;
+      const pct = total ? Math.round((count / total) * 100) : 0;
+      info.value.textContent = `${count} (${pct}%)`;
+      info.group.setAttribute(
+        "aria-label",
+        `${info.label}: ${count} of ${total} (${pct}%)`,
+      );
+      info.group.setAttribute("role", "img");
+      info.bar.style.transition = prefers ? "none" : "height 1s ease-out";
+      requestAnimationFrame(() => {
+        info.bar.style.height = `${pct}%`;
+      });
+      summaries.push(`${info.label} ${count} (${pct}%)`);
     });
+    chartContainer.setAttribute("role", "img");
+    chartContainer.setAttribute("aria-label", summaries.join(", "));
   }
   function complete(opts = {}) {
     let total = 0;
@@ -344,11 +316,16 @@
       .trim();
     scoreBandEl.textContent = band.label;
     scoreBandEl.style.backgroundColor = zoneColor;
-    gaugeContainer.setAttribute(
-      "aria-label",
-      `Score ${total} out of ${max}, ${band.label}`,
-    );
-    gaugeContainer.setAttribute("role", "img");
+
+    const counts = {
+      0: gapsBySeverity[0].length,
+      1: gapsBySeverity[1].length,
+      2: gapsBySeverity[2].length,
+      3:
+        fieldsets.length -
+        (gapsBySeverity[0].length + gapsBySeverity[1].length + gapsBySeverity[2].length),
+    };
+    renderChart(counts);
 
     gapsEl.innerHTML = "";
     const severityMap = {
@@ -396,7 +373,6 @@
     results.hidden = false;
     results.scrollIntoView({ behavior: "smooth", block: "start" });
     results.focus();
-    animateGauge(total);
     const lines = results.querySelectorAll(".fade-line");
     const prefers = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
@@ -518,11 +494,20 @@
     messageEl.textContent = "";
     scoreValueEl.textContent = "";
     scoreBandEl.textContent = "";
-    results.querySelectorAll(".fade-line").forEach((el) => el.classList.remove("show"));
+    results.querySelectorAll(".fade-line").forEach((el) =>
+      el.classList.remove("show"),
+    );
     gapsTitleEl.hidden = true;
     gapsEl.hidden = true;
-    needle.style.transition = "none";
-    needle.style.transform = "rotate(-120deg)";
+    Object.values(chartBars).forEach((info) => {
+      info.bar.style.transition = "none";
+      info.bar.style.height = "0%";
+      info.value.textContent = "0";
+      info.group.removeAttribute("aria-label");
+      info.group.removeAttribute("role");
+    });
+    chartContainer.removeAttribute("aria-label");
+    chartContainer.removeAttribute("role");
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
 })();

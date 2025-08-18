@@ -31,6 +31,7 @@ window.ASSESSMENT_CONFIG = {
     severityCritical: "Critical",
     severityMajor: "Major",
     severityMinor: "Minor",
+    severityPerfect: "Perfect",
     noGaps: "No immediate gaps detected",
   },
   wizard: {
