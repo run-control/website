@@ -7,7 +7,10 @@
     <style>
       :root {
         line-height: 1.5;
-        --header-bg: #00172C;
+        --header-navy: #00172C;
+        --header-bar-height: 8px;
+        --radius-card: 18px;
+        --radius-row: 12px;
       }
       body {
         margin: 0;
@@ -18,11 +21,16 @@
         background: var(--bg);
         color: var(--text);
       }
+      .header-bar {
+        width: 100%;
+        height: var(--header-bar-height);
+        background: var(--header-navy);
+      }
       .site-header {
         text-align: center;
-        padding-top: clamp(12px, 4vw, 16px);
+        padding-top: clamp(8px, 3vw, 16px);
         padding-bottom: 24px;
-        background: var(--header-bg);
+        background: var(--header-navy);
       }
       .site-header img {
         height: clamp(48px, 10vw, 80px);
@@ -68,18 +76,19 @@
         transform: scaleX(0);
         transform-origin: left;
         transition: transform 0.16s ease-out;
+        border-radius: inherit;
       }
       fieldset {
         border: none;
         margin: 0;
         padding: 0;
+        min-inline-size: 0;
       }
       .q-card {
         background: var(--surface);
         color: var(--text);
-        border-radius: var(--radius);
-        border: 1px solid var(--border);
-        box-shadow: var(--shadow);
+        border-radius: var(--radius-card);
+        box-shadow: var(--shadow), 0 0 0 1px var(--border) inset;
         padding: 20px 24px 24px;
         max-width: 720px;
         margin: 0 auto;
@@ -87,7 +96,7 @@
         opacity: 0;
         transform: translateY(24px);
         transition: opacity 0.2s ease-out, transform 0.2s ease-out,
-          box-shadow 0.2s, border-color 0.2s;
+          box-shadow 0.2s;
       }
       .q-card.active {
         opacity: 1;
@@ -95,17 +104,22 @@
       }
       .q-card:hover,
       .q-card:focus-within {
-        box-shadow: var(--shadow), 0 0 0 2px var(--accent-blue);
+        box-shadow: var(--shadow), 0 0 0 1px var(--border) inset,
+          0 0 0 2px var(--accent-blue);
       }
       .q-card:has(fieldset[aria-invalid="true"]) {
-        border-color: var(--accent-orange);
+        box-shadow: var(--shadow), 0 0 0 1px var(--accent-orange) inset;
       }
-      legend {
+      .q-head {
         display: block;
         margin: 0 0 12px;
         line-height: 1.3;
         white-space: normal;
         color: var(--text);
+      }
+      .q-body {
+        border-radius: calc(var(--radius-card) - 6px);
+        overflow: hidden;
       }
       label.option {
         width: 100%;
@@ -115,7 +129,7 @@
         padding: 12px 16px;
         background: var(--surface-elev);
         box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.14);
-        border-radius: var(--radius);
+        border-radius: var(--radius-row);
         cursor: pointer;
         transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
         min-height: 48px;
@@ -261,6 +275,7 @@
     </style>
   </head>
   <body>
+    <div class="header-bar"></div>
     <header class="site-header">
       <img id="site-logo" alt="" />
       <p id="site-tagline" class="tagline"></p>

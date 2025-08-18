@@ -12,12 +12,12 @@
       surfaceElev: "#0E0E0E",
       text: "#FFFFFF",
       muted: "#A9B1BC",
-        accentOrange: "#FF8A00",
-        accentBlue: "#00AEEF",
-        headerBg: "#00172C",
-        border: "rgba(0,174,239,0.35)",
-        radius: "18px",
-        shadow: "0 8px 30px rgba(0,0,0,0.45)",
+      accentOrange: "#FF8A00",
+      accentBlue: "#00AEEF",
+      headerBarColor: "#00172C",
+      headerBarHeight: "8px",
+      border: "rgba(0,174,239,0.35)",
+      shadow: "0 8px 30px rgba(0,0,0,0.45)",
     },
     config.brand || {},
   );
@@ -30,10 +30,10 @@
     "--text": brand.text,
     "--muted": brand.muted,
     "--accent-orange": brand.accentOrange,
-      "--accent-blue": brand.accentBlue,
-      "--header-bg": brand.headerBg,
+    "--accent-blue": brand.accentBlue,
+    "--header-navy": brand.headerBarColor,
+    "--header-bar-height": brand.headerBarHeight,
     "--border": brand.border,
-    "--radius": brand.radius,
     "--shadow": brand.shadow,
     "--color-risk-high": brand.riskHigh,
     "--color-risk-medium": brand.riskMedium,
@@ -147,8 +147,11 @@
       const fs = document.createElement("fieldset");
       fs.tabIndex = -1;
       const lg = document.createElement("legend");
+      lg.className = "q-head";
       lg.textContent = q.text || `Question ${idx + 1}`;
-      fs.appendChild(lg);
+      const body = document.createElement("div");
+      body.className = "q-body";
+      fs.append(lg, body);
       q.options.forEach((opt) => {
         const label = document.createElement("label");
         label.classList.add("option");
@@ -171,7 +174,7 @@
             .forEach((l) => l.classList.toggle("selected", l === label));
           updateNextState();
         });
-        fs.appendChild(label);
+        body.appendChild(label);
       });
       const help = document.createElement("p");
       help.className = "help";
