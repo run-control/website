@@ -7,6 +7,7 @@
     <style>
       :root {
         line-height: 1.5;
+        --header-bg: #00172C;
       }
       body {
         margin: 0;
@@ -17,14 +18,11 @@
         background: var(--bg);
         color: var(--text);
       }
-      .top-bar {
-        height: 8px;
-        background: var(--accent-blue);
-      }
       .site-header {
         text-align: center;
         padding-top: clamp(12px, 4vw, 16px);
         padding-bottom: 24px;
+        background: var(--header-bg);
       }
       .site-header img {
         height: clamp(48px, 10vw, 80px);
@@ -80,7 +78,8 @@
         background: var(--surface);
         color: var(--text);
         border-radius: var(--radius);
-        box-shadow: var(--shadow), 0 0 0 1px var(--border) inset;
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
         padding: 20px 24px 24px;
         max-width: 720px;
         margin: 0 auto;
@@ -88,7 +87,7 @@
         opacity: 0;
         transform: translateY(24px);
         transition: opacity 0.2s ease-out, transform 0.2s ease-out,
-          box-shadow 0.2s;
+          box-shadow 0.2s, border-color 0.2s;
       }
       .q-card.active {
         opacity: 1;
@@ -96,11 +95,10 @@
       }
       .q-card:hover,
       .q-card:focus-within {
-        box-shadow: var(--shadow), 0 0 0 1px var(--border) inset,
-          0 0 0 2px var(--accent-blue);
+        box-shadow: var(--shadow), 0 0 0 2px var(--accent-blue);
       }
       .q-card:has(fieldset[aria-invalid="true"]) {
-        box-shadow: var(--shadow), 0 0 0 1px var(--accent-orange) inset;
+        border-color: var(--accent-orange);
       }
       legend {
         display: block;
@@ -116,7 +114,7 @@
         gap: 12px;
         padding: 12px 16px;
         background: var(--surface-elev);
-        box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.14) inset;
+        box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.14);
         border-radius: var(--radius);
         cursor: pointer;
         transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
@@ -127,14 +125,14 @@
       }
       label.option:hover {
         transform: translateY(-1px);
-        box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.24) inset;
+        box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.24);
       }
       label.option:focus-within {
-        box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.24) inset,
-          0 0 0 2px var(--accent-blue);
+        box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.24),
+          0 0 0 3px var(--accent-blue);
       }
       label.option.selected {
-        box-shadow: 0 0 0 1px var(--accent-blue) inset;
+        box-shadow: 0 0 0 1px var(--accent-blue);
         background: color-mix(in srgb, var(--accent-blue) 10%, var(--surface-elev));
       }
       label.option input[type="radio"] {
@@ -263,7 +261,6 @@
     </style>
   </head>
   <body>
-    <div class="top-bar"></div>
     <header class="site-header">
       <img id="site-logo" alt="" />
       <p id="site-tagline" class="tagline"></p>
