@@ -63,6 +63,17 @@
   const restartBtn = document.getElementById("restart");
   const scoreEl = document.getElementById("score");
   const dialContainer = document.getElementById("dial");
+  const selectionLive = document.getElementById("selection-live");
+
+  const wizard = config.wizard || {};
+  const autoAdvance = !!wizard.autoAdvance;
+  const useHistory = !!wizard.history;
+  const advanceDelay = wizard.delay || 220;
+
+  let autoTimer;
+  let isAdvancing = false;
+
+  if (autoAdvance) nextBtn.style.display = "none";
 
   restartBtn.textContent =
     (config.texts && config.texts.startOver) || "Retake assessment";
@@ -175,6 +186,15 @@
             .querySelectorAll("label.option")
             .forEach((l) => l.classList.toggle("selected", l === label));
           updateNextState();
+          if (selectionLive) {
+            selectionLive.textContent = `${opt.label} selected`;
+          }
+          if (autoAdvance) {
+            clearTimeout(autoTimer);
+            autoTimer = setTimeout(() => {
+              gotoNext();
+            }, advanceDelay);
+          }
         });
         body.appendChild(label);
       });
@@ -209,7 +229,8 @@
     nextBtn.disabled = !sel;
   }
 
-  function showQuestion(idx) {
+  function showQuestion(idx, opts = {}) {
+    clearTimeout(autoTimer);
     current = idx;
     fieldsets.forEach((wrap, i) => {
       if (i === idx) {
@@ -225,11 +246,30 @@
     backBtn.disabled = idx === 0;
     fieldsets[idx].scrollIntoView({ behavior: "smooth", block: "center" });
     fieldsets[idx].querySelector("fieldset").focus();
+
+    if (useHistory && opts.updateHistory !== false) {
+      const url = new URL(window.location);
+      url.searchParams.set("step", idx + 1);
+      if (opts.replace) {
+        history.replaceState({ step: idx }, "", url);
+      } else {
+        history.pushState({ step: idx }, "", url);
+      }
+    }
   }
 
   if (fieldsets.length) {
     progress.hidden = false;
-    showQuestion(0);
+    let startIdx = 0;
+    if (useHistory) {
+      const params = new URLSearchParams(location.search);
+      const stepParam = params.get("step");
+      const parsed = parseInt(stepParam, 10);
+      if (!isNaN(parsed) && parsed > 0 && parsed <= fieldsets.length) {
+        startIdx = parsed - 1;
+      }
+    }
+    showQuestion(startIdx, { replace: true });
   }
 
   function animateDial(score) {
@@ -239,28 +279,7 @@
       needle.style.transform = `rotate(${angle}deg)`;
     });
   }
-  backBtn.addEventListener("click", () => {
-    if (current > 0) showQuestion(current - 1);
-  });
-
-  nextBtn.addEventListener("click", () => {
-    const wrap = fieldsets[current];
-    const fs = wrap.querySelector("fieldset");
-    const selected = wrap && wrap.querySelector("input:checked");
-    if (!selected) {
-      fs.setAttribute("aria-invalid", "true");
-      const help = fs.querySelector(".help");
-      if (help) help.hidden = false;
-      wrap.scrollIntoView({ behavior: "smooth", block: "center" });
-      fs.focus();
-      return;
-    }
-    fs.removeAttribute("aria-invalid");
-    if (current < fieldsets.length - 1) {
-      showQuestion(current + 1);
-      return;
-    }
-
+  function complete(opts = {}) {
     let total = 0;
     const gaps = [];
     fieldsets.forEach((wrap, i) => {
@@ -318,16 +337,75 @@
     backBtn.style.display = "none";
     progress.hidden = true;
     results.hidden = false;
+    results.scrollIntoView({ behavior: "smooth", block: "start" });
+    results.focus();
     animateDial(total);
     if (window.dataLayer) {
       window.dataLayer.push({ event: "assessment_complete", score: total });
     }
+    if (useHistory && opts.updateHistory !== false) {
+      const url = new URL(window.location);
+      url.searchParams.set("step", "results");
+      history.pushState({ step: "results" }, "", url);
+    }
+  }
+
+  function gotoNext() {
+    if (isAdvancing) return;
+    isAdvancing = true;
+    const wrap = fieldsets[current];
+    const fs = wrap.querySelector("fieldset");
+    const selected = wrap && wrap.querySelector("input:checked");
+    if (!selected) {
+      fs.setAttribute("aria-invalid", "true");
+      const help = fs.querySelector(".help");
+      if (help) help.hidden = false;
+      wrap.scrollIntoView({ behavior: "smooth", block: "center" });
+      fs.focus();
+      isAdvancing = false;
+      return;
+    }
+    fs.removeAttribute("aria-invalid");
+    if (current < fieldsets.length - 1) {
+      showQuestion(current + 1);
+      isAdvancing = false;
+      return;
+    }
+    complete();
+    isAdvancing = false;
+  }
+
+  backBtn.addEventListener("click", () => {
+    if (isAdvancing) return;
+    if (current > 0) showQuestion(current - 1);
   });
+
+  nextBtn.addEventListener("click", () => {
+    gotoNext();
+  });
+
+  if (useHistory) {
+    window.addEventListener("popstate", (e) => {
+      const step = e.state && e.state.step;
+      if (step === "results") {
+        complete({ updateHistory: false });
+        return;
+      }
+      if (typeof step === "number" && step >= 0 && step < fieldsets.length) {
+        form.style.display = "";
+        backBtn.style.display = "";
+        if (!autoAdvance) nextBtn.style.display = "";
+        progress.hidden = false;
+        results.hidden = true;
+        showQuestion(step, { updateHistory: false });
+      }
+    });
+  }
 
   form.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      if (!nextBtn.disabled) nextBtn.click();
+      if (!nextBtn.disabled) gotoNext();
     }
   });
 
@@ -341,9 +419,9 @@
       const help = fs.querySelector(".help");
       if (help) help.hidden = true;
     });
-    showQuestion(0);
+    showQuestion(0, { replace: true });
     form.style.display = "";
-    nextBtn.style.display = "";
+    nextBtn.style.display = autoAdvance ? "none" : "";
     backBtn.style.display = "";
     progress.hidden = false;
     results.hidden = true;

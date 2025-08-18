@@ -28,6 +28,10 @@ window.ASSESSMENT_CONFIG = {
     startOver: "Retake assessment",
     gapsTitle: "Where you lost points",
   },
+  wizard: {
+    autoAdvance: true,
+    history: true,
+  },
   ranges: [
     {
       min: 0,
