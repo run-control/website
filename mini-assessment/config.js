@@ -1,4 +1,4 @@
-const ASSESSMENT_CONFIG = {
+window.ASSESSMENT_CONFIG = {
   brand: {
     background: '#0b1b33',
     primary: '#008080',
