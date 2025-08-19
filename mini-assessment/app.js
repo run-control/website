@@ -43,6 +43,12 @@
     "--color-risk-min": brand.riskMin,
   }).forEach(([k, v]) => setVar(k, v));
 
+  const chartSettings = Object.assign(
+    { size: 160, thickness: 35 },
+    config.chart || {},
+  );
+  setVar("--donut-size", `${chartSettings.size}px`);
+
   const logoEl = document.getElementById("site-logo");
   const taglineEl = document.getElementById("site-tagline");
   if (logoEl && brand.logoUrl) logoEl.src = brand.logoUrl;
@@ -109,30 +115,33 @@
     ];
     const ns = "http://www.w3.org/2000/svg";
     const svg = document.createElementNS(ns, "svg");
-    svg.setAttribute("viewBox", "0 0 36 36");
+    svg.setAttribute("viewBox", "0 0 100 100");
     svg.classList.add("severity-donut");
     const g = document.createElementNS(ns, "g");
-    g.setAttribute("transform", "rotate(-90 18 18)");
+    g.setAttribute("transform", "rotate(-90 50 50)");
     svg.appendChild(g);
     const center = document.createElementNS(ns, "text");
-    center.setAttribute("x", "18");
-    center.setAttribute("y", "18");
+    center.setAttribute("x", "50");
+    center.setAttribute("y", "50");
     center.setAttribute("text-anchor", "middle");
     center.setAttribute("class", "donut-center");
     svg.appendChild(center);
     const legend = document.createElement("ul");
     legend.className = "severity-legend";
     const sliceMap = {};
+    const stroke = (chartSettings.thickness / chartSettings.size) * 100;
+    const radius = 50 - stroke / 2;
     severities.forEach((sev) => {
       const circle = document.createElementNS(ns, "circle");
-      circle.setAttribute("cx", "18");
-      circle.setAttribute("cy", "18");
-      circle.setAttribute("r", "15.915");
+      circle.setAttribute("cx", "50");
+      circle.setAttribute("cy", "50");
+      circle.setAttribute("r", radius);
       circle.setAttribute("fill", "transparent");
       circle.setAttribute("stroke", `var(${sev.color})`);
-      circle.setAttribute("stroke-width", "8");
+      circle.setAttribute("stroke-width", stroke);
       circle.setAttribute("stroke-dasharray", "0 100");
       circle.setAttribute("stroke-dashoffset", "0");
+      circle.setAttribute("pathLength", "100");
       g.appendChild(circle);
       const li = document.createElement("li");
       const swatch = document.createElement("span");
@@ -140,13 +149,39 @@
       swatch.style.backgroundColor = `var(${sev.color})`;
       const text = document.createElement("span");
       li.append(swatch, text);
+      li.style.display = "none";
       legend.appendChild(li);
-      sliceMap[sev.key] = { circle, label: sev.label, legendText: text };
+      sliceMap[sev.key] = {
+        circle,
+        label: sev.label,
+        legendText: text,
+        legendItem: li,
+      };
     });
     chartContainer.append(svg, legend);
     return { sliceMap, center, svg };
   }
   const chart = buildChart();
+
+  function setCenterLabel(text) {
+    chart.center.textContent = text;
+    chart.center.removeAttribute("transform");
+    let fontSize = chartSettings.size * 0.2;
+    chart.center.style.fontSize = `${fontSize}px`;
+    const max = chartSettings.size - chartSettings.thickness * 2;
+    try {
+      let box = chart.center.getBBox();
+      if (box.width > max) {
+        const scale = max / box.width;
+        chart.center.setAttribute(
+          "transform",
+          `translate(50 50) scale(${scale}) translate(-50 -50)`,
+        );
+      }
+    } catch (e) {
+      /* ignore */
+    }
+  }
 
   // Render questions
   const fieldsets = [];
@@ -270,16 +305,14 @@
     showQuestion(startIdx, { replace: true });
   }
 
-  function renderChart(counts) {
+  function renderChart(counts, animate = true) {
     const total = fieldsets.length;
     const prefers = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
     const summaries = [];
     const totalGaps = (counts[0] || 0) + (counts[1] || 0) + (counts[2] || 0);
-    chart.center.textContent = `${totalGaps} gap${
-      totalGaps === 1 ? "" : "s"
-    }`;
+    setCenterLabel(`${totalGaps} gap${totalGaps === 1 ? "" : "s"}`);
     let offset = 0;
     [0, 1, 2, 3].forEach((key) => {
       const info = chart.sliceMap[key];
@@ -288,18 +321,38 @@
       info.legendText.textContent = `${info.label} ${count} (${Math.round(
         pct,
       )}%)`;
-      info.circle.style.transition = prefers
-        ? "none"
-        : "stroke-dasharray 1s ease";
+      info.legendItem.style.display = count ? "flex" : "none";
+      info.circle.style.transition = !prefers && animate
+        ? "stroke-dasharray 1s ease"
+        : "none";
       info.circle.setAttribute("stroke-dashoffset", offset);
       requestAnimationFrame(() => {
         info.circle.setAttribute("stroke-dasharray", `${pct} ${100 - pct}`);
       });
       offset -= pct;
-      summaries.push(`${info.label} ${count} (${Math.round(pct)}%)`);
+      if (count) summaries.push(`${info.label} ${count} (${Math.round(pct)}%)`);
     });
     chart.svg.setAttribute("role", "img");
     chart.svg.setAttribute("aria-label", summaries.join(", "));
+  }
+
+  function animateScore(total, max) {
+    const prefers = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    if (prefers) {
+      scoreValueEl.textContent = `${total}/${max}`;
+      return;
+    }
+    const start = performance.now();
+    const duration = 1000;
+    function step(now) {
+      const p = Math.min((now - start) / duration, 1);
+      const val = Math.round(p * total);
+      scoreValueEl.textContent = `${val}/${max}`;
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
   }
   function complete(opts = {}) {
     let total = 0;
@@ -317,7 +370,6 @@
       }
     });
     const max = fieldsets.length * 3;
-    scoreValueEl.textContent = `${total}/${max}`;
     scoreValueEl.setAttribute("aria-label", `Score ${total} out of ${max}`);
     const range =
       config.ranges &&
@@ -351,7 +403,6 @@
         fieldsets.length -
         (gapsBySeverity[0].length + gapsBySeverity[1].length + gapsBySeverity[2].length),
     };
-    renderChart(counts);
 
     gapsEl.innerHTML = "";
     const severityMap = {
@@ -399,31 +450,49 @@
     results.hidden = false;
     results.scrollIntoView({ behavior: "smooth", block: "start" });
     results.focus();
-    const lines = results.querySelectorAll(".fade-line");
+    const card = results.querySelector(".results-content");
     const prefers = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
-    lines.forEach((el) => {
-      if (el.hidden) return;
-      if (prefers) {
-        el.classList.add("show");
-      } else if (el.id === "gaps" || el.id === "gaps-title") {
-        setTimeout(() => el.classList.add("show"), 1600);
-      } else {
-        el.classList.add("show");
-      }
-    });
-    setTimeout(() => {
+    card.classList.add("show");
+    const scoreLines = results.querySelectorAll(
+      ".score-heading, .score-row",
+    );
+    scoreLines.forEach((el) => el.classList.add("show"));
+    const revealRest = () => {
+      [
+        "result-headline",
+        "result-message",
+        "gaps-title",
+        "gaps",
+        "cta",
+        "restart",
+      ].forEach((id, idx) => {
+        const el = document.getElementById(id);
+        if (!el || el.hidden) return;
+        if (prefers) el.classList.add("show");
+        else setTimeout(() => el.classList.add("show"), idx * 80);
+      });
       const items = gapsEl.querySelectorAll(".gap-item");
       items.forEach((li, idx) => {
-        if (prefers) {
-          li.classList.add("show");
-        } else {
+        if (prefers) li.classList.add("show");
+        else {
           li.style.transitionDelay = `${idx * 60}ms`;
           li.classList.add("show");
         }
       });
-    }, prefers ? 0 : 1600);
+    };
+    if (prefers) {
+      renderChart(counts, false);
+      scoreValueEl.textContent = `${total}/${max}`;
+      revealRest();
+    } else {
+      setTimeout(() => {
+        renderChart(counts, true);
+        animateScore(total, max);
+      }, 400);
+      setTimeout(revealRest, 1400);
+    }
     if (window.dataLayer) {
       window.dataLayer.push({
         event: "assessment_complete",
@@ -523,14 +592,18 @@
     results.querySelectorAll(".fade-line").forEach((el) =>
       el.classList.remove("show"),
     );
+    const card = results.querySelector(".results-content");
+    if (card) card.classList.remove("show");
     gapsTitleEl.hidden = true;
     gapsEl.hidden = true;
     Object.values(chart.sliceMap).forEach((info) => {
       info.circle.style.transition = "none";
       info.circle.setAttribute("stroke-dasharray", "0 100");
       info.legendText.textContent = "";
+      info.legendItem.style.display = "none";
     });
     chart.center.textContent = "";
+    chart.center.removeAttribute("transform");
     chart.svg.removeAttribute("aria-label");
     chart.svg.removeAttribute("role");
     window.scrollTo({ top: 0, behavior: "smooth" });
