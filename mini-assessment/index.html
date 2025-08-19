@@ -204,7 +204,7 @@
         box-shadow: var(--shadow),
           0 0 0 var(--stroke-inner) var(--stroke-white) inset;
         padding: 24px;
-        overflow: hidden;
+        overflow: visible;
       }
       @media (min-width: 768px) {
         .results-content {
@@ -213,38 +213,45 @@
         }
       }
       #severity-chart {
-        width: 200px;
-        height: 120px;
-        display: flex;
-        align-items: flex-end;
-        justify-content: space-between;
-        gap: 12px;
-      }
-      .severity-bar {
-        flex: 1;
         display: flex;
         flex-direction: column;
         align-items: center;
+        justify-content: center;
+        gap: 8px;
       }
-      .severity-bar .bar-fill {
-        width: 40px;
-        height: 0;
-        border-radius: 4px 4px 0 0;
-        background: var(--color-risk-high);
-        transition: height 1s ease-out;
+      .severity-donut {
+        width: 160px;
+        height: 160px;
       }
-      .severity-bar .bar-value {
+      .severity-donut .donut-center {
         font-size: 0.875rem;
-        margin-bottom: 4px;
+        fill: var(--text);
+        dominant-baseline: middle;
       }
-      .severity-bar .bar-label {
-        margin-top: 4px;
+      .severity-legend {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
         font-size: 0.75rem;
-        text-align: center;
+      }
+      .severity-legend li {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .severity-legend .swatch {
+        width: 10px;
+        height: 10px;
+        border-radius: 2px;
+        flex-shrink: 0;
       }
       @media (prefers-reduced-motion: reduce) {
-        .severity-bar .bar-fill {
-          transition: none;
+        .severity-donut circle {
+          transition: none !important;
         }
       }
       .score-heading {
