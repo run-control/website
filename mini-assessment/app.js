@@ -107,26 +107,46 @@
         color: "--color-risk-min",
       },
     ];
-    const barMap = {};
+    const ns = "http://www.w3.org/2000/svg";
+    const svg = document.createElementNS(ns, "svg");
+    svg.setAttribute("viewBox", "0 0 36 36");
+    svg.classList.add("severity-donut");
+    const g = document.createElementNS(ns, "g");
+    g.setAttribute("transform", "rotate(-90 18 18)");
+    svg.appendChild(g);
+    const center = document.createElementNS(ns, "text");
+    center.setAttribute("x", "18");
+    center.setAttribute("y", "18");
+    center.setAttribute("text-anchor", "middle");
+    center.setAttribute("class", "donut-center");
+    svg.appendChild(center);
+    const legend = document.createElement("ul");
+    legend.className = "severity-legend";
+    const sliceMap = {};
     severities.forEach((sev) => {
-      const group = document.createElement("div");
-      group.className = "severity-bar";
-      const value = document.createElement("div");
-      value.className = "bar-value";
-      value.textContent = "0";
-      const bar = document.createElement("div");
-      bar.className = "bar-fill";
-      bar.style.backgroundColor = `var(${sev.color})`;
-      const label = document.createElement("div");
-      label.className = "bar-label";
-      label.textContent = sev.label;
-      group.append(value, bar, label);
-      chartContainer.appendChild(group);
-      barMap[sev.key] = { bar, value, label: sev.label, group };
+      const circle = document.createElementNS(ns, "circle");
+      circle.setAttribute("cx", "18");
+      circle.setAttribute("cy", "18");
+      circle.setAttribute("r", "15.915");
+      circle.setAttribute("fill", "transparent");
+      circle.setAttribute("stroke", `var(${sev.color})`);
+      circle.setAttribute("stroke-width", "8");
+      circle.setAttribute("stroke-dasharray", "0 100");
+      circle.setAttribute("stroke-dashoffset", "0");
+      g.appendChild(circle);
+      const li = document.createElement("li");
+      const swatch = document.createElement("span");
+      swatch.className = "swatch";
+      swatch.style.backgroundColor = `var(${sev.color})`;
+      const text = document.createElement("span");
+      li.append(swatch, text);
+      legend.appendChild(li);
+      sliceMap[sev.key] = { circle, label: sev.label, legendText: text };
     });
-    return barMap;
+    chartContainer.append(svg, legend);
+    return { sliceMap, center, svg };
   }
-  const chartBars = buildChart();
+  const chart = buildChart();
 
   // Render questions
   const fieldsets = [];
@@ -256,24 +276,30 @@
       "(prefers-reduced-motion: reduce)",
     ).matches;
     const summaries = [];
+    const totalGaps = (counts[0] || 0) + (counts[1] || 0) + (counts[2] || 0);
+    chart.center.textContent = `${totalGaps} gap${
+      totalGaps === 1 ? "" : "s"
+    }`;
+    let offset = 0;
     [0, 1, 2, 3].forEach((key) => {
-      const info = chartBars[key];
+      const info = chart.sliceMap[key];
       const count = counts[key] || 0;
-      const pct = total ? Math.round((count / total) * 100) : 0;
-      info.value.textContent = `${count} (${pct}%)`;
-      info.group.setAttribute(
-        "aria-label",
-        `${info.label}: ${count} of ${total} (${pct}%)`,
-      );
-      info.group.setAttribute("role", "img");
-      info.bar.style.transition = prefers ? "none" : "height 1s ease-out";
+      const pct = total ? (count / total) * 100 : 0;
+      info.legendText.textContent = `${info.label} ${count} (${Math.round(
+        pct,
+      )}%)`;
+      info.circle.style.transition = prefers
+        ? "none"
+        : "stroke-dasharray 1s ease";
+      info.circle.setAttribute("stroke-dashoffset", offset);
       requestAnimationFrame(() => {
-        info.bar.style.height = `${pct}%`;
+        info.circle.setAttribute("stroke-dasharray", `${pct} ${100 - pct}`);
       });
-      summaries.push(`${info.label} ${count} (${pct}%)`);
+      offset -= pct;
+      summaries.push(`${info.label} ${count} (${Math.round(pct)}%)`);
     });
-    chartContainer.setAttribute("role", "img");
-    chartContainer.setAttribute("aria-label", summaries.join(", "));
+    chart.svg.setAttribute("role", "img");
+    chart.svg.setAttribute("aria-label", summaries.join(", "));
   }
   function complete(opts = {}) {
     let total = 0;
@@ -499,15 +525,14 @@
     );
     gapsTitleEl.hidden = true;
     gapsEl.hidden = true;
-    Object.values(chartBars).forEach((info) => {
-      info.bar.style.transition = "none";
-      info.bar.style.height = "0%";
-      info.value.textContent = "0";
-      info.group.removeAttribute("aria-label");
-      info.group.removeAttribute("role");
+    Object.values(chart.sliceMap).forEach((info) => {
+      info.circle.style.transition = "none";
+      info.circle.setAttribute("stroke-dasharray", "0 100");
+      info.legendText.textContent = "";
     });
-    chartContainer.removeAttribute("aria-label");
-    chartContainer.removeAttribute("role");
+    chart.center.textContent = "";
+    chart.svg.removeAttribute("aria-label");
+    chart.svg.removeAttribute("role");
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
 })();
