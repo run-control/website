@@ -11,6 +11,7 @@
         --radius-row: 12px;
         --stroke-inner: 1px;
         --glow-size: 2px;
+        --donut-size: 160px;
       }
       body {
         margin: 0;
@@ -193,9 +194,10 @@
         display: none;
       }
       .results-content {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+        display: grid;
+        grid-template-columns: 1fr;
+        justify-items: center;
+        align-items: flex-start;
         gap: 20px;
         margin-top: 20px;
         background: var(--surface);
@@ -205,11 +207,18 @@
           0 0 0 var(--stroke-inner) var(--stroke-white) inset;
         padding: 24px;
         overflow: visible;
+        opacity: 0;
+        transform: translateY(24px);
+        transition: opacity 0.2s ease-out, transform 0.2s ease-out,
+          box-shadow 0.2s;
+      }
+      .results-content.show {
+        opacity: 1;
+        transform: translateY(0);
       }
       @media (min-width: 768px) {
         .results-content {
-          flex-direction: row;
-          align-items: flex-start;
+          grid-template-columns: auto minmax(0, 1fr);
         }
       }
       #severity-chart {
@@ -220,13 +229,19 @@
         gap: 8px;
       }
       .severity-donut {
-        width: 160px;
-        height: 160px;
+        width: var(--donut-size);
+        height: var(--donut-size);
+        transform-origin: center;
+        transform: scale(0);
+        transition: transform 0.4s ease-out;
+      }
+      .results-content.show .severity-donut {
+        transform: scale(1);
       }
       .severity-donut .donut-center {
-        font-size: 0.875rem;
         fill: var(--text);
         dominant-baseline: middle;
+        font-weight: 600;
       }
       .severity-legend {
         list-style: none;
@@ -250,6 +265,15 @@
         flex-shrink: 0;
       }
       @media (prefers-reduced-motion: reduce) {
+        .results-content {
+          opacity: 1;
+          transform: none;
+          transition: none;
+        }
+        .severity-donut {
+          transform: none;
+          transition: none;
+        }
         .severity-donut circle {
           transition: none !important;
         }

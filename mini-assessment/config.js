@@ -38,6 +38,10 @@ window.ASSESSMENT_CONFIG = {
     autoAdvance: true,
     history: true,
   },
+  chart: {
+    size: 160,
+    thickness: 35,
+  },
   ranges: [
     {
       min: 0,
