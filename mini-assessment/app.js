@@ -65,7 +65,10 @@
   const messageEl = document.getElementById("result-message");
   const gapsTitleEl = document.getElementById("gaps-title");
   const gapsEl = document.getElementById("gaps");
-  const ctaEl = document.getElementById("cta");
+  const nextStepsHeadingEl = document.getElementById("next-steps-heading");
+  const bandNoteEl = document.getElementById("band-note");
+  const nextStepsBodyEl = document.getElementById("next-steps-body");
+  const ctaEl = document.getElementById("next-steps-cta");
   const restartBtn = document.getElementById("restart");
   const scoreValueEl = document.getElementById("score-value");
   const scoreBandEl = document.getElementById("score-band");
@@ -86,8 +89,14 @@
     (config.texts && config.texts.startOver) || "Retake assessment";
   gapsTitleEl.textContent =
     (config.texts && config.texts.gapsTitle) || "Opportunities for improvement";
-  ctaEl.textContent = (config.cta && config.cta.text) || "";
-  ctaEl.href = (config.cta && config.cta.url) || "#";
+  nextStepsHeadingEl.textContent =
+    (config.nextSteps && config.nextSteps.heading) || "Next steps";
+  nextStepsBodyEl.textContent =
+    (config.nextSteps && config.nextSteps.body) || "";
+  ctaEl.textContent =
+    (config.nextSteps && config.nextSteps.ctaLabel) || "";
+  ctaEl.href =
+    (config.nextSteps && config.nextSteps.ctaHref) || "#";
 
   // Build severity chart
   function buildChart() {
@@ -353,19 +362,23 @@
       headlineEl.textContent = "Score range missing";
       messageEl.textContent = "This score has no configured message.";
     }
-    let band = { label: "Low", colorVar: "--color-risk-low" };
+    let band = { label: "Good", colorVar: "--color-risk-low" };
     if (total === max) band = { label: "Perfect", colorVar: "--color-risk-min" };
     else if (total <= 10)
       band = { label: "High", colorVar: "--color-risk-high" };
     else if (total <= 20)
       band = { label: "Medium", colorVar: "--color-risk-medium" };
-    else if (total <= 29) band = { label: "Low", colorVar: "--color-risk-low" };
 
     const zoneColor = getComputedStyle(root)
       .getPropertyValue(band.colorVar)
       .trim();
     scoreBandEl.textContent = band.label;
     scoreBandEl.style.backgroundColor = zoneColor;
+
+    const bandKey = band.label.toLowerCase();
+    const bandNotes =
+      (config.nextSteps && config.nextSteps.bandNotes) || {};
+    bandNoteEl.textContent = bandNotes[bandKey] || "";
 
     const counts = {
       0: gapsBySeverity[0].length,
@@ -449,7 +462,7 @@
         "result-message",
         "gaps-title",
         "gaps",
-        "cta",
+        "next-steps",
         "restart",
       ].forEach((id, idx) => {
         const el = document.getElementById(id);
@@ -573,6 +586,7 @@
     messageEl.textContent = "";
     scoreValueEl.textContent = "";
     scoreBandEl.textContent = "";
+    bandNoteEl.textContent = "";
     results.querySelectorAll(".fade-line").forEach((el) =>
       el.classList.remove("show"),
     );

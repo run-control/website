@@ -389,12 +389,8 @@
         background: var(--color-risk-low);
       }
       #gaps-title,
-      #gaps,
-      #cta {
+      #gaps {
         grid-column: 1 / -1;
-      }
-      #cta {
-        justify-self: center;
       }
       .cta-button {
         display: inline-block;
@@ -405,6 +401,20 @@
         border-radius: 999px;
         text-decoration: none;
         text-align: center;
+      }
+      .next-steps {
+        margin-top: 40px;
+        padding-top: 32px;
+        border-top: 1px solid var(--border);
+        text-align: center;
+      }
+      .next-steps h2 {
+        margin: 0 0 12px;
+        color: var(--accent-orange);
+      }
+      .next-steps p {
+        margin: 0 0 12px;
+        color: var(--muted);
       }
       #restart {
         margin-top: 12px;
@@ -494,13 +504,22 @@
           </div>
           <h4 id="gaps-title" class="fade-line" hidden></h4>
           <div id="gaps" class="gaps fade-line" hidden></div>
+        </div>
+        <section
+          id="next-steps"
+          class="next-steps fade-line"
+          aria-labelledby="next-steps-heading"
+        >
+          <h2 id="next-steps-heading"></h2>
+          <p id="band-note"></p>
+          <p id="next-steps-body"></p>
           <a
-            id="cta"
-            class="cta-button fade-line"
+            id="next-steps-cta"
+            class="cta-button"
             target="_blank"
             rel="noopener"
           ></a>
-        </div>
+        </section>
         <button id="restart" type="button" class="fade-line"></button>
       </section>
     </main>
