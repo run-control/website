@@ -66,8 +66,10 @@
   const gapsTitleEl = document.getElementById("gaps-title");
   const gapsEl = document.getElementById("gaps");
   const nextStepsHeadingEl = document.getElementById("next-steps-heading");
-  const bandNoteEl = document.getElementById("band-note");
   const nextStepsBodyEl = document.getElementById("next-steps-body");
+  const nextStepsEncouragementEl = document.getElementById(
+    "next-steps-encouragement"
+  );
   const ctaEl = document.getElementById("next-steps-cta");
   const restartBtn = document.getElementById("restart");
   const scoreValueEl = document.getElementById("score-value");
@@ -93,6 +95,9 @@
     (config.nextSteps && config.nextSteps.heading) || "Next steps";
   nextStepsBodyEl.textContent =
     (config.nextSteps && config.nextSteps.body) || "";
+  nextStepsEncouragementEl.textContent =
+    (config.nextSteps && config.nextSteps.encouragement) ||
+    "You’ve already done the hardest part—getting a clear starting point. A short call can turn this into a practical 30-day plan.";
   ctaEl.textContent =
     (config.nextSteps && config.nextSteps.ctaLabel) || "";
   ctaEl.href =
@@ -375,11 +380,6 @@
     scoreBandEl.textContent = band.label;
     scoreBandEl.style.backgroundColor = zoneColor;
 
-    const bandKey = band.label.toLowerCase();
-    const bandNotes =
-      (config.nextSteps && config.nextSteps.bandNotes) || {};
-    bandNoteEl.textContent = bandNotes[bandKey] || "";
-
     const counts = {
       0: gapsBySeverity[0].length,
       1: gapsBySeverity[1].length,
@@ -586,7 +586,6 @@
     messageEl.textContent = "";
     scoreValueEl.textContent = "";
     scoreBandEl.textContent = "";
-    bandNoteEl.textContent = "";
     results.querySelectorAll(".fade-line").forEach((el) =>
       el.classList.remove("show"),
     );

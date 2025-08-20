@@ -414,7 +414,12 @@
       }
       .next-steps p {
         margin: 0 0 12px;
-        color: var(--muted);
+        color: var(--text);
+      }
+      .next-steps .encouragement {
+        font-weight: 600;
+        margin: 20px 0;
+        color: var(--text);
       }
       #restart {
         margin-top: 12px;
@@ -513,8 +518,8 @@
           aria-labelledby="next-steps-heading"
         >
           <h2 id="next-steps-heading"></h2>
-          <p id="band-note"></p>
           <p id="next-steps-body"></p>
+          <p id="next-steps-encouragement" class="encouragement"></p>
           <a
             id="next-steps-cta"
             class="cta-button"
