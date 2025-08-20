@@ -65,7 +65,12 @@
   const messageEl = document.getElementById("result-message");
   const gapsTitleEl = document.getElementById("gaps-title");
   const gapsEl = document.getElementById("gaps");
-  const ctaEl = document.getElementById("cta");
+  const nextStepsHeadingEl = document.getElementById("next-steps-heading");
+  const nextStepsBodyEl = document.getElementById("next-steps-body");
+  const nextStepsEncouragementEl = document.getElementById(
+    "next-steps-encouragement"
+  );
+  const ctaEl = document.getElementById("next-steps-cta");
   const restartBtn = document.getElementById("restart");
   const scoreValueEl = document.getElementById("score-value");
   const scoreBandEl = document.getElementById("score-band");
@@ -86,8 +91,17 @@
     (config.texts && config.texts.startOver) || "Retake assessment";
   gapsTitleEl.textContent =
     (config.texts && config.texts.gapsTitle) || "Opportunities for improvement";
-  ctaEl.textContent = (config.cta && config.cta.text) || "";
-  ctaEl.href = (config.cta && config.cta.url) || "#";
+  nextStepsHeadingEl.textContent =
+    (config.nextSteps && config.nextSteps.heading) || "Next steps";
+  nextStepsBodyEl.textContent =
+    (config.nextSteps && config.nextSteps.body) || "";
+  nextStepsEncouragementEl.textContent =
+    (config.nextSteps && config.nextSteps.encouragement) ||
+    "You’ve already done the hardest part—getting a clear starting point. A short call can turn this into a practical 30-day plan.";
+  ctaEl.textContent =
+    (config.nextSteps && config.nextSteps.ctaLabel) || "";
+  ctaEl.href =
+    (config.nextSteps && config.nextSteps.ctaHref) || "#";
 
   // Build severity chart
   function buildChart() {
@@ -353,13 +367,12 @@
       headlineEl.textContent = "Score range missing";
       messageEl.textContent = "This score has no configured message.";
     }
-    let band = { label: "Low", colorVar: "--color-risk-low" };
+    let band = { label: "Good", colorVar: "--color-risk-low" };
     if (total === max) band = { label: "Perfect", colorVar: "--color-risk-min" };
     else if (total <= 10)
       band = { label: "High", colorVar: "--color-risk-high" };
     else if (total <= 20)
       band = { label: "Medium", colorVar: "--color-risk-medium" };
-    else if (total <= 29) band = { label: "Low", colorVar: "--color-risk-low" };
 
     const zoneColor = getComputedStyle(root)
       .getPropertyValue(band.colorVar)
@@ -397,7 +410,19 @@
       list.forEach((g) => {
         const li = document.createElement("li");
         li.className = "gap-item";
-        li.textContent = `${g.q} – ${g.a}: ${g.risk || ""}`;
+        const text = document.createElement("div");
+        text.className = "gap-text";
+        const qEl = document.createElement("p");
+        qEl.className = "gap-question";
+        qEl.textContent = g.q;
+        const aEl = document.createElement("p");
+        aEl.className = "gap-answer";
+        aEl.textContent = `Your answer: ${g.a}`;
+        const rEl = document.createElement("p");
+        rEl.className = "gap-explanation";
+        rEl.textContent = `Why it's not optimal: ${g.risk || ""}`;
+        text.append(qEl, aEl, rEl);
+        li.appendChild(text);
         ul.appendChild(li);
       });
       group.appendChild(ul);
@@ -437,7 +462,7 @@
         "result-message",
         "gaps-title",
         "gaps",
-        "cta",
+        "next-steps",
         "restart",
       ].forEach((id, idx) => {
         const el = document.getElementById(id);

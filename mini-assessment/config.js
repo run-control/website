@@ -19,10 +19,6 @@ window.ASSESSMENT_CONFIG = {
     riskLow: "#fdd835",
     riskMin: "#43a047",
   },
-  cta: {
-    text: "Book a free consultation",
-    url: "https://outlook.office.com/book/VectariIntroduction@vectari.co/?ismsaljsauthenabled",
-  },
   texts: {
     seeResults: "See Results",
     next: "Next",
@@ -33,6 +29,15 @@ window.ASSESSMENT_CONFIG = {
     severityMinor: "Minor",
     severityPerfect: "Perfect",
     noGaps: "No immediate gaps detected",
+  },
+  nextSteps: {
+    heading: "Next steps",
+    body: "Ten questions surface themes, not the full picture. If you’d like to walk through any questions or answers—and decide what to tackle first—we’re happy to help.",
+    encouragement:
+      "You’ve already done the hardest part—getting a clear starting point. A short call can turn this into a practical 30-day plan.",
+    ctaLabel: "Book a free consultation",
+    ctaHref:
+      "https://outlook.office.com/book/VectariIntroduction@vectari.co/?ismsaljsauthenabled",
   },
   wizard: {
     autoAdvance: true,
