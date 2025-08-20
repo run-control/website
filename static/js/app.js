@@ -23,4 +23,26 @@ document.addEventListener('DOMContentLoaded', function () {
       item.classList.toggle('active');
     });
   });
+  const scrollIndicator = document.querySelector('.scroll-indicator');
+  if (scrollIndicator) {
+    const nextSection = document.querySelector('#problems');
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    scrollIndicator.addEventListener('click', function () {
+      if (nextSection) {
+        nextSection.scrollIntoView({ behavior: prefersReduced ? 'auto' : 'smooth' });
+      }
+    });
+
+    const toggleIndicator = function () {
+      if (window.scrollY > 10) {
+        scrollIndicator.classList.add('hide');
+      } else {
+        scrollIndicator.classList.remove('hide');
+      }
+    };
+
+    window.addEventListener('scroll', toggleIndicator);
+    toggleIndicator();
+  }
 });

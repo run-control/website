@@ -232,6 +232,74 @@ a:hover {
   margin-bottom: 0.5rem;
 }
 
+/* Scroll indicator at bottom of hero */
+.scroll-indicator {
+  position: absolute;
+  left: 50%;
+  bottom: calc(env(safe-area-inset-bottom) + 1rem);
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  color: #fff;
+  opacity: 0.8;
+  cursor: pointer;
+  transition: opacity 0.3s;
+  min-width: 44px;
+  min-height: 44px;
+}
+.scroll-indicator.hide {
+  opacity: 0;
+  pointer-events: none;
+}
+.scroll-indicator .mouse {
+  width: 24px;
+  height: 40px;
+  border: 2px solid currentColor;
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+}
+.scroll-indicator .wheel {
+  width: 4px;
+  height: 8px;
+  background: currentColor;
+  border-radius: 2px;
+  margin-top: 6px;
+  animation: scroll-wheel 1.5s infinite;
+}
+.scroll-indicator .arrow {
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  animation: scroll-arrow 1.5s infinite;
+}
+.scroll-indicator .scroll-text {
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+@keyframes scroll-wheel {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(6px); }
+}
+
+@keyframes scroll-arrow {
+  0% { opacity: 0; transform: rotate(45deg) translateY(0); }
+  50% { opacity: 1; transform: rotate(45deg) translateY(4px); }
+  100% { opacity: 0; transform: rotate(45deg) translateY(8px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-indicator .wheel,
+  .scroll-indicator .arrow {
+    animation: none;
+  }
+}
+
 .button {
   display: inline-block;
   padding: 0.75rem 1.5rem;
