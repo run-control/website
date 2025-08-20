@@ -397,7 +397,19 @@
       list.forEach((g) => {
         const li = document.createElement("li");
         li.className = "gap-item";
-        li.textContent = `${g.q} – ${g.a}: ${g.risk || ""}`;
+        const text = document.createElement("div");
+        text.className = "gap-text";
+        const qEl = document.createElement("p");
+        qEl.className = "gap-question";
+        qEl.textContent = g.q;
+        const aEl = document.createElement("p");
+        aEl.className = "gap-answer";
+        aEl.textContent = `Your answer: ${g.a}`;
+        const rEl = document.createElement("p");
+        rEl.className = "gap-explanation";
+        rEl.textContent = `Why it's not optimal: ${g.risk || ""}`;
+        text.append(qEl, aEl, rEl);
+        li.appendChild(text);
         ul.appendChild(li);
       });
       group.appendChild(ul);
