@@ -120,12 +120,6 @@
     const g = document.createElementNS(ns, "g");
     g.setAttribute("transform", "rotate(-90 50 50)");
     svg.appendChild(g);
-    const center = document.createElementNS(ns, "text");
-    center.setAttribute("x", "50");
-    center.setAttribute("y", "50");
-    center.setAttribute("text-anchor", "middle");
-    center.setAttribute("class", "donut-center");
-    svg.appendChild(center);
     const legend = document.createElement("ul");
     legend.className = "severity-legend";
     const sliceMap = {};
@@ -159,29 +153,9 @@
       };
     });
     chartContainer.append(svg, legend);
-    return { sliceMap, center, svg };
+    return { sliceMap, svg };
   }
   const chart = buildChart();
-
-  function setCenterLabel(text) {
-    chart.center.textContent = text;
-    chart.center.removeAttribute("transform");
-    let fontSize = chartSettings.size * 0.2;
-    chart.center.style.fontSize = `${fontSize}px`;
-    const max = chartSettings.size - chartSettings.thickness * 2;
-    try {
-      let box = chart.center.getBBox();
-      if (box.width > max) {
-        const scale = max / box.width;
-        chart.center.setAttribute(
-          "transform",
-          `translate(50 50) scale(${scale}) translate(-50 -50)`,
-        );
-      }
-    } catch (e) {
-      /* ignore */
-    }
-  }
 
   // Render questions
   const fieldsets = [];
@@ -311,8 +285,6 @@
       "(prefers-reduced-motion: reduce)",
     ).matches;
     const summaries = [];
-    const totalGaps = (counts[0] || 0) + (counts[1] || 0) + (counts[2] || 0);
-    setCenterLabel(`${totalGaps} gap${totalGaps === 1 ? "" : "s"}`);
     let offset = 0;
     [0, 1, 2, 3].forEach((key) => {
       const info = chart.sliceMap[key];
@@ -602,8 +574,6 @@
       info.legendText.textContent = "";
       info.legendItem.style.display = "none";
     });
-    chart.center.textContent = "";
-    chart.center.removeAttribute("transform");
     chart.svg.removeAttribute("aria-label");
     chart.svg.removeAttribute("role");
     window.scrollTo({ top: 0, behavior: "smooth" });
