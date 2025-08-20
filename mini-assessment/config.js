@@ -33,13 +33,8 @@ window.ASSESSMENT_CONFIG = {
   nextSteps: {
     heading: "Next steps",
     body: "Ten questions surface themes, not the full picture. If you’d like to walk through any questions or answers—and decide what to tackle first—we’re happy to help.",
-    bandNotes: {
-      high: "You have critical gaps—let’s triage the top risks first.",
-      medium: "A few focused improvements will close the biggest exposures.",
-      good: "You’re close—tighten the last gaps to reduce residual risk.",
-      perfect:
-        "Excellent baseline—keep it strong with periodic validation, and let's dive deeper.",
-    },
+    encouragement:
+      "You’ve already done the hardest part—getting a clear starting point. A short call can turn this into a practical 30-day plan.",
     ctaLabel: "Book a free consultation",
     ctaHref:
       "https://outlook.office.com/book/VectariIntroduction@vectari.co/?ismsaljsauthenabled",
