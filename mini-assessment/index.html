@@ -196,7 +196,7 @@
       .results-content {
         display: grid;
         grid-template-columns: 1fr;
-        justify-items: center;
+        justify-items: stretch;
         align-items: flex-start;
         gap: 20px;
         margin-top: 20px;
@@ -227,6 +227,7 @@
         align-items: center;
         justify-content: center;
         gap: 8px;
+        justify-self: center;
       }
       .severity-donut {
         width: var(--donut-size);
@@ -243,9 +244,9 @@
         padding: 0;
         margin: 0;
         display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 8px;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
         font-size: 0.75rem;
       }
       .severity-legend li {
@@ -338,6 +339,20 @@
         opacity: 0;
         transition: opacity 0.4s ease-in;
       }
+      .gap-text p {
+        margin: 0;
+      }
+      .gap-text p + p {
+        margin-top: 4px;
+      }
+      .gap-question {
+        font-weight: 600;
+      }
+      .gap-answer,
+      .gap-explanation {
+        color: var(--muted);
+        font-size: 0.875rem;
+      }
       .gap-item::before {
         content: "";
         width: 6px;
@@ -372,6 +387,14 @@
       }
       .severity-2 .gap-item::before {
         background: var(--color-risk-low);
+      }
+      #gaps-title,
+      #gaps,
+      #cta {
+        grid-column: 1 / -1;
+      }
+      #cta {
+        justify-self: center;
       }
       .cta-button {
         display: inline-block;
@@ -468,15 +491,15 @@
             </div>
             <h3 id="result-headline" class="fade-line"></h3>
             <p id="result-message" class="fade-line"></p>
-            <h4 id="gaps-title" class="fade-line" hidden></h4>
-            <div id="gaps" class="gaps fade-line" hidden></div>
-            <a
-              id="cta"
-              class="cta-button fade-line"
-              target="_blank"
-              rel="noopener"
-            ></a>
           </div>
+          <h4 id="gaps-title" class="fade-line" hidden></h4>
+          <div id="gaps" class="gaps fade-line" hidden></div>
+          <a
+            id="cta"
+            class="cta-button fade-line"
+            target="_blank"
+            rel="noopener"
+          ></a>
         </div>
         <button id="restart" type="button" class="fade-line"></button>
       </section>
