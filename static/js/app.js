@@ -34,15 +34,28 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
 
-    const toggleIndicator = function () {
-      if (window.scrollY > 10) {
+    let lastKnownScrollY = 0;
+    let ticking = false;
+
+    const updateIndicator = function () {
+      if (lastKnownScrollY > 10) {
         scrollIndicator.classList.add('hide');
       } else {
         scrollIndicator.classList.remove('hide');
       }
+      ticking = false;
     };
 
-    window.addEventListener('scroll', toggleIndicator);
-    toggleIndicator();
+    const onScroll = function () {
+      lastKnownScrollY = window.scrollY;
+      if (!ticking) {
+        window.requestAnimationFrame(updateIndicator);
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    lastKnownScrollY = window.scrollY;
+    updateIndicator();
   }
 });
