@@ -796,3 +796,20 @@ a:hover {
   color: #d1d5db;
   margin-bottom: 2rem;
 }
+/* Overrides merged from overrides.css */
+
+/* Use a solid black background across the page */
+html { background: #000 !important; }
+body { background: #000 !important; }
+
+/* Remove global pseudo-overlays */
+html::after, body::after { content: none !important; display: none !important; background: none !important; opacity: 0 !important; }
+
+/* Tame hero/light tints */
+section.hero, .hero,
+section.hero::before, .hero::before,
+section.hero::after, .hero::after,
+.section.bg-light, .section[class*="bg-light"] {
+  background: transparent !important;
+  background-image: none !important;
+}
