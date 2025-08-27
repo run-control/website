@@ -38,6 +38,11 @@
 
   const slides = [...root.querySelectorAll(".slide")];
 
+  let maxScroll = root.scrollWidth - root.clientWidth;
+  window.addEventListener('resize', () => {
+    maxScroll = root.scrollWidth - root.clientWidth;
+  });
+
   // Toggle expanded state and pause while open
   function closeAll(){
     slides.forEach(s => {
@@ -78,7 +83,7 @@
   function tick(){
     if(!paused){
       root.scrollLeft += speed;
-      if(root.scrollLeft >= root.scrollWidth - root.clientWidth - 1){
+      if(root.scrollLeft >= maxScroll - 1){
         root.scrollLeft = 0;
       }
     }
@@ -99,18 +104,18 @@
   let isDown = false;
   let startX = 0;
   let startScroll = 0;
+  let rect;
 
   function down(clientX){
     pauseCarousel();
     isDown = true;
     root.classList.add("dragging");
-    const rect = root.getBoundingClientRect();
+    rect = root.getBoundingClientRect();
     startX = clientX - rect.left;
     startScroll = root.scrollLeft;
   }
   function move(clientX){
     if(!isDown) return;
-    const rect = root.getBoundingClientRect();
     const x = clientX - rect.left;
     const walk = (x - startX) * 1.6; // drag speed multiplier
     root.scrollLeft = startScroll - walk;
@@ -118,6 +123,7 @@
   function up(){
     if(!isDown) return;
     isDown = false;
+    rect = null;
     root.classList.remove("dragging");
     delayedResume();
   }
