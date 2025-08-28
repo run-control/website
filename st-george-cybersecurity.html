@@ -5,11 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cybersecurity in St. George, Utah – Vectari</title>
     <link rel="icon" type="image/png" href="static/assets/logo.png" />
-    <link rel="stylesheet" href="static/css/styles.css" />
-    <link
-      rel="canonical"
-      href="https://vectari.co/st-george-cybersecurity.html"
-    />
+      <link rel="stylesheet" href="static/css/styles.css" />
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+      />
+      <link
+        rel="canonical"
+        href="https://vectari.co/st-george-cybersecurity.html"
+      />
     <link
       rel="preconnect"
       href="https://www.googletagmanager.com"
@@ -111,6 +115,7 @@
         background: transparent;
         color: var(--color-orange);
       }
+
       .section {
         text-align: center;
       }
@@ -162,8 +167,26 @@
           loading="lazy"
           referrerpolicy="no-referrer-when-downgrade"
         ></iframe>
+        <div class="image-carousel swiper">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1502590464437-9221c9bed8ba" alt="Zion National Park" /></div>
+            <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1517562469536-f0b52d5be27e" alt="Bryce Canyon" /></div>
+            <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1533327340197-8c594fa28c2c" alt="Snow Canyon" /></div>
+          </div>
+          <div class="swiper-pagination"></div>
+          <div class="swiper-button-prev"></div>
+          <div class="swiper-button-next"></div>
+        </div>
         <p><a href="/">Back to home</a></p>
       </section>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+      new Swiper('.image-carousel', {
+        loop: true,
+        pagination: { el: '.swiper-pagination', clickable: true },
+        navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' }
+      });
+    </script>
   </body>
 </html>
