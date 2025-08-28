@@ -698,12 +698,13 @@
         </div>
         <div class="footer-column">
           <h4>Service Areas</h4>
-          <ul>
-            <li><a href="/st-george-cybersecurity.html">Cybersecurity in St. George, UT (HQ)</a></li>
-            <li><a href="/locations/washington-dc/">Cybersecurity in Washington, D.C.</a></li>
-            <li><a href="/locations/seattle/">Cybersecurity in Seattle, WA</a></li>
-            <li><a href="/locations/las-vegas/">Cybersecurity in Las Vegas, NV</a></li>
-          </ul>
+          <select id="footer-service-area" aria-label="Select service area" onchange="if(this.value) window.location.href=this.value;">
+            <option value="">Choose a location</option>
+            <option value="/st-george-cybersecurity.html">St. George, UT (HQ)</option>
+            <option value="/locations/washington-dc/">Washington, D.C.</option>
+            <option value="/locations/seattle/">Seattle, WA</option>
+            <option value="/locations/las-vegas/">Las Vegas, NV</option>
+          </select>
         </div>
         <div class="footer-column">
           <h4>Get in touch</h4>
