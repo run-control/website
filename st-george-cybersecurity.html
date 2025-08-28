@@ -22,6 +22,9 @@
     </script>
     <style>
       :root {
+        --color-navy: #00172c;
+        --color-blue: #0076d1;
+        --color-teal: #10b5a6;
         --color-orange: #ff6a3d;
         --font-family: "Inter", sans-serif;
       }
@@ -38,7 +41,7 @@
         background: #000;
       }
       a {
-        color: #0076d1;
+        color: var(--color-blue);
         text-decoration: none;
       }
       a:hover {
@@ -87,38 +90,136 @@
       .nav-links a:hover {
         opacity: 0.8;
       }
-      .cta-button {
+      .cta-button,
+      .button.primary {
         display: inline-block;
-        padding: 0.5rem 1rem;
+        padding: 0.75rem 1.5rem;
         border-radius: 9999px;
         background: var(--color-orange);
         color: #fff;
         font-weight: 600;
-        font-size: 0.85rem;
+        font-size: 0.9rem;
         border: 2px solid var(--color-orange);
-        transition: background 0.2s;
+        transition: all 0.2s;
       }
-      .cta-button:hover {
+      .cta-button:hover,
+      .button.primary:hover {
         background: transparent;
         color: var(--color-orange);
       }
+      .overlay {
+        color: #fff;
+      }
       .section {
+        padding: 0 1rem 40px;
         text-align: center;
-        padding: 2rem 1rem;
       }
       .section h2 {
-        margin-bottom: 1rem;
+        margin: 40px 0;
+        color: var(--color-orange);
+        font-size: clamp(1.5rem, 4vw, 2rem);
       }
-      ul {
-        list-style-position: inside;
-        padding-left: 0;
+      .section p {
+        margin: 0 0 20px;
+      }
+      .cards {
+        list-style: none;
+        padding: 0;
         margin: 0 auto;
-        max-width: 600px;
+        display: grid;
+        gap: 1.5rem;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        max-width: 1200px;
+      }
+      .cards li {
+        display: flex;
+      }
+      .cards article {
+        background: transparent;
+        border: 1px solid #1f2430;
+        border-radius: 16px;
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+        position: relative;
+        overflow: hidden;
+        transition: box-shadow 0.3s, transform 0.3s;
+        flex: 1;
+      }
+      .cards article::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        padding: 1px;
+        border-radius: inherit;
+        background: conic-gradient(var(--color-navy), var(--color-blue), var(--color-orange), var(--color-navy));
+        -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+      }
+      .cards svg {
+        width: 32px;
+        height: 32px;
+        color: var(--color-blue);
+      }
+      .cards h3 {
+        margin: 0;
+        color: var(--color-orange);
+        font-size: 1.1rem;
+      }
+      .cards p {
+        margin: 0;
+      }
+      .cards article:hover {
+        box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.6), 0 0 8px 2px var(--color-blue);
+        transform: translateY(-4px);
+      }
+      .location-hero {
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        min-height: 60vh;
+        padding: 4rem 1rem;
+      }
+      .location-hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(0, 118, 209, 0.5), rgba(16, 181, 166, 0.5));
+        z-index: -1;
+      }
+      .location-hero h1 {
+        margin: 0 0 20px;
+        color: #fff;
+        font-size: clamp(2rem, 5vw, 3rem);
+      }
+      .location-hero p {
+        margin: 0 0 20px;
+        color: #e5e7eb;
+        font-size: 1.125rem;
+      }
+      .map-card {
+        max-width: 800px;
+        margin: 0 auto;
+        border: 1px solid var(--color-teal);
+        border-radius: 16px;
+        overflow: hidden;
+      }
+      .map-card iframe {
+        width: 100%;
+        height: 400px;
+        border: 0;
       }
       footer {
         text-align: center;
-        padding: 2rem 1rem;
-        color: #fff;
+        padding: 40px 1rem;
       }
     </style>
   </head>
@@ -146,70 +247,161 @@
         </div>
       </header>
 
-      <section class="section">
-        <h1>Vectari – Cybersecurity Services in St. George, Utah</h1>
-        <p>
-          Vectari is headquartered in St. George, Utah, delivers enterprise-grade
-          cybersecurity services locally, and serves clients nationwide.
-        </p>
-      </section>
-
-      <section class="section">
-        <h2>Cybersecurity in St. George, Utah</h2>
-        <p>
-          Our team lives and works in St. George, providing tailored protection
-          for local industries such as CPAs, healthcare providers, and SaaS
-          companies.
-        </p>
+      <section class="location-hero">
+        <div class="hero-content">
+          <h1>Cybersecurity Services in St. George, Utah</h1>
+          <p>
+            Vectari is headquartered in St. George, delivering enterprise-grade
+            cybersecurity locally and nationwide.
+          </p>
+        </div>
       </section>
 
       <section class="section">
         <h2>Local Expertise, National Reach</h2>
-        <ul>
-          <li>Rooted in southern Utah with a dedicated local team.</li>
-          <li>Delivering enterprise-grade solutions to clients across the U.S.</li>
+        <ul class="cards">
+          <li>
+            <article>
+              <!-- map-pin icon -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+              <h3>Local roots</h3>
+              <p>Our team lives and works in southern Utah.</p>
+            </article>
+          </li>
+          <li>
+            <article>
+              <!-- globe icon -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="2" y1="12" x2="22" y2="12"/>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+              </svg>
+              <h3>National reach</h3>
+              <p>Enterprise-grade solutions for clients across the U.S.</p>
+            </article>
+          </li>
         </ul>
       </section>
 
       <section class="section">
         <h2>Our Services</h2>
-        <ul>
-          <li>Risk assessments</li>
-          <li>Compliance readiness</li>
-          <li>Fractional CISO</li>
-          <li>MSP services</li>
-          <li>Vendor risk automation</li>
+        <ul class="cards">
+          <li>
+            <article>
+              <!-- shield icon -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+              <h3>Risk Assessments</h3>
+            </article>
+          </li>
+          <li>
+            <article>
+              <!-- checklist icon -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M9 11l3 3L22 4"/>
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+              </svg>
+              <h3>Compliance Readiness</h3>
+            </article>
+          </li>
+          <li>
+            <article>
+              <!-- user-tie icon -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="7" r="4"/>
+                <path d="M4 21v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2"/>
+                <path d="M12 11v4"/>
+                <path d="M10 15l2 3 2-3"/>
+              </svg>
+              <h3>Fractional CISO</h3>
+            </article>
+          </li>
+          <li>
+            <article>
+              <!-- settings/gear icon -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 8.6 19a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.09a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.09a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+              </svg>
+              <h3>MSP Services</h3>
+            </article>
+          </li>
+          <li>
+            <article>
+              <!-- link-check icon -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M15 7h3a5 5 0 0 1 0 10h-3"/>
+                <path d="M9 17H6a5 5 0 0 1 0-10h3"/>
+                <path d="M8 12h8"/>
+                <polyline points="16 18 18 20 22 16"/>
+              </svg>
+              <h3>Vendor Risk Automation</h3>
+            </article>
+          </li>
         </ul>
       </section>
 
       <section class="section">
         <h2>Why Southern Utah Businesses Choose Vectari</h2>
-        <ul>
-          <li>Local presence in St. George</li>
-          <li>Enterprise cybersecurity expertise</li>
-          <li>Scalable solutions that grow with your business</li>
+        <ul class="cards">
+          <li>
+            <article>
+              <!-- map-pin icon -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+              <h3>Local presence in St. George</h3>
+            </article>
+          </li>
+          <li>
+            <article>
+              <!-- shield icon -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+              <h3>Enterprise cybersecurity expertise</h3>
+            </article>
+          </li>
+          <li>
+            <article>
+              <!-- trending-up icon -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+                <polyline points="17 6 23 6 23 12"/>
+              </svg>
+              <h3>Scalable solutions that grow with you</h3>
+            </article>
+          </li>
         </ul>
+        <a
+          href="https://outlook.office.com/book/VectariIntroduction@vectari.co/?ismsaljsauthenabled"
+          class="button primary"
+          >Schedule a Call</a
+        >
       </section>
 
       <section class="section">
-        <h2>Visit Us</h2>
-        <p>Vectari LLC<br />St. George, Utah</p>
-        <iframe
-          src="https://www.google.com/maps?q=St+George,+UT&output=embed"
-          width="600"
-          height="450"
-          style="border: 0"
-          allowfullscreen=""
-          loading="lazy"
-          referrerpolicy="no-referrer-when-downgrade"
-        ></iframe>
+        <h2>Visit Us in St. George, Utah</h2>
+        <div class="map-card">
+          <iframe
+            src="https://www.google.com/maps?q=St+George,+UT&output=embed"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+          ></iframe>
+        </div>
       </section>
 
       <section class="section">
         <h2>Ready to Secure Your Business?</h2>
         <a
           href="https://outlook.office.com/book/VectariIntroduction@vectari.co/?ismsaljsauthenabled"
-          class="cta-button"
+          class="button primary"
           >Schedule a Call</a
         >
       </section>
