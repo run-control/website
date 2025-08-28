@@ -1,16 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Regenerate or manually update this sitemap whenever pages change -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://vectari.co/</loc>
   </url>
   <url>
     <loc>https://vectari.co/mini-assessment/</loc>
-  </url>
-  <url>
-    <loc>https://vectari.co/thank-you.html</loc>
-  </url>
-  <url>
-    <loc>https://vectari.co/thank-you-booking.html</loc>
   </url>
   <url>
     <loc>https://vectari.co/st-george-cybersecurity.html</loc>
