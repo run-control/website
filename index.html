@@ -77,6 +77,7 @@
       <option>Identity &amp; Access</option>
       <option>Application &amp; Cloud Security</option>
     </select>
+          <p><a href="/locations/">View all locations</a></p>
     <textarea name="message"></textarea>
   </form>
   <script defer src="static/js/app.js"></script>
@@ -697,11 +698,21 @@
           </ul>
         </div>
         <div class="footer-column">
+          <h4>Service Areas</h4>
+          <select id="footer-service-area" aria-label="Service Areas" onchange="if(this.value) window.location.href=this.value;">
+            <option value="">Choose a location</option>
+            <option value="/locations/st-george/">St. George, UT (HQ)</option>
+            <option value="/locations/washington-dc/">Washington, D.C.</option>
+            <option value="/locations/seattle/">Seattle, WA</option>
+            <option value="/locations/las-vegas/">Las Vegas, NV</option>
+          </select>
+            <p><a href="/locations/">View all locations</a></p>
+        </div>
+        <div class="footer-column">
           <h4>Get in touch</h4>
           <p>info@vectari.co</p>
           <p>(301) 246‑0601</p>
-          <p>St. George, Utah • Serving clients across the United States</p>
-          <p><a href="/st-george-cybersecurity.html">Cybersecurity in St. George</a></p>
+          <p>Headquarters: St. George, Utah • Serving clients across the United States</p>
           <p><a href="/privacy-policy.html">Privacy Policy</a> · <a href="/terms.html">Terms</a></p>
         </div>
       </div>

@@ -8,7 +8,19 @@
     <loc>https://vectari.co/mini-assessment/</loc>
   </url>
   <url>
-    <loc>https://vectari.co/st-george-cybersecurity.html</loc>
+    <loc>https://vectari.co/locations/</loc>
+  </url>
+  <url>
+    <loc>https://vectari.co/locations/st-george/</loc>
+  </url>
+  <url>
+    <loc>https://vectari.co/locations/washington-dc/</loc>
+  </url>
+  <url>
+    <loc>https://vectari.co/locations/seattle/</loc>
+  </url>
+  <url>
+    <loc>https://vectari.co/locations/las-vegas/</loc>
   </url>
   <url>
     <loc>https://vectari.co/privacy-policy.html</loc>
@@ -17,4 +29,3 @@
     <loc>https://vectari.co/terms.html</loc>
   </url>
 </urlset>
-
