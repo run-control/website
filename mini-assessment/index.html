@@ -71,7 +71,7 @@
       .nav-brand {
         display: flex;
         flex-direction: column;
-        align-items: flex-start;
+        align-items: center;
         justify-content: center;
       }
       .nav-brand .logo-full {
@@ -88,6 +88,7 @@
         color: #999;
         text-decoration: none;
         margin-top: 4px;
+        text-align: center;
       }
       .nav-cta {
         background: var(--accent-orange);
@@ -365,7 +366,8 @@
         margin: 32px 0;
       }
       #guidance {
-        background: #f9fafb;
+        background: var(--surface);
+        color: var(--text);
       }
       .info-block h2 {
         font-size: 20px;
@@ -598,9 +600,8 @@
         background: var(--header-navy);
         color: #eee;
         display: flex;
-        justify-content: space-between;
+        justify-content: center;
         align-items: center;
-        padding: 0 16px;
         height: 60px;
         box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.3);
         transform: translateY(100%);
@@ -612,8 +613,15 @@
         transform: translateY(0);
         opacity: 1;
       }
+      .cta-inner {
+        width: 100%;
+        max-width: 960px;
+        padding: 0 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
       .cta-bar .cta-text {
-        margin-right: 16px;
         font-size: 14px;
         white-space: nowrap;
       }
@@ -734,14 +742,16 @@
       </section>
     </main>
     <div id="sticky-cta" class="cta-bar">
-      <span class="cta-text">Free Expert Review — fix your top risks fast.</span>
-      <a
-        id="sticky-cta-button"
-        class="cta-button"
-        target="_blank"
-        rel="noopener"
-        >Book Now</a
-      >
+      <div class="cta-inner">
+        <span class="cta-text">Free Expert Review — fix your top risks fast.</span>
+        <a
+          id="sticky-cta-button"
+          class="cta-button"
+          target="_blank"
+          rel="noopener"
+          >Book Now</a
+        >
+      </div>
     </div>
     <script defer src="config.js"></script>
     <script defer src="app.js"></script>
