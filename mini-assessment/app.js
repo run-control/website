@@ -74,7 +74,6 @@
   const navCta = document.getElementById("nav-cta");
   const stickyBar = document.getElementById("sticky-cta");
   const stickyCtaBtn = document.getElementById("sticky-cta-button");
-  const scoreBlock = document.getElementById("score-block");
   const assessmentHeading = document.querySelector(".assessment-heading");
   const assessmentNote = document.querySelector(".assessment-note");
   let stickyObserver;
@@ -514,16 +513,16 @@
 
     stickyObserver = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          stickyBar.classList.remove("show");
-          header.classList.remove("hidden");
-        } else {
+        if (entry.isIntersecting || entry.boundingClientRect.top < 0) {
           stickyBar.classList.add("show");
           header.classList.add("hidden");
+        } else {
+          stickyBar.classList.remove("show");
+          header.classList.remove("hidden");
         }
       });
     });
-    stickyObserver.observe(scoreBlock);
+    stickyObserver.observe(gapsTitleEl);
 
     const track = (loc) => {
       if (window.dataLayer) {
