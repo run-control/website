@@ -99,7 +99,7 @@
     li.textContent = item;
     nextStepsListEl.appendChild(li);
   });
-  ctaEl.textContent =
+  ctaEl.innerHTML =
     (config.nextSteps && config.nextSteps.ctaLabel) || "";
   ctaEl.href =
     (config.nextSteps && config.nextSteps.ctaHref) || "#";
