@@ -49,7 +49,7 @@ window.ASSESSMENT_CONFIG = {
     history: true,
   },
   chart: {
-    size: 160,
+    size: 220,
     thickness: 35,
   },
   ranges: [

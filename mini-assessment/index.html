@@ -498,7 +498,7 @@
         }
       }
       .gaps {
-        margin-top: 16px;
+        margin: 32px 0;
       }
       .gap-group + .gap-group {
         margin-top: 16px;
@@ -570,12 +570,11 @@
       .severity-2 .gap-item::before {
         background: var(--color-risk-low);
       }
-      #gaps-title,
       #gaps {
         grid-column: 1 / -1;
       }
       #gaps-title {
-        margin: 48px 0 16px;
+        margin: 0 0 12px;
         padding-bottom: 8px;
         border-bottom: 1px solid #ddd;
         font-size: 18px;
@@ -606,6 +605,9 @@
       }
       #results {
         padding-bottom: 72px;
+      }
+      #results:focus {
+        outline: none;
       }
       .cta-bar {
         position: fixed;
@@ -762,8 +764,9 @@
           </ul>
           <p class="reassurance">No pitch — your results stay private.</p>
         </section>
-        <h4 id="gaps-title" class="fade-line" hidden></h4>
-        <div id="gaps" class="gaps fade-line" hidden></div>
+        <div id="gaps" class="gaps info-block fade-line" hidden>
+          <h4 id="gaps-title" class="fade-line" hidden></h4>
+        </div>
         <button id="restart" type="button" class="fade-line"></button>
       </section>
     </main>
