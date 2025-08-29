@@ -61,19 +61,19 @@
   const progressText = document.getElementById("progress-text");
   const progressBar = document.getElementById("progress-bar");
   const results = document.getElementById("results");
-  const headlineEl = document.getElementById("result-headline");
   const messageEl = document.getElementById("result-message");
   const gapsTitleEl = document.getElementById("gaps-title");
   const gapsEl = document.getElementById("gaps");
-  const nextStepsHeadingEl = document.getElementById("next-steps-heading");
-  const nextStepsBodyEl = document.getElementById("next-steps-body");
-  const nextStepsListEl = document.getElementById("next-steps-list");
-  const ctaEl = document.getElementById("next-steps-cta");
   const restartBtn = document.getElementById("restart");
   const scoreValueEl = document.getElementById("score-value");
-  const scoreBandEl = document.getElementById("score-band");
+  const scoreGradeEl = document.getElementById("score-grade");
   const chartContainer = document.getElementById("severity-chart");
   const selectionLive = document.getElementById("selection-live");
+  const navCta = document.getElementById("nav-cta");
+  const stickyBar = document.getElementById("sticky-cta");
+  const stickyCtaBtn = document.getElementById("sticky-cta-button");
+  const scoreBlock = document.getElementById("score-block");
+  let stickyObserver;
 
   const wizard = config.wizard || {};
   const autoAdvance = !!wizard.autoAdvance;
@@ -85,24 +85,16 @@
 
   if (autoAdvance) nextBtn.style.display = "none";
 
+  const header = document.querySelector(".navbar");
+  window.addEventListener("scroll", () => {
+    if (window.scrollY > 0) header.classList.add("scrolled");
+    else header.classList.remove("scrolled");
+  });
+
   restartBtn.textContent =
     (config.texts && config.texts.startOver) || "Retake assessment";
   gapsTitleEl.textContent =
     (config.texts && config.texts.gapsTitle) || "Opportunities for improvement";
-  nextStepsHeadingEl.textContent =
-    (config.nextSteps && config.nextSteps.heading) || "Next steps";
-  let nextStepsBodyTemplate =
-    (config.nextSteps && config.nextSteps.body) || "";
-  const nextStepsItems = (config.nextSteps && config.nextSteps.items) || [];
-  nextStepsItems.forEach((item) => {
-    const li = document.createElement("li");
-    li.textContent = item;
-    nextStepsListEl.appendChild(li);
-  });
-  ctaEl.innerHTML =
-    (config.nextSteps && config.nextSteps.ctaLabel) || "";
-  ctaEl.href =
-    (config.nextSteps && config.nextSteps.ctaHref) || "#";
 
   // Build severity chart
   function buildChart() {
@@ -328,7 +320,7 @@
       "(prefers-reduced-motion: reduce)",
     ).matches;
     if (prefers) {
-      scoreValueEl.textContent = `${total}/${max}`;
+      scoreValueEl.textContent = `${total}`;
       return;
     }
     const start = performance.now();
@@ -336,7 +328,7 @@
     function step(now) {
       const p = Math.min((now - start) / duration, 1);
       const val = Math.round(p * total);
-      scoreValueEl.textContent = `${val}/${max}`;
+      scoreValueEl.textContent = `${val}`;
       if (p < 1) requestAnimationFrame(step);
     }
     requestAnimationFrame(step);
@@ -358,32 +350,34 @@
     });
     const max = fieldsets.length * 3;
     scoreValueEl.setAttribute("aria-label", `Score ${total} out of ${max}`);
-    nextStepsBodyEl.textContent = nextStepsBodyTemplate.replace(
-      "{{score}}",
-      `${total}/${max}`,
-    );
     const range =
       config.ranges &&
       config.ranges.find((r) => total >= r.min && total <= r.max);
     if (range) {
-      headlineEl.textContent = range.title;
       messageEl.textContent = range.message;
     } else {
-      headlineEl.textContent = "Score range missing";
       messageEl.textContent = "This score has no configured message.";
     }
-    let band = { label: "Good", colorVar: "--color-risk-low" };
-    if (total === max) band = { label: "Perfect", colorVar: "--color-risk-min" };
-    else if (total <= 10)
-      band = { label: "High", colorVar: "--color-risk-high" };
-    else if (total <= 20)
-      band = { label: "Medium", colorVar: "--color-risk-medium" };
+    let grade = "Good";
+    if (total === max) grade = "Perfect";
+    else if (total <= 10) grade = "Poor";
+    else if (total <= 20) grade = "Fair";
+    scoreGradeEl.textContent = grade;
 
-    const zoneColor = getComputedStyle(root)
-      .getPropertyValue(band.colorVar)
-      .trim();
-    scoreBandEl.textContent = band.label;
-    scoreBandEl.style.backgroundColor = zoneColor;
+    const baseHref =
+      (config.nextSteps && config.nextSteps.ctaHref) || "#";
+    const buildLink = (content) => {
+      const url = new URL(baseHref);
+      url.searchParams.set("utm_source", "meta");
+      url.searchParams.set("utm_medium", "ads");
+      url.searchParams.set("utm_campaign", "quiz");
+      url.searchParams.set("utm_content", content);
+      url.searchParams.set("score", total);
+      url.searchParams.set("grade", grade);
+      return url.toString();
+    };
+    navCta.href = buildLink("nav_top");
+    stickyCtaBtn.href = buildLink("sticky_bar");
 
     const counts = {
       0: gapsBySeverity[0].length,
@@ -457,17 +451,14 @@
       "(prefers-reduced-motion: reduce)",
     ).matches;
     card.classList.add("show");
-    const scoreLines = results.querySelectorAll(
-      ".score-heading, .score-row",
-    );
+    const scoreLines = results.querySelectorAll(".score-heading, #severity-chart");
     scoreLines.forEach((el) => el.classList.add("show"));
     const revealRest = () => {
       [
-        "result-headline",
         "result-message",
         "gaps-title",
         "gaps",
-        "next-steps",
+        "guidance",
         "restart",
       ].forEach((id, idx) => {
         const el = document.getElementById(id);
@@ -486,7 +477,7 @@
     };
     if (prefers) {
       renderChart(counts, false);
-      scoreValueEl.textContent = `${total}/${max}`;
+      scoreValueEl.textContent = `${total}`;
       revealRest();
     } else {
       setTimeout(() => {
@@ -509,6 +500,27 @@
       url.searchParams.set("step", "results");
       history.pushState({ step: "results" }, "", url);
     }
+
+    stickyObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          stickyBar.classList.remove("show");
+          navCta.classList.remove("hidden");
+        } else {
+          stickyBar.classList.add("show");
+          navCta.classList.add("hidden");
+        }
+      });
+    });
+    stickyObserver.observe(scoreBlock);
+
+    const track = (loc) => {
+      if (window.dataLayer) {
+        window.dataLayer.push({ event: "cta_click", location: loc });
+      }
+    };
+    navCta.addEventListener("click", () => track("nav_top"));
+    stickyCtaBtn.addEventListener("click", () => track("sticky_bottom"));
   }
 
   function gotoNext() {
@@ -587,10 +599,9 @@
     progress.hidden = false;
     results.hidden = true;
     gapsEl.innerHTML = "";
-    headlineEl.textContent = "";
     messageEl.textContent = "";
     scoreValueEl.textContent = "";
-    scoreBandEl.textContent = "";
+    scoreGradeEl.textContent = "";
     results.querySelectorAll(".fade-line").forEach((el) =>
       el.classList.remove("show"),
     );
@@ -606,6 +617,9 @@
     });
     chart.svg.removeAttribute("aria-label");
     chart.svg.removeAttribute("role");
+    stickyBar.classList.remove("show");
+    navCta.classList.remove("hidden");
+    if (stickyObserver) stickyObserver.disconnect();
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
 })();
