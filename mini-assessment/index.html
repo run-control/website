@@ -42,11 +42,17 @@
         top: 0;
         background: var(--header-navy);
         z-index: 100;
-        transition: box-shadow 0.2s ease;
+        transition: box-shadow 0.2s ease, opacity 0.2s ease,
+          transform 0.2s ease;
         height: 60px;
       }
       .navbar.scrolled {
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+      .navbar.hidden {
+        opacity: 0;
+        transform: translateY(-8px);
+        pointer-events: none;
       }
       @media (min-width: 768px) {
         .navbar {
@@ -291,19 +297,24 @@
         padding-bottom: 16px;
       }
       #severity-chart {
-        position: relative;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         margin: 0 auto;
       }
+      .chart-holder {
+        position: relative;
+        width: var(--donut-size);
+        height: var(--donut-size);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
       .score-overlay {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
         text-align: center;
+        margin-top: 16px;
       }
       #score-value {
         font-size: 36px;
@@ -322,6 +333,13 @@
         }
         #score-grade {
           font-size: 16px;
+        }
+        .score-overlay {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          margin-top: 0;
         }
       }
       #result-message {
@@ -345,6 +363,9 @@
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         padding: 24px 20px;
         margin: 32px 0;
+      }
+      #guidance {
+        background: #f9fafb;
       }
       .info-block h2 {
         font-size: 20px;
@@ -680,9 +701,11 @@
         <div id="score-block" class="results-content">
           <h2 class="score-heading fade-line">Your Cybersecurity Risk Score</h2>
           <div id="severity-chart" class="fade-line">
-            <div class="score-overlay">
-              <span id="score-value"></span>
-              <span id="score-grade" class="score-grade"></span>
+            <div class="chart-holder">
+              <div class="score-overlay">
+                <span id="score-value"></span>
+                <span id="score-grade" class="score-grade"></span>
+              </div>
             </div>
           </div>
           <p id="result-message" class="fade-line"></p>

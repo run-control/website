@@ -68,6 +68,8 @@
   const scoreValueEl = document.getElementById("score-value");
   const scoreGradeEl = document.getElementById("score-grade");
   const chartContainer = document.getElementById("severity-chart");
+  const chartHolder = chartContainer.querySelector(".chart-holder");
+  const scoreOverlay = chartHolder.querySelector(".score-overlay");
   const selectionLive = document.getElementById("selection-live");
   const navCta = document.getElementById("nav-cta");
   const stickyBar = document.getElementById("sticky-cta");
@@ -165,7 +167,9 @@
         legendItem: li,
       };
     });
-    chartContainer.append(svg, legend);
+    chartHolder.appendChild(svg);
+    chartHolder.appendChild(scoreOverlay);
+    chartContainer.appendChild(legend);
     return { sliceMap, svg };
   }
   const chart = buildChart();
@@ -512,10 +516,10 @@
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           stickyBar.classList.remove("show");
-          navCta.classList.remove("hidden");
+          header.classList.remove("hidden");
         } else {
           stickyBar.classList.add("show");
-          navCta.classList.add("hidden");
+          header.classList.add("hidden");
         }
       });
     });
@@ -627,7 +631,7 @@
     chart.svg.removeAttribute("aria-label");
     chart.svg.removeAttribute("role");
     stickyBar.classList.remove("show");
-    navCta.classList.remove("hidden");
+    header.classList.remove("hidden");
     if (stickyObserver) stickyObserver.disconnect();
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
