@@ -32,10 +32,14 @@ window.ASSESSMENT_CONFIG = {
   },
   nextSteps: {
     heading: "Next steps",
-    body: "Ten questions surface themes, not the full picture. If you’d like to walk through any questions or answers—and decide what to tackle first—we’re happy to help.",
-    encouragement:
-      "You’ve already done the hardest part—getting a clear starting point. A short call can turn this into a practical 30-day plan.",
-    ctaLabel: "Book a free consultation",
+    body:
+      "You’ve got a clear starting point - nice work! Your score of {{score}} shows gaps that attackers (and auditors) can exploit. Let’s turn this into action:",
+    items: [
+      "Walk your results with a CISO (free, 30 minutes)",
+      "Get a custom 30-day plan to close your top 3 risks",
+      "Know the exact fixes to prioritize (no fluff, no upsell)",
+    ],
+    ctaLabel: "Turn my score into a 30-day plan!",
     ctaHref:
       "https://outlook.office.com/book/VectariIntroduction@vectari.co/?ismsaljsauthenabled",
   },

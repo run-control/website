@@ -67,9 +67,7 @@
   const gapsEl = document.getElementById("gaps");
   const nextStepsHeadingEl = document.getElementById("next-steps-heading");
   const nextStepsBodyEl = document.getElementById("next-steps-body");
-  const nextStepsEncouragementEl = document.getElementById(
-    "next-steps-encouragement"
-  );
+  const nextStepsListEl = document.getElementById("next-steps-list");
   const ctaEl = document.getElementById("next-steps-cta");
   const restartBtn = document.getElementById("restart");
   const scoreValueEl = document.getElementById("score-value");
@@ -93,11 +91,14 @@
     (config.texts && config.texts.gapsTitle) || "Opportunities for improvement";
   nextStepsHeadingEl.textContent =
     (config.nextSteps && config.nextSteps.heading) || "Next steps";
-  nextStepsBodyEl.textContent =
+  let nextStepsBodyTemplate =
     (config.nextSteps && config.nextSteps.body) || "";
-  nextStepsEncouragementEl.textContent =
-    (config.nextSteps && config.nextSteps.encouragement) ||
-    "You’ve already done the hardest part—getting a clear starting point. A short call can turn this into a practical 30-day plan.";
+  const nextStepsItems = (config.nextSteps && config.nextSteps.items) || [];
+  nextStepsItems.forEach((item) => {
+    const li = document.createElement("li");
+    li.textContent = item;
+    nextStepsListEl.appendChild(li);
+  });
   ctaEl.textContent =
     (config.nextSteps && config.nextSteps.ctaLabel) || "";
   ctaEl.href =
@@ -357,6 +358,10 @@
     });
     const max = fieldsets.length * 3;
     scoreValueEl.setAttribute("aria-label", `Score ${total} out of ${max}`);
+    nextStepsBodyEl.textContent = nextStepsBodyTemplate.replace(
+      "{{score}}",
+      `${total}/${max}`,
+    );
     const range =
       config.ranges &&
       config.ranges.find((r) => total >= r.min && total <= r.max);
