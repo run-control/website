@@ -44,7 +44,7 @@
   }).forEach(([k, v]) => setVar(k, v));
 
   const chartSettings = Object.assign(
-    { size: 160, thickness: 35 },
+    { size: 220, thickness: 35 },
     config.chart || {},
   );
   setVar("--donut-size", `${chartSettings.size}px`);
@@ -73,6 +73,8 @@
   const stickyBar = document.getElementById("sticky-cta");
   const stickyCtaBtn = document.getElementById("sticky-cta-button");
   const scoreBlock = document.getElementById("score-block");
+  const assessmentHeading = document.querySelector(".assessment-heading");
+  const assessmentNote = document.querySelector(".assessment-note");
   let stickyObserver;
 
   const wizard = config.wizard || {};
@@ -444,6 +446,8 @@
     backBtn.style.display = "none";
     progress.hidden = true;
     results.hidden = false;
+    if (assessmentHeading) assessmentHeading.hidden = true;
+    if (assessmentNote) assessmentNote.hidden = true;
     results.scrollIntoView({ behavior: "smooth", block: "start" });
     results.focus();
     const card = results.querySelector(".results-content");
@@ -598,6 +602,8 @@
     backBtn.style.display = "";
     progress.hidden = false;
     results.hidden = true;
+    if (assessmentHeading) assessmentHeading.hidden = false;
+    if (assessmentNote) assessmentNote.hidden = false;
     gapsEl.innerHTML = "";
     messageEl.textContent = "";
     scoreValueEl.textContent = "";
