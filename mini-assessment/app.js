@@ -68,6 +68,8 @@
   const scoreValueEl = document.getElementById("score-value");
   const scoreGradeEl = document.getElementById("score-grade");
   const chartContainer = document.getElementById("severity-chart");
+  const chartHolder = chartContainer.querySelector(".chart-holder");
+  const scoreOverlay = chartHolder.querySelector(".score-overlay");
   const selectionLive = document.getElementById("selection-live");
   const navCta = document.getElementById("nav-cta");
   const stickyBar = document.getElementById("sticky-cta");
@@ -150,18 +152,24 @@
       const swatch = document.createElement("span");
       swatch.className = "swatch";
       swatch.style.backgroundColor = `var(${sev.color})`;
-      const text = document.createElement("span");
-      li.append(swatch, text);
+      const labelEl = document.createElement("span");
+      labelEl.className = "label";
+      labelEl.textContent = sev.label;
+      const countEl = document.createElement("span");
+      countEl.className = "count";
+      li.append(swatch, labelEl, countEl);
       li.style.display = "none";
       legend.appendChild(li);
       sliceMap[sev.key] = {
         circle,
         label: sev.label,
-        legendText: text,
+        legendCount: countEl,
         legendItem: li,
       };
     });
-    chartContainer.append(svg, legend);
+    chartHolder.appendChild(svg);
+    chartHolder.appendChild(scoreOverlay);
+    chartContainer.appendChild(legend);
     return { sliceMap, svg };
   }
   const chart = buildChart();
@@ -299,9 +307,7 @@
       const info = chart.sliceMap[key];
       const count = counts[key] || 0;
       const pct = total ? (count / total) * 100 : 0;
-      info.legendText.textContent = `${info.label} ${count} (${Math.round(
-        pct,
-      )}%)`;
+      info.legendCount.textContent = `${count} (${Math.round(pct)}%)`;
       info.legendItem.style.display = count ? "flex" : "none";
       info.circle.style.transition = !prefers && animate
         ? "stroke-dasharray 1s ease"
@@ -322,7 +328,7 @@
       "(prefers-reduced-motion: reduce)",
     ).matches;
     if (prefers) {
-      scoreValueEl.textContent = `${total}`;
+      scoreValueEl.textContent = `${total}/${max}`;
       return;
     }
     const start = performance.now();
@@ -330,7 +336,7 @@
     function step(now) {
       const p = Math.min((now - start) / duration, 1);
       const val = Math.round(p * total);
-      scoreValueEl.textContent = `${val}`;
+      scoreValueEl.textContent = `${val}/${max}`;
       if (p < 1) requestAnimationFrame(step);
     }
     requestAnimationFrame(step);
@@ -360,10 +366,11 @@
     } else {
       messageEl.textContent = "This score has no configured message.";
     }
-    let grade = "Good";
+    let grade;
     if (total === max) grade = "Perfect";
-    else if (total <= 10) grade = "Poor";
+    else if (total <= 10) grade = "Critical";
     else if (total <= 20) grade = "Fair";
+    else grade = "Good";
     scoreGradeEl.textContent = grade;
 
     const baseHref =
@@ -481,7 +488,7 @@
     };
     if (prefers) {
       renderChart(counts, false);
-      scoreValueEl.textContent = `${total}`;
+      scoreValueEl.textContent = `${total}/${max}`;
       revealRest();
     } else {
       setTimeout(() => {
@@ -509,10 +516,10 @@
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           stickyBar.classList.remove("show");
-          navCta.classList.remove("hidden");
+          header.classList.remove("hidden");
         } else {
           stickyBar.classList.add("show");
-          navCta.classList.add("hidden");
+          header.classList.add("hidden");
         }
       });
     });
@@ -618,13 +625,13 @@
     Object.values(chart.sliceMap).forEach((info) => {
       info.circle.style.transition = "none";
       info.circle.setAttribute("stroke-dasharray", "0 100");
-      info.legendText.textContent = "";
+      info.legendCount.textContent = "";
       info.legendItem.style.display = "none";
     });
     chart.svg.removeAttribute("aria-label");
     chart.svg.removeAttribute("role");
     stickyBar.classList.remove("show");
-    navCta.classList.remove("hidden");
+    header.classList.remove("hidden");
     if (stickyObserver) stickyObserver.disconnect();
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
