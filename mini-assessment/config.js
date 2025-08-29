@@ -39,7 +39,8 @@ window.ASSESSMENT_CONFIG = {
       "Get a custom 30-day plan to close your top 3 risks",
       "Know the exact fixes to prioritize (no fluff, no upsell)",
     ],
-    ctaLabel: "Turn my score into a 30-day plan!",
+    ctaLabel:
+      "Get your top 3 risks fixed in 30 days <small>(free custom plan)</small>",
     ctaHref:
       "https://outlook.office.com/book/VectariIntroduction@vectari.co/?ismsaljsauthenabled",
   },
