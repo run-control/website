@@ -431,10 +431,12 @@
         margin: 0 0 28px;
         color: var(--muted);
       }
-      .next-steps .encouragement {
-        font-weight: 600;
+      .next-steps ul {
+        list-style: disc;
+        padding-left: 20px;
         margin: 0 0 28px;
-        color: var(--text);
+        text-align: left;
+        color: var(--muted);
       }
       .next-steps .cta-button {
         margin-top: 0;
@@ -547,7 +549,7 @@
         >
           <h2 id="next-steps-heading"></h2>
           <p id="next-steps-body"></p>
-          <p id="next-steps-encouragement" class="encouragement"></p>
+          <ul id="next-steps-list"></ul>
           <a
             id="next-steps-cta"
             class="cta-button"
@@ -555,6 +557,7 @@
             rel="noopener"
           ></a>
           <p class="subnote">Your results stay private.</p>
+          <p class="subnote">Limited review slots each week.</p>
         </section>
         <button id="restart" type="button" class="fade-line"></button>
       </section>
