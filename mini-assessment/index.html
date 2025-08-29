@@ -358,13 +358,14 @@
         margin-top: 24px;
       }
       .info-block {
-        background: #f9fafb;
-        color: #111;
+
+        background: var(--surface);
+        color: var(--text);
         border-radius: 12px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        box-shadow: var(--shadow), 0 0 0 var(--stroke-inner) var(--stroke-white) inset;
         padding: 24px 20px;
         margin: 32px 0;
-        transition: background-color 0.2s ease, box-shadow 0.2s ease;
+        transition: box-shadow 0.2s ease;
       }
       .info-block h2 {
         font-size: 20px;
@@ -373,13 +374,17 @@
       @media (hover: hover) and (pointer: fine) {
         .info-block:hover,
         .info-block:focus {
-          background: #f1f3f5;
-          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+
+          box-shadow: var(--shadow), 0 0 0 var(--glow-size) var(--accent-blue),
+            0 0 0 var(--stroke-inner) var(--stroke-white) inset;
         }
       }
       @media (hover: none) {
         .info-block:active {
-          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+
+          box-shadow: var(--shadow), 0 0 0 var(--glow-size) var(--accent-blue),
+            0 0 0 var(--stroke-inner) var(--stroke-white) inset;
+
         }
       }
       .bullet-list {
@@ -393,7 +398,7 @@
       }
       .reassurance {
         font-size: 13px;
-        color: #888;
+        color: var(--muted);
         margin-top: 16px;
         padding-left: 20px;
       }
