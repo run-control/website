@@ -519,7 +519,11 @@
 
     stickyObserver = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
-        if (entry.boundingClientRect.top < 0) {
+        // Show the sticky bar as soon as the opportunities section enters
+        // the viewport and keep it visible while it remains in view or has
+        // been scrolled past. Hide the bar only when the section has not yet
+        // been reached (i.e., is still below the viewport).
+        if (entry.isIntersecting || entry.boundingClientRect.top < 0) {
           stickyBar.classList.add("show");
           header.classList.add("hidden");
         } else {
