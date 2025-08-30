@@ -64,6 +64,8 @@
   const messageEl = document.getElementById("result-message");
   const gapsTitleEl = document.getElementById("gaps-title");
   const gapsEl = document.getElementById("gaps");
+  if (!gapsTitleEl)
+    console.warn('Element with id "gaps-title" not found; defaulting to section observer');
   const restartBtn = document.getElementById("restart");
   const scoreValueEl = document.getElementById("score-value");
   const scoreGradeEl = document.getElementById("score-grade");
@@ -96,8 +98,9 @@
 
   restartBtn.textContent =
     (config.texts && config.texts.startOver) || "Retake assessment";
-  gapsTitleEl.textContent =
-    (config.texts && config.texts.gapsTitle) || "Opportunities for improvement";
+  if (gapsTitleEl)
+    gapsTitleEl.textContent =
+      (config.texts && config.texts.gapsTitle) || "Opportunities for improvement";
 
   // Build severity chart
   function buildChart() {
@@ -437,15 +440,17 @@
       totalGaps += list.length;
     });
     if (totalGaps) {
-      gapsTitleEl.hidden = false;
-      gapsEl.hidden = false;
+      if (gapsTitleEl) gapsTitleEl.hidden = false;
+      if (gapsEl) gapsEl.hidden = false;
     } else {
-      gapsTitleEl.hidden = false;
-      gapsEl.hidden = false;
-      const p = document.createElement("p");
-      p.textContent =
-        (config.texts && config.texts.noGaps) || "No immediate gaps detected";
-      gapsEl.appendChild(p);
+      if (gapsTitleEl) gapsTitleEl.hidden = false;
+      if (gapsEl) {
+        gapsEl.hidden = false;
+        const p = document.createElement("p");
+        p.textContent =
+          (config.texts && config.texts.noGaps) || "No immediate gaps detected";
+        gapsEl.appendChild(p);
+      }
     }
     form.style.display = "none";
     nextBtn.style.display = "none";
@@ -522,7 +527,16 @@
         }
       });
     });
-    stickyObserver.observe(gapsTitleEl);
+    if (gapsTitleEl) {
+      stickyObserver.observe(gapsTitleEl);
+    } else if (gapsEl) {
+      console.warn(
+        'gaps title element missing; observing entire gaps section for sticky CTA',
+      );
+      stickyObserver.observe(gapsEl);
+    } else {
+      console.warn('gaps elements not found; sticky CTA will not be observed');
+    }
 
     const track = (loc) => {
       if (window.dataLayer) {
@@ -619,8 +633,8 @@
     );
     const card = results.querySelector(".results-content");
     if (card) card.classList.remove("show");
-    gapsTitleEl.hidden = true;
-    gapsEl.hidden = true;
+    if (gapsTitleEl) gapsTitleEl.hidden = true;
+    if (gapsEl) gapsEl.hidden = true;
     Object.values(chart.sliceMap).forEach((info) => {
       info.circle.style.transition = "none";
       info.circle.setAttribute("stroke-dasharray", "0 100");
