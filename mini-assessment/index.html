@@ -671,6 +671,19 @@
         font-size: 0.875rem;
         margin: -16px 0 24px;
       }
+      .footer {
+        text-align: center;
+        font-size: 0.875rem;
+        color: var(--muted);
+        margin: 32px 0;
+      }
+      .footer a {
+        color: var(--accent-blue);
+        text-decoration: none;
+      }
+      .footer a:hover {
+        text-decoration: underline;
+      }
       .visually-hidden {
         position: absolute;
         left: -9999px;
@@ -764,12 +777,20 @@
           </ul>
           <p class="reassurance">No pitch — your results stay private.</p>
         </section>
-        <div id="gaps" class="gaps info-block fade-line" hidden>
-          <h4 id="gaps-title" class="fade-line" hidden></h4>
+        <div id="gaps" class="gaps info-block" hidden>
+          <h4 id="gaps-title" class="fade-line" hidden>
+            Opportunities for improvement
+          </h4>
         </div>
         <button id="restart" type="button" class="fade-line"></button>
       </section>
     </main>
+    <footer class="footer">
+      <p>
+        <a href="/privacy-policy.html">Privacy Policy</a> &middot;
+        <a href="/terms.html">Terms</a>
+      </p>
+    </footer>
     <div id="sticky-cta" class="cta-bar">
       <div class="cta-inner">
         <span class="cta-text">Book Free 30-Minute Review</span>
