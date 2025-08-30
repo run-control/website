@@ -19,51 +19,68 @@
       gtag('config', 'G-4HFEY2Y8K7');
     </script>
     <style>
-      :root {
-        line-height: 1.5;
-        --radius-card: 18px;
-        --radius-row: 12px;
-        --stroke-inner: 1px;
-        --glow-size: 2px;
-        --donut-size: 220px;
-      }
+        :root {
+          line-height: 1.5;
+          --radius-card: 18px;
+          --radius-row: 12px;
+          --stroke-inner: 1px;
+          --glow-size: 2px;
+          --donut-size: 220px;
+          --header-height: 60px;
+        }
       *,
       *::before,
       *::after {
         box-sizing: border-box;
       }
-      body {
-        margin: 0;
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-        font-family: system-ui, sans-serif;
-        background: var(--bg);
-        color: var(--text);
-        line-height: 1.5;
-      }
-      .navbar {
-        position: sticky;
-        top: 0;
-        background: var(--header-navy);
-        z-index: 100;
-        transition: box-shadow 0.2s ease, opacity 0.2s ease,
-          transform 0.2s ease;
-        height: 60px;
-      }
+        body {
+          margin: 0;
+          /* fallback for browsers without dynamic viewport units */
+          min-height: 100%;
+          display: flex;
+          flex-direction: column;
+          font-family: system-ui, sans-serif;
+          background: var(--bg);
+          color: var(--text);
+          line-height: 1.5;
+        }
+        @supports (height: 100dvh) {
+          body {
+            min-height: 100dvh;
+          }
+        }
+        .navbar {
+          position: sticky;
+          top: 0;
+          background: var(--header-navy);
+          z-index: 100;
+          transition: box-shadow 0.2s ease, opacity 0.2s ease;
+          padding-top: env(safe-area-inset-top);
+          height: calc(var(--header-height) + env(safe-area-inset-top));
+        }
       .navbar.scrolled {
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
       }
-      .navbar.hidden {
-        opacity: 0;
-        transform: translateY(-8px);
-        pointer-events: none;
-      }
-      @media (min-width: 768px) {
-        .navbar {
-          height: 64px;
+        .navbar.hidden {
+          opacity: 0;
+          pointer-events: none;
         }
-      }
+        @media (min-width: 768px) {
+          :root {
+            --header-height: 64px;
+          }
+        }
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+          scroll-margin-top: calc(var(--header-height) + env(safe-area-inset-top));
+        }
+        #results {
+          scroll-margin-top: calc(var(--header-height) + env(safe-area-inset-top));
+        }
       .nav-inner {
         display: flex;
         align-items: center;
@@ -95,25 +112,24 @@
         margin-top: 4px;
         text-align: center;
       }
-      .nav-cta {
-        background: var(--accent-orange);
-        color: #fff;
-        text-decoration: none;
-        padding: 0 16px;
-        border-radius: 999px;
-        font-weight: 600;
-        line-height: 1;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        height: 40px;
-        transition: opacity 0.2s ease, transform 0.2s ease;
-      }
-      .nav-cta.hidden {
-        opacity: 0;
-        transform: translateY(-8px);
-        pointer-events: none;
-      }
+        .nav-cta {
+          background: var(--accent-orange);
+          color: #fff;
+          text-decoration: none;
+          padding: 0 16px;
+          border-radius: 999px;
+          font-weight: 600;
+          line-height: 1;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          height: 40px;
+          transition: opacity 0.2s ease;
+        }
+        .nav-cta.hidden {
+          opacity: 0;
+          pointer-events: none;
+        }
       .container {
         flex: 1;
         width: 100%;
@@ -664,11 +680,15 @@
           width: 100%;
         }
       }
-      .assessment-heading {
-        color: #FF6A3D;
-        text-align: center;
-        margin: 24px 0;
-      }
+        .assessment-heading {
+          color: #FF6A3D;
+          text-align: center;
+          margin: 24px auto;
+          line-height: 1.2;
+          max-width: 25ch;
+          font-size: clamp(1.5rem, 6vw, 2.5rem);
+          text-wrap: balance;
+        }
       .assessment-note {
         color: #ffffff;
         text-align: center;

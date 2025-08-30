@@ -5,6 +5,11 @@
     return;
   }
   const root = document.documentElement;
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  if (window.location.hash)
+    history.replaceState(null, '', window.location.pathname + window.location.search);
+  requestAnimationFrame(() => window.scrollTo(0, 0));
+  window.addEventListener('load', () => window.scrollTo(0, 0));
   const brand = Object.assign(
     {
       bg: "#000000",
@@ -255,25 +260,27 @@
     nextBtn.disabled = !sel;
   }
 
-  function showQuestion(idx, opts = {}) {
-    clearTimeout(autoTimer);
-    current = idx;
-    fieldsets.forEach((wrap, i) => {
-      if (i === idx) {
-        wrap.hidden = false;
-        requestAnimationFrame(() => wrap.classList.add("active"));
-      } else {
-        wrap.classList.remove("active");
-        wrap.hidden = true;
-      }
-    });
-    updateProgress();
-    updateNextState();
-    backBtn.disabled = idx === 0;
-    fieldsets[idx].scrollIntoView({ behavior: "smooth", block: "center" });
-    fieldsets[idx].querySelector("fieldset").focus();
+    function showQuestion(idx, opts = {}) {
+      clearTimeout(autoTimer);
+      current = idx;
+      fieldsets.forEach((wrap, i) => {
+        if (i === idx) {
+          wrap.hidden = false;
+          requestAnimationFrame(() => wrap.classList.add("active"));
+        } else {
+          wrap.classList.remove("active");
+          wrap.hidden = true;
+        }
+      });
+      updateProgress();
+      updateNextState();
+      backBtn.disabled = idx === 0;
+      if (!opts.skipScroll)
+        fieldsets[idx].scrollIntoView({ behavior: "smooth", block: "center" });
+      if (!opts.skipFocus)
+        fieldsets[idx].querySelector("fieldset").focus();
 
-    if (useHistory && opts.updateHistory !== false) {
+      if (useHistory && opts.updateHistory !== false) {
       const url = new URL(window.location);
       url.searchParams.set("step", idx + 1);
       if (opts.replace) {
@@ -295,8 +302,8 @@
         startIdx = parsed - 1;
       }
     }
-    showQuestion(startIdx, { replace: true });
-  }
+      showQuestion(startIdx, { replace: true, skipScroll: true, skipFocus: true });
+    }
 
   function renderChart(counts, animate = true) {
     const total = fieldsets.length;
