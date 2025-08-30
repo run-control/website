@@ -49,7 +49,7 @@ window.ASSESSMENT_CONFIG = {
     history: true,
   },
   chart: {
-    size: 160,
+    size: 220,
     thickness: 35,
   },
   ranges: [
@@ -230,21 +230,27 @@ window.ASSESSMENT_CONFIG = {
       text: "What protections are in place for endpoints (laptops, PCs, mobile)?",
       options: [
         {
-          label: "None/basic AV",
+          label: "Basic antivirus only",
           score: 0,
-          risk: "Modern attackers bypass traditional AV quickly — EDR/MDR is the new baseline.",
+          risk:
+            "Modern attackers bypass basic antivirus quickly — advanced security tools and professional monitoring are becoming the new baseline.",
         },
         {
-          label: "AV + occasional updates",
+          label: "Antivirus with occasional updates",
           score: 1,
-          risk: "Weak patching leaves known holes exploitable within days of disclosure.",
+          risk:
+            "Infrequent updates leave known vulnerabilities open for attackers within days of their discovery.",
         },
         {
-          label: "Endpoint protection + patching policy",
+          label: "Advanced security tools with a patching plan",
           score: 2,
-          risk: "Policies without enforcement leave devices exposed — active monitoring closes the gap.",
+          risk:
+            "Having a plan is good, but without consistent follow-through devices remain exposed — real-time threat monitoring helps close the gap.",
         },
-        { label: "EDR/MDR monitoring + enforced patching", score: 3 },
+        {
+          label: "Professional monitoring service with enforced patching",
+          score: 3,
+        },
       ],
     },
     {

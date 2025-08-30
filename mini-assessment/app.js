@@ -5,6 +5,15 @@
     return;
   }
   const root = document.documentElement;
+  const sessionId =
+    (self.crypto && crypto.randomUUID
+      ? crypto.randomUUID()
+      : Math.random().toString(36).slice(2));
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  if (window.location.hash)
+    history.replaceState(null, '', window.location.pathname + window.location.search);
+  requestAnimationFrame(() => window.scrollTo(0, 0));
+  window.addEventListener('load', () => window.scrollTo(0, 0));
   const brand = Object.assign(
     {
       bg: "#000000",
@@ -44,7 +53,7 @@
   }).forEach(([k, v]) => setVar(k, v));
 
   const chartSettings = Object.assign(
-    { size: 160, thickness: 35 },
+    { size: 220, thickness: 35 },
     config.chart || {},
   );
   setVar("--donut-size", `${chartSettings.size}px`);
@@ -61,19 +70,38 @@
   const progressText = document.getElementById("progress-text");
   const progressBar = document.getElementById("progress-bar");
   const results = document.getElementById("results");
-  const headlineEl = document.getElementById("result-headline");
   const messageEl = document.getElementById("result-message");
   const gapsTitleEl = document.getElementById("gaps-title");
   const gapsEl = document.getElementById("gaps");
-  const nextStepsHeadingEl = document.getElementById("next-steps-heading");
-  const nextStepsBodyEl = document.getElementById("next-steps-body");
-  const nextStepsListEl = document.getElementById("next-steps-list");
-  const ctaEl = document.getElementById("next-steps-cta");
+  if (!gapsTitleEl)
+    console.warn('Element with id "gaps-title" not found; defaulting to section observer');
   const restartBtn = document.getElementById("restart");
   const scoreValueEl = document.getElementById("score-value");
-  const scoreBandEl = document.getElementById("score-band");
+  const scoreGradeEl = document.getElementById("score-grade");
   const chartContainer = document.getElementById("severity-chart");
+  const chartHolder = chartContainer.querySelector(".chart-holder");
+  const scoreOverlay = chartHolder.querySelector(".score-overlay");
   const selectionLive = document.getElementById("selection-live");
+  const navCta = document.getElementById("nav-cta");
+  const stickyBar = document.getElementById("sticky-cta");
+  const stickyCtaBtn = document.getElementById("sticky-cta-button");
+  let prefetchDone = false;
+  window.addEventListener(
+    "scroll",
+    () => {
+      if (prefetchDone) return;
+      prefetchDone = true;
+      const link = document.createElement("link");
+      link.rel = "prefetch";
+      link.href =
+        (config.nextSteps && config.nextSteps.ctaHref) || "";
+      if (link.href) document.head.appendChild(link);
+    },
+    { once: true, passive: true },
+  );
+  const assessmentHeading = document.querySelector(".assessment-heading");
+  const assessmentNote = document.querySelector(".assessment-note");
+  let stickyObserver;
 
   const wizard = config.wizard || {};
   const autoAdvance = !!wizard.autoAdvance;
@@ -85,24 +113,17 @@
 
   if (autoAdvance) nextBtn.style.display = "none";
 
+  const header = document.querySelector(".navbar");
+  window.addEventListener("scroll", () => {
+    if (window.scrollY > 0) header.classList.add("scrolled");
+    else header.classList.remove("scrolled");
+  });
+
   restartBtn.textContent =
     (config.texts && config.texts.startOver) || "Retake assessment";
-  gapsTitleEl.textContent =
-    (config.texts && config.texts.gapsTitle) || "Opportunities for improvement";
-  nextStepsHeadingEl.textContent =
-    (config.nextSteps && config.nextSteps.heading) || "Next steps";
-  let nextStepsBodyTemplate =
-    (config.nextSteps && config.nextSteps.body) || "";
-  const nextStepsItems = (config.nextSteps && config.nextSteps.items) || [];
-  nextStepsItems.forEach((item) => {
-    const li = document.createElement("li");
-    li.textContent = item;
-    nextStepsListEl.appendChild(li);
-  });
-  ctaEl.innerHTML =
-    (config.nextSteps && config.nextSteps.ctaLabel) || "";
-  ctaEl.href =
-    (config.nextSteps && config.nextSteps.ctaHref) || "#";
+  if (gapsTitleEl)
+    gapsTitleEl.textContent =
+      (config.texts && config.texts.gapsTitle) || "Opportunities for improvement";
 
   // Build severity chart
   function buildChart() {
@@ -156,18 +177,24 @@
       const swatch = document.createElement("span");
       swatch.className = "swatch";
       swatch.style.backgroundColor = `var(${sev.color})`;
-      const text = document.createElement("span");
-      li.append(swatch, text);
+      const labelEl = document.createElement("span");
+      labelEl.className = "label";
+      labelEl.textContent = sev.label;
+      const countEl = document.createElement("span");
+      countEl.className = "count";
+      li.append(swatch, labelEl, countEl);
       li.style.display = "none";
       legend.appendChild(li);
       sliceMap[sev.key] = {
         circle,
         label: sev.label,
-        legendText: text,
+        legendCount: countEl,
         legendItem: li,
       };
     });
-    chartContainer.append(svg, legend);
+    chartHolder.appendChild(svg);
+    chartHolder.appendChild(scoreOverlay);
+    chartContainer.appendChild(legend);
     return { sliceMap, svg };
   }
   const chart = buildChart();
@@ -251,25 +278,27 @@
     nextBtn.disabled = !sel;
   }
 
-  function showQuestion(idx, opts = {}) {
-    clearTimeout(autoTimer);
-    current = idx;
-    fieldsets.forEach((wrap, i) => {
-      if (i === idx) {
-        wrap.hidden = false;
-        requestAnimationFrame(() => wrap.classList.add("active"));
-      } else {
-        wrap.classList.remove("active");
-        wrap.hidden = true;
-      }
-    });
-    updateProgress();
-    updateNextState();
-    backBtn.disabled = idx === 0;
-    fieldsets[idx].scrollIntoView({ behavior: "smooth", block: "center" });
-    fieldsets[idx].querySelector("fieldset").focus();
+    function showQuestion(idx, opts = {}) {
+      clearTimeout(autoTimer);
+      current = idx;
+      fieldsets.forEach((wrap, i) => {
+        if (i === idx) {
+          wrap.hidden = false;
+          requestAnimationFrame(() => wrap.classList.add("active"));
+        } else {
+          wrap.classList.remove("active");
+          wrap.hidden = true;
+        }
+      });
+      updateProgress();
+      updateNextState();
+      backBtn.disabled = idx === 0;
+      if (!opts.skipScroll)
+        fieldsets[idx].scrollIntoView({ behavior: "smooth", block: "center" });
+      if (!opts.skipFocus)
+        fieldsets[idx].querySelector("fieldset").focus();
 
-    if (useHistory && opts.updateHistory !== false) {
+      if (useHistory && opts.updateHistory !== false) {
       const url = new URL(window.location);
       url.searchParams.set("step", idx + 1);
       if (opts.replace) {
@@ -291,8 +320,8 @@
         startIdx = parsed - 1;
       }
     }
-    showQuestion(startIdx, { replace: true });
-  }
+      showQuestion(startIdx, { replace: true, skipScroll: true, skipFocus: true });
+    }
 
   function renderChart(counts, animate = true) {
     const total = fieldsets.length;
@@ -305,9 +334,7 @@
       const info = chart.sliceMap[key];
       const count = counts[key] || 0;
       const pct = total ? (count / total) * 100 : 0;
-      info.legendText.textContent = `${info.label} ${count} (${Math.round(
-        pct,
-      )}%)`;
+      info.legendCount.textContent = `${count} (${Math.round(pct)}%)`;
       info.legendItem.style.display = count ? "flex" : "none";
       info.circle.style.transition = !prefers && animate
         ? "stroke-dasharray 1s ease"
@@ -358,32 +385,36 @@
     });
     const max = fieldsets.length * 3;
     scoreValueEl.setAttribute("aria-label", `Score ${total} out of ${max}`);
-    nextStepsBodyEl.textContent = nextStepsBodyTemplate.replace(
-      "{{score}}",
-      `${total}/${max}`,
-    );
     const range =
       config.ranges &&
       config.ranges.find((r) => total >= r.min && total <= r.max);
     if (range) {
-      headlineEl.textContent = range.title;
       messageEl.textContent = range.message;
     } else {
-      headlineEl.textContent = "Score range missing";
       messageEl.textContent = "This score has no configured message.";
     }
-    let band = { label: "Good", colorVar: "--color-risk-low" };
-    if (total === max) band = { label: "Perfect", colorVar: "--color-risk-min" };
-    else if (total <= 10)
-      band = { label: "High", colorVar: "--color-risk-high" };
-    else if (total <= 20)
-      band = { label: "Medium", colorVar: "--color-risk-medium" };
+    let grade;
+    if (total === max) grade = "Perfect";
+    else if (total <= 10) grade = "Critical";
+    else if (total <= 20) grade = "Fair";
+    else grade = "Good";
+    scoreGradeEl.textContent = grade;
 
-    const zoneColor = getComputedStyle(root)
-      .getPropertyValue(band.colorVar)
-      .trim();
-    scoreBandEl.textContent = band.label;
-    scoreBandEl.style.backgroundColor = zoneColor;
+    const baseHref =
+      (config.nextSteps && config.nextSteps.ctaHref) || "#";
+    const buildLink = (content) => {
+      const url = new URL(baseHref);
+      url.searchParams.set("utm_source", "meta");
+      url.searchParams.set("utm_medium", "ads");
+      url.searchParams.set("utm_campaign", "quiz");
+      url.searchParams.set("utm_content", content);
+      url.searchParams.set("score", total);
+      url.searchParams.set("grade", grade);
+      url.searchParams.set("session_id", sessionId);
+      return url.toString();
+    };
+    navCta.href = buildLink("nav_top");
+    stickyCtaBtn.href = buildLink("sticky_bottom");
 
     const counts = {
       0: gapsBySeverity[0].length,
@@ -395,6 +426,7 @@
     };
 
     gapsEl.innerHTML = "";
+    if (gapsTitleEl) gapsEl.appendChild(gapsTitleEl);
     const severityMap = {
       0: { label: (config.texts && config.texts.severityCritical) || "Critical" },
       1: { label: (config.texts && config.texts.severityMajor) || "Major" },
@@ -435,21 +467,25 @@
       totalGaps += list.length;
     });
     if (totalGaps) {
-      gapsTitleEl.hidden = false;
-      gapsEl.hidden = false;
+      if (gapsTitleEl) gapsTitleEl.hidden = false;
+      if (gapsEl) gapsEl.hidden = false;
     } else {
-      gapsTitleEl.hidden = false;
-      gapsEl.hidden = false;
-      const p = document.createElement("p");
-      p.textContent =
-        (config.texts && config.texts.noGaps) || "No immediate gaps detected";
-      gapsEl.appendChild(p);
+      if (gapsTitleEl) gapsTitleEl.hidden = false;
+      if (gapsEl) {
+        gapsEl.hidden = false;
+        const p = document.createElement("p");
+        p.textContent =
+          (config.texts && config.texts.noGaps) || "No immediate gaps detected";
+        gapsEl.appendChild(p);
+      }
     }
     form.style.display = "none";
     nextBtn.style.display = "none";
     backBtn.style.display = "none";
     progress.hidden = true;
     results.hidden = false;
+    if (assessmentHeading) assessmentHeading.hidden = true;
+    if (assessmentNote) assessmentNote.hidden = true;
     results.scrollIntoView({ behavior: "smooth", block: "start" });
     results.focus();
     const card = results.querySelector(".results-content");
@@ -457,17 +493,14 @@
       "(prefers-reduced-motion: reduce)",
     ).matches;
     card.classList.add("show");
-    const scoreLines = results.querySelectorAll(
-      ".score-heading, .score-row",
-    );
+    const scoreLines = results.querySelectorAll(".score-heading, #severity-chart");
     scoreLines.forEach((el) => el.classList.add("show"));
     const revealRest = () => {
       [
-        "result-headline",
         "result-message",
         "gaps-title",
         "gaps",
-        "next-steps",
+        "guidance",
         "restart",
       ].forEach((id, idx) => {
         const el = document.getElementById(id);
@@ -509,6 +542,46 @@
       url.searchParams.set("step", "results");
       history.pushState({ step: "results" }, "", url);
     }
+
+    stickyObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        // Show the sticky bar as soon as the opportunities section enters
+        // the viewport and keep it visible while it remains in view or has
+        // been scrolled past. Hide the bar only when the section has not yet
+        // been reached (i.e., is still below the viewport).
+        if (entry.isIntersecting || entry.boundingClientRect.top < 0) {
+          stickyBar.classList.add("show");
+          header.classList.add("hidden");
+        } else {
+          stickyBar.classList.remove("show");
+          header.classList.remove("hidden");
+        }
+      });
+    });
+    if (gapsTitleEl) {
+      stickyObserver.observe(gapsTitleEl);
+    } else if (gapsEl) {
+      console.warn(
+        'gaps title element missing; observing entire gaps section for sticky CTA',
+      );
+      stickyObserver.observe(gapsEl);
+    } else {
+      console.warn('gaps elements not found; sticky CTA will not be observed');
+    }
+
+    const track = (loc) => {
+      if (window.dataLayer) {
+        window.dataLayer.push({
+          event: "cta_click",
+          location: loc,
+          score: total,
+          grade,
+          session_id: sessionId,
+        });
+      }
+    };
+    navCta.addEventListener("click", () => track("nav_top"));
+    stickyCtaBtn.addEventListener("click", () => track("sticky_bottom"));
   }
 
   function gotoNext() {
@@ -586,26 +659,31 @@
     backBtn.style.display = "";
     progress.hidden = false;
     results.hidden = true;
+    if (assessmentHeading) assessmentHeading.hidden = false;
+    if (assessmentNote) assessmentNote.hidden = false;
     gapsEl.innerHTML = "";
-    headlineEl.textContent = "";
+    if (gapsTitleEl) gapsEl.appendChild(gapsTitleEl);
     messageEl.textContent = "";
     scoreValueEl.textContent = "";
-    scoreBandEl.textContent = "";
+    scoreGradeEl.textContent = "";
     results.querySelectorAll(".fade-line").forEach((el) =>
       el.classList.remove("show"),
     );
     const card = results.querySelector(".results-content");
     if (card) card.classList.remove("show");
-    gapsTitleEl.hidden = true;
-    gapsEl.hidden = true;
+    if (gapsTitleEl) gapsTitleEl.hidden = true;
+    if (gapsEl) gapsEl.hidden = true;
     Object.values(chart.sliceMap).forEach((info) => {
       info.circle.style.transition = "none";
       info.circle.setAttribute("stroke-dasharray", "0 100");
-      info.legendText.textContent = "";
+      info.legendCount.textContent = "";
       info.legendItem.style.display = "none";
     });
     chart.svg.removeAttribute("aria-label");
     chart.svg.removeAttribute("role");
+    stickyBar.classList.remove("show");
+    header.classList.remove("hidden");
+    if (stickyObserver) stickyObserver.disconnect();
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
 })();
