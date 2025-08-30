@@ -5,6 +5,10 @@
     return;
   }
   const root = document.documentElement;
+  const sessionId =
+    (self.crypto && crypto.randomUUID
+      ? crypto.randomUUID()
+      : Math.random().toString(36).slice(2));
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
   if (window.location.hash)
     history.replaceState(null, '', window.location.pathname + window.location.search);
@@ -81,6 +85,20 @@
   const navCta = document.getElementById("nav-cta");
   const stickyBar = document.getElementById("sticky-cta");
   const stickyCtaBtn = document.getElementById("sticky-cta-button");
+  let prefetchDone = false;
+  window.addEventListener(
+    "scroll",
+    () => {
+      if (prefetchDone) return;
+      prefetchDone = true;
+      const link = document.createElement("link");
+      link.rel = "prefetch";
+      link.href =
+        (config.nextSteps && config.nextSteps.ctaHref) || "";
+      if (link.href) document.head.appendChild(link);
+    },
+    { once: true, passive: true },
+  );
   const assessmentHeading = document.querySelector(".assessment-heading");
   const assessmentNote = document.querySelector(".assessment-note");
   let stickyObserver;
@@ -392,10 +410,11 @@
       url.searchParams.set("utm_content", content);
       url.searchParams.set("score", total);
       url.searchParams.set("grade", grade);
+      url.searchParams.set("session_id", sessionId);
       return url.toString();
     };
     navCta.href = buildLink("nav_top");
-    stickyCtaBtn.href = buildLink("sticky_bar");
+    stickyCtaBtn.href = buildLink("sticky_bottom");
 
     const counts = {
       0: gapsBySeverity[0].length,
@@ -552,7 +571,13 @@
 
     const track = (loc) => {
       if (window.dataLayer) {
-        window.dataLayer.push({ event: "cta_click", location: loc });
+        window.dataLayer.push({
+          event: "cta_click",
+          location: loc,
+          score: total,
+          grade,
+          session_id: sessionId,
+        });
       }
     };
     navCta.addEventListener("click", () => track("nav_top"));

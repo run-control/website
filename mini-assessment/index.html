@@ -9,9 +9,10 @@
     />
     <link rel="canonical" href="https://vectari.co/mini-assessment/" />
     <title>Mini Security Assessment</title>
+    <link rel="preconnect" href="https://bookings.microsoft.com" />
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-4HFEY2Y8K7"></script>
-    <script>
+    <script defer>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
@@ -32,6 +33,12 @@
       *::before,
       *::after {
         box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
       }
         body {
           margin: 0;
@@ -123,18 +130,30 @@
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          height: 40px;
+          min-height: 40px;
+          font-size: 16px;
+          white-space: nowrap;
           transition: opacity 0.2s ease;
         }
         .nav-cta.hidden {
           opacity: 0;
           pointer-events: none;
         }
+        @media (max-width: 359px) {
+          .nav-cta {
+            padding: 0 12px;
+          }
+        }
+        .nav-cta:focus-visible,
+        .cta-button:focus-visible {
+          outline: 2px solid var(--accent-blue);
+          outline-offset: 2px;
+        }
       .container {
         flex: 1;
         width: 100%;
         max-width: 960px;
-        padding: 24px 24px 72px;
+        padding: 24px 24px calc(72px + env(safe-area-inset-bottom));
         margin: 0 auto;
       }
       h2,
@@ -335,8 +354,11 @@
         flex-shrink: 0;
       }
       .score-overlay {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
         text-align: center;
-        margin-top: 16px;
       }
       #score-value {
         font-size: 36px;
@@ -345,7 +367,7 @@
       }
       #score-grade {
         font-size: 14px;
-        color: #888;
+        color: var(--muted);
         display: block;
         margin-top: 4px;
       }
@@ -356,22 +378,20 @@
         #score-grade {
           font-size: 16px;
         }
-        .score-overlay {
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          margin-top: 0;
-        }
       }
       #result-message {
         color: var(--muted);
-        font-size: 16px;
-        margin: 16px 0 0;
+        font-size: 15px;
+        line-height: 1.55;
+        max-width: 32ch;
+        margin: 16px auto 0;
+        text-align: left;
       }
       @media (min-width: 768px) {
         #result-message {
           font-size: 18px;
+          max-width: none;
+          margin: 16px 0 0;
         }
       }
       .divider {
@@ -449,14 +469,21 @@
         padding: 0;
         margin: 16px 0 0;
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 8px 16px;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px 12px;
         font-size: 0.75rem;
       }
       .severity-legend li {
         display: flex;
         align-items: center;
         gap: 4px;
+      }
+      .severity-legend .label {
+        flex: 1;
+      }
+      .severity-legend .count {
+        margin-left: auto;
+        color: var(--muted);
       }
       .severity-legend .swatch {
         width: 10px;
@@ -612,7 +639,9 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        height: 40px;
+        min-height: 40px;
+        font-size: 16px;
+        white-space: nowrap;
       }
       #restart {
         margin-top: 12px;
@@ -626,7 +655,7 @@
         margin-right: auto;
       }
       #results {
-        padding: 32px 0 72px;
+        padding: 32px 0 0;
         scroll-margin-top: 60px;
       }
       #results > *:first-child {
@@ -647,14 +676,16 @@
         align-items: center;
         height: 60px;
         box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.3);
-        transform: translateY(100%);
+        transform: translateY(8px);
         opacity: 0;
-        transition: transform 0.3s ease, opacity 0.3s ease;
+        transition: opacity 0.2s ease, transform 0.2s ease;
         z-index: 101;
+        pointer-events: none;
       }
       .cta-bar.show {
         transform: translateY(0);
         opacity: 1;
+        pointer-events: auto;
       }
       .cta-inner {
         width: 100%;
@@ -829,6 +860,7 @@
           class="cta-button"
           target="_blank"
           rel="noopener"
+          aria-label="Book free 30-minute review"
           >Book Now</a
         >
       </div>
