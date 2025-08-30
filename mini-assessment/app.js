@@ -519,7 +519,7 @@
 
     stickyObserver = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting || entry.boundingClientRect.top < 0) {
+        if (entry.boundingClientRect.top < 0) {
           stickyBar.classList.add("show");
           header.classList.add("hidden");
         } else {
