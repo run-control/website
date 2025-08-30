@@ -400,6 +400,7 @@
     };
 
     gapsEl.innerHTML = "";
+    if (gapsTitleEl) gapsEl.appendChild(gapsTitleEl);
     const severityMap = {
       0: { label: (config.texts && config.texts.severityCritical) || "Critical" },
       1: { label: (config.texts && config.texts.severityMajor) || "Major" },
@@ -625,6 +626,7 @@
     if (assessmentHeading) assessmentHeading.hidden = false;
     if (assessmentNote) assessmentNote.hidden = false;
     gapsEl.innerHTML = "";
+    if (gapsTitleEl) gapsEl.appendChild(gapsTitleEl);
     messageEl.textContent = "";
     scoreValueEl.textContent = "";
     scoreGradeEl.textContent = "";
