@@ -493,15 +493,16 @@
       }
       @media (min-width: 768px) {
         #severity-chart {
-          position: relative;
-          width: var(--donut-size);
-          flex-direction: column;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: center;
+          gap: 24px;
+          width: auto;
         }
         .severity-legend {
-          position: absolute;
-          top: 50%;
-          left: calc(100% + 24px);
-          transform: translateY(-50%);
+          position: static;
+          transform: none;
           display: flex;
           flex-direction: column;
           align-items: flex-start;
