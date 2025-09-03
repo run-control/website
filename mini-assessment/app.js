@@ -85,6 +85,7 @@
   const navCta = document.getElementById("nav-cta");
   const stickyBar = document.getElementById("sticky-cta");
   const stickyCtaBtn = document.getElementById("sticky-cta-button");
+  let assessmentStarted = false;
   let prefetchDone = false;
   window.addEventListener(
     "scroll",
@@ -237,6 +238,22 @@
           updateNextState();
           if (selectionLive) {
             selectionLive.textContent = `${opt.label} selected`;
+          }
+          if (!assessmentStarted && window.dataLayer) {
+            window.dataLayer.push({
+              event: "assessment_start",
+              session_id: sessionId,
+            });
+          }
+          assessmentStarted = true;
+          if (window.dataLayer) {
+            window.dataLayer.push({
+              event: "question_answered",
+              question_index: idx + 1,
+              question_text: q.text,
+              answer: opt.label,
+              session_id: sessionId,
+            });
           }
           if (autoAdvance) {
             clearTimeout(autoTimer);
@@ -535,6 +552,7 @@
         critical_gaps: gapsBySeverity[0].length,
         major_gaps: gapsBySeverity[1].length,
         minor_gaps: gapsBySeverity[2].length,
+        session_id: sessionId,
       });
     }
     if (useHistory && opts.updateHistory !== false) {
@@ -572,7 +590,7 @@
     const track = (loc) => {
       if (window.dataLayer) {
         window.dataLayer.push({
-          event: "cta_click",
+          event: "booking_link_click",
           location: loc,
           score: total,
           grade,
