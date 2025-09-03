@@ -5,10 +5,10 @@
     return;
   }
   const root = document.documentElement;
-  const sessionId =
-    (self.crypto && crypto.randomUUID
+  let quizSessionId =
+    self.crypto && crypto.randomUUID
       ? crypto.randomUUID()
-      : Math.random().toString(36).slice(2));
+      : Math.random().toString(36).slice(2);
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
   if (window.location.hash)
     history.replaceState(null, '', window.location.pathname + window.location.search);
@@ -87,6 +87,13 @@
   const stickyCtaBtn = document.getElementById("sticky-cta-button");
   let assessmentStarted = false;
   let prefetchDone = false;
+  const DEBUG_MODE = new URLSearchParams(window.location.search).has("debug");
+  const trackEvent = (name, params = {}) => {
+    if (typeof window.gtag !== "function") return;
+    const payload = Object.assign({ quiz_session_id: quizSessionId }, params);
+    if (DEBUG_MODE) payload.debug_mode = true; // enable via ?debug
+    window.gtag("event", name, payload);
+  };
   window.addEventListener(
     "scroll",
     () => {
@@ -239,22 +246,10 @@
           if (selectionLive) {
             selectionLive.textContent = `${opt.label} selected`;
           }
-          if (!assessmentStarted && window.dataLayer) {
-            window.dataLayer.push({
-              event: "assessment_start",
-              session_id: sessionId,
-            });
-          }
-          assessmentStarted = true;
-          if (window.dataLayer) {
-            window.dataLayer.push({
-              event: "question_answered",
-              question_index: idx + 1,
-              question_text: q.text,
-              answer: opt.label,
-              session_id: sessionId,
-            });
-          }
+          trackEvent("question_answered", {
+            question_index: idx + 1,
+            answer: opt.label,
+          });
           if (autoAdvance) {
             clearTimeout(autoTimer);
             autoTimer = setTimeout(() => {
@@ -298,6 +293,10 @@
     function showQuestion(idx, opts = {}) {
       clearTimeout(autoTimer);
       current = idx;
+      if (idx === 0 && !assessmentStarted) {
+        trackEvent("assessment_start");
+        assessmentStarted = true;
+      }
       fieldsets.forEach((wrap, i) => {
         if (i === idx) {
           wrap.hidden = false;
@@ -427,7 +426,7 @@
       url.searchParams.set("utm_content", content);
       url.searchParams.set("score", total);
       url.searchParams.set("grade", grade);
-      url.searchParams.set("session_id", sessionId);
+      url.searchParams.set("quiz_session_id", quizSessionId);
       return url.toString();
     };
     navCta.href = buildLink("nav_top");
@@ -545,16 +544,12 @@
       }, 400);
       setTimeout(revealRest, 1400);
     }
-    if (window.dataLayer) {
-      window.dataLayer.push({
-        event: "assessment_complete",
-        score: total,
-        critical_gaps: gapsBySeverity[0].length,
-        major_gaps: gapsBySeverity[1].length,
-        minor_gaps: gapsBySeverity[2].length,
-        session_id: sessionId,
-      });
-    }
+    trackEvent("assessment_complete", {
+      score: total,
+      critical_gaps: gapsBySeverity[0].length,
+      major_gaps: gapsBySeverity[1].length,
+      minor_gaps: gapsBySeverity[2].length,
+    });
     if (useHistory && opts.updateHistory !== false) {
       const url = new URL(window.location);
       url.searchParams.set("step", "results");
@@ -588,15 +583,9 @@
     }
 
     const track = (loc) => {
-      if (window.dataLayer) {
-        window.dataLayer.push({
-          event: "booking_link_click",
-          location: loc,
-          score: total,
-          grade,
-          session_id: sessionId,
-        });
-      }
+      const params = { location: loc, score: total };
+      if (grade) params.grade = grade;
+      trackEvent("booking_link_click", params);
     };
     navCta.addEventListener("click", () => track("nav_top"));
     stickyCtaBtn.addEventListener("click", () => track("sticky_bottom"));
@@ -662,6 +651,11 @@
   });
 
   restartBtn.addEventListener("click", () => {
+    quizSessionId =
+      self.crypto && crypto.randomUUID
+        ? crypto.randomUUID()
+        : Math.random().toString(36).slice(2);
+    assessmentStarted = false;
     form.reset();
     fieldsets.forEach((wrap) => {
       wrap.hidden = true;
