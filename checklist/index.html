@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cybersecurity Checklist</title>
+    <link rel="canonical" href="https://vectari.co/checklist/" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-4HFEY2Y8K7"></script>
+    <script defer>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-4HFEY2Y8K7');
+    </script>
+    <style>
+      :root {
+        line-height: 1.5;
+        --radius-card: 18px;
+        --radius-row: 12px;
+        --stroke-inner: 1px;
+        --glow-size: 2px;
+        --donut-size: 220px;
+        --header-height: 60px;
+        --bg: #000000;
+        --text: #FFFFFF;
+        --accent-orange: #FF8A00;
+        --accent-blue: #00AEEF;
+        --header-navy: #00172C;
+        --border: rgba(0,174,239,0.35);
+        --shadow: 0 8px 30px rgba(0,0,0,0.45);
+      }
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+      }
+      body {
+        margin: 0;
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
+        font-family: system-ui, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.5;
+      }
+      @supports (height: 100dvh) {
+        body { min-height: 100dvh; }
+      }
+      .navbar {
+        position: sticky;
+        top: 0;
+        background: var(--header-navy);
+        z-index: 100;
+        transition: box-shadow 0.2s ease, opacity 0.2s ease;
+        padding-top: env(safe-area-inset-top);
+        height: calc(var(--header-height) + env(safe-area-inset-top));
+      }
+      .navbar.scrolled { box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+      .navbar.hidden { opacity: 0; pointer-events: none; }
+      @media (min-width: 768px) {
+        :root { --header-height: 64px; }
+      }
+      h1, h2, h3, h4, h5, h6 {
+        scroll-margin-top: calc(var(--header-height) + env(safe-area-inset-top));
+      }
+      .nav-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 100%;
+        padding: 0 16px;
+        max-width: 960px;
+        margin: 0 auto;
+      }
+      .nav-brand {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      .nav-brand .logo-full {
+        height: 32px;
+        width: auto;
+      }
+      @media (min-width: 768px) {
+        .nav-brand .logo-full { height: 40px; }
+      }
+      .visit-main {
+        font-size: 11px;
+        color: #999;
+        text-decoration: none;
+        margin-top: 4px;
+        text-align: center;
+      }
+      .nav-cta {
+        background: var(--accent-orange);
+        color: #fff;
+        text-decoration: none;
+        padding: 0 16px;
+        border-radius: 999px;
+        font-weight: 600;
+        line-height: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 40px;
+        font-size: 16px;
+        white-space: nowrap;
+        transition: opacity 0.2s ease;
+      }
+      .nav-cta.hidden { opacity: 0; pointer-events: none; }
+      @media (max-width: 359px) {
+        .nav-cta { padding: 0 12px; }
+      }
+      .nav-cta:focus-visible,
+      .cta-button:focus-visible {
+        outline: 2px solid var(--accent-blue);
+        outline-offset: 2px;
+      }
+      .container {
+        flex: 1;
+        width: 100%;
+        max-width: 960px;
+        padding: 24px 24px calc(72px + env(safe-area-inset-bottom));
+        margin: 0 auto;
+        text-align: center;
+      }
+      .cta-button {
+        background: var(--accent-orange);
+        color: #fff;
+        text-decoration: none;
+        padding: 0 16px;
+        border-radius: 999px;
+        font-weight: 600;
+        line-height: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 40px;
+        font-size: 16px;
+        white-space: nowrap;
+      }
+      .footer {
+        padding: 16px;
+        text-align: center;
+      }
+      .footer a { color: inherit; }
+      .cta-bar {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: var(--header-navy);
+        color: #eee;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 60px;
+        box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.3);
+        z-index: 101;
+      }
+      .cta-inner {
+        width: 100%;
+        max-width: 960px;
+        padding: 0 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .cta-bar .cta-text {
+        font-size: 14px;
+        white-space: nowrap;
+      }
+      @media (max-width: 480px) {
+        .cta-bar { height: auto; }
+        .cta-inner {
+          flex-direction: column;
+          align-items: center;
+          gap: 8px;
+          padding: 8px 16px;
+        }
+        .cta-bar .cta-text {
+          text-align: center;
+          white-space: normal;
+        }
+        .cta-button { width: 100%; }
+      }
+      .visually-hidden {
+        position: absolute;
+        left: -9999px;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="navbar">
+      <div class="nav-inner">
+        <div class="nav-brand">
+          <a href="https://vectari.co/#hero">
+            <img id="site-logo" src="/static/assets/logo-bar.png" alt="Vectari logo" class="logo-full" />
+          </a>
+          <a href="https://vectari.co" class="visit-main" target="_blank" rel="noopener">Visit main site</a>
+        </div>
+        <a id="nav-cta" class="nav-cta" href="https://outlook.office.com/book/VectariIntroduction@vectari.co/?ismsaljsauthenabled" target="_blank" rel="noopener">Book Free 30-Minute Review</a>
+      </div>
+    </header>
+    <main class="container">
+      <h1 class="visually-hidden">Cybersecurity Checklist</h1>
+      <iframe width="640px" height="480px" src="https://forms.office.com/Pages/ResponsePage.aspx?id=-O72gHlKlEmuKHoeEl8KyHg2LcrpzuFFrR_pKL5ouQtUMDNRTURERDk4MlBNS043TlBPWFJDWTNOUC4u&embed=true" frameborder="0" marginwidth="0" marginheight="0" style="border: none; max-width:100%; max-height:100vh" allowfullscreen webkitallowfullscreen mozallowfullscreen msallowfullscreen> </iframe>
+    </main>
+    <footer class="footer">
+      <p>
+        <a href="/privacy-policy.html">Privacy Policy</a> &middot;
+        <a href="/terms.html">Terms</a>
+      </p>
+    </footer>
+    <div id="sticky-cta" class="cta-bar">
+      <div class="cta-inner">
+        <span class="cta-text">Book Free 30-Minute Review</span>
+        <a id="sticky-cta-button" class="cta-button" href="https://outlook.office.com/book/VectariIntroduction@vectari.co/?ismsaljsauthenabled" target="_blank" rel="noopener" aria-label="Book free 30-minute review">Book Now</a>
+      </div>
+    </div>
+  </body>
+</html>
