@@ -119,8 +119,7 @@
       @media (max-width: 359px) {
         .nav-cta { padding: 0 12px; }
       }
-      .nav-cta:focus-visible,
-      .cta-button:focus-visible {
+      .nav-cta:focus-visible {
         outline: 2px solid var(--accent-blue);
         outline-offset: 2px;
       }
@@ -132,66 +131,11 @@
         margin: 0 auto;
         text-align: center;
       }
-      .cta-button {
-        background: var(--accent-orange);
-        color: #fff;
-        text-decoration: none;
-        padding: 0 16px;
-        border-radius: 999px;
-        font-weight: 600;
-        line-height: 1;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 40px;
-        font-size: 16px;
-        white-space: nowrap;
-      }
       .footer {
         padding: 16px;
         text-align: center;
       }
       .footer a { color: inherit; }
-      .cta-bar {
-        position: fixed;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: var(--header-navy);
-        color: #eee;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 60px;
-        box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.3);
-        z-index: 101;
-      }
-      .cta-inner {
-        width: 100%;
-        max-width: 960px;
-        padding: 0 16px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-      .cta-bar .cta-text {
-        font-size: 14px;
-        white-space: nowrap;
-      }
-      @media (max-width: 480px) {
-        .cta-bar { height: auto; }
-        .cta-inner {
-          flex-direction: column;
-          align-items: center;
-          gap: 8px;
-          padding: 8px 16px;
-        }
-        .cta-bar .cta-text {
-          text-align: center;
-          white-space: normal;
-        }
-        .cta-button { width: 100%; }
-      }
       .visually-hidden {
         position: absolute;
         left: -9999px;
@@ -206,7 +150,7 @@
       <div class="nav-inner">
         <div class="nav-brand">
           <a href="https://vectari.co/#hero">
-            <img id="site-logo" src="/static/assets/logo-bar.png" alt="Vectari logo" class="logo-full" />
+            <img id="site-logo" src="../static/assets/logo-bar.png" alt="Vectari logo" class="logo-full" />
           </a>
           <a href="https://vectari.co" class="visit-main" target="_blank" rel="noopener">Visit main site</a>
         </div>
@@ -223,11 +167,5 @@
         <a href="/terms.html">Terms</a>
       </p>
     </footer>
-    <div id="sticky-cta" class="cta-bar">
-      <div class="cta-inner">
-        <span class="cta-text">Book Free 30-Minute Review</span>
-        <a id="sticky-cta-button" class="cta-button" href="https://outlook.office.com/book/VectariIntroduction@vectari.co/?ismsaljsauthenabled" target="_blank" rel="noopener" aria-label="Book free 30-minute review">Book Now</a>
-      </div>
-    </div>
   </body>
 </html>
