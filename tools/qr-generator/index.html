@@ -498,430 +498,511 @@
   <footer>
     &copy; <span id="year"></span> Vectari. All rights reserved.
   </footer>
-  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
   <script>
-    const form = document.getElementById('qrForm');
-    const textInput = document.getElementById('qrText');
-    const sizeInput = document.getElementById('qrSize');
-    const marginInput = document.getElementById('qrMargin');
-    const correctionInput = document.getElementById('qrCorrection');
-    const fgPicker = document.getElementById('qrForeground');
-    const bgPicker = document.getElementById('qrBackground');
-    const fgHex = document.getElementById('qrForegroundHex');
-    const bgHex = document.getElementById('qrBackgroundHex');
-    const canvas = document.getElementById('qrCanvas');
-    const previewDetails = document.getElementById('previewDetails');
-    const statusMessage = document.getElementById('statusMessage');
-    const downloadBtn = document.getElementById('downloadBtn');
-    const copyBtn = document.getElementById('copyBtn');
-    const previewFrame = document.getElementById('previewCanvas');
-    const typeTabs = document.querySelectorAll('[data-type-tab]');
-    const typePanels = document.querySelectorAll('[data-type-panel]');
-    const tabList = Array.from(typeTabs);
-    const urlValue = document.getElementById('urlValue');
-    const textValue = document.getElementById('textValue');
-    const emailAddress = document.getElementById('emailAddress');
-    const emailSubject = document.getElementById('emailSubject');
-    const emailBody = document.getElementById('emailBody');
-    const phoneNumber = document.getElementById('phoneNumber');
-    const smsNumber = document.getElementById('smsNumber');
-    const smsMessage = document.getElementById('smsMessage');
-    const wifiSsid = document.getElementById('wifiSsid');
-    const wifiEncryption = document.getElementById('wifiEncryption');
-    const wifiPassword = document.getElementById('wifiPassword');
-    const wifiHidden = document.getElementById('wifiHidden');
-    const contactFirst = document.getElementById('contactFirst');
-    const contactLast = document.getElementById('contactLast');
-    const contactCompany = document.getElementById('contactCompany');
-    const contactPhone = document.getElementById('contactPhone');
-    const contactEmail = document.getElementById('contactEmail');
-    const contactWebsite = document.getElementById('contactWebsite');
-
-    let currentType = document.querySelector('[data-type-panel].active')?.dataset.typePanel || 'url';
-
-    typeTabs.forEach((tab) => {
-      const isActive = tab.dataset.typeTab === currentType;
-      tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
-      tab.tabIndex = isActive ? 0 : -1;
-    });
-
-    typePanels.forEach((panel) => {
-      const isActive = panel.classList.contains('active');
-      panel.hidden = !isActive;
-      panel.setAttribute('aria-hidden', (!isActive).toString());
-    });
-
-    let latestDataURL = '';
-    const correctionLevels = {
-      L: 'low',
-      M: 'medium',
-      Q: 'quartile',
-      H: 'high'
-    };
-
-    function truncate(value, length = 42) {
-      if (!value) return '';
-      return value.length > length ? `${value.slice(0, length - 1)}…` : value;
-    }
-
-    function escapeHTML(value) {
-      if (!value) return '';
-      const map = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;'
-      };
-      map['"'] = '&quot;';
-      map["'"] = '&#39;';
-      return value.replace(/[&<>"']/g, (char) => map[char]);
-    }
-
-    function normalizePhone(value) {
-      return value.replace(/[^+\d]/g, '');
-    }
-
-    function escapeWifi(value) {
-      return (value || '').replace(/([\\;,:"])/g, '\\$1');
-    }
-
-    function escapeVCard(value) {
-      return (value || '').replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/,/g, '\\,').replace(/;/g, '\\;');
-    }
-
-    const wifiSecurityLabels = {
-      WPA: 'WPA/WPA2',
-      WEP: 'WEP',
-      nopass: 'Open'
-    };
-
-    const typeBuilders = {
-      url: () => {
-        const raw = urlValue.value.trim();
-        if (!raw) {
-          return { error: 'Enter a destination URL to encode.' };
+    (function() {
+      function setupQrGenerator() {
+        if (window.__qrGeneratorInitialized) {
+          return;
         }
-        const hasScheme = /^[a-z][\w+.-]*:/i.test(raw);
-        const prefixed = hasScheme || raw.startsWith('//') ? raw : `https://${raw}`;
-        return {
-          payload: prefixed,
-          summary: `URL → ${truncate(prefixed)}`
-        };
-      },
-      text: () => {
-        const raw = textValue.value.trim();
-        if (!raw) {
-          return { error: 'Add the text you want to encode.' };
-        }
-        return {
-          payload: raw,
-          summary: `Text message (${raw.length} characters)`
-        };
-      },
-      email: () => {
-        const address = emailAddress.value.trim();
-        if (!address) {
-          return { error: 'Provide the email address to reach.' };
-        }
-        const params = new URLSearchParams();
-        if (emailSubject.value.trim()) {
-          params.append('subject', emailSubject.value.trim());
-        }
-        if (emailBody.value.trim()) {
-          params.append('body', emailBody.value.trim());
-        }
-        const query = params.toString();
-        return {
-          payload: `mailto:${address}${query ? `?${query}` : ''}`,
-          summary: `Email link to ${address}`
-        };
-      },
-      phone: () => {
-        const number = normalizePhone(phoneNumber.value.trim());
-        if (!number) {
-          return { error: 'Add the phone number to dial.' };
-        }
-        return {
-          payload: `tel:${number}`,
-          summary: `Phone call to ${number}`
-        };
-      },
-      sms: () => {
-        const number = normalizePhone(smsNumber.value.trim());
-        if (!number) {
-          return { error: 'Add the SMS recipient number.' };
-        }
-        const params = new URLSearchParams();
-        if (smsMessage.value.trim()) {
-          params.append('body', smsMessage.value.trim());
-        }
-        const query = params.toString();
-        return {
-          payload: `sms:${number}${query ? `?${query}` : ''}`,
-          summary: `SMS to ${number}${smsMessage.value.trim() ? ' with preset message' : ''}`
-        };
-      },
-      wifi: () => {
-        const ssid = wifiSsid.value.trim();
-        const security = wifiEncryption.value;
-        const password = wifiPassword.value.trim();
-        if (!ssid) {
-          return { error: 'Enter the Wi-Fi network name (SSID).' };
-        }
-        if (security !== 'nopass' && !password) {
-          return { error: 'Add the Wi-Fi password or switch security to None.' };
-        }
-        const escapedSsid = escapeWifi(ssid);
-        const escapedPassword = escapeWifi(password);
-        const hidden = wifiHidden.checked ? 'true' : 'false';
-        const payloadParts = [`WIFI:T:${security};S:${escapedSsid};`];
-        if (security !== 'nopass') {
-          payloadParts.push(`P:${escapedPassword};`);
-        }
-        payloadParts.push(`H:${hidden};`);
-        payloadParts.push(';');
-        return {
-          payload: payloadParts.join(''),
-          summary: `Wi-Fi network "${truncate(ssid, 26)}" (${wifiSecurityLabels[security] || security})`
-        };
-      },
-      contact: () => {
-        const first = contactFirst.value.trim();
-        const last = contactLast.value.trim();
-        const company = contactCompany.value.trim();
-        const phone = contactPhone.value.trim();
-        const email = contactEmail.value.trim();
-        const website = contactWebsite.value.trim();
-        if (!first && !last && !company) {
-          return { error: 'Add a name or company for the contact card.' };
-        }
-        const lines = ['BEGIN:VCARD', 'VERSION:3.0'];
-        lines.push(`N:${escapeVCard(last)};${escapeVCard(first)};;;`);
-        const fullName = `${first} ${last}`.trim();
-        const displayName = fullName || company;
-        lines.push(`FN:${escapeVCard(displayName)}`);
-        if (company) {
-          lines.push(`ORG:${escapeVCard(company)}`);
-        }
-        if (phone) {
-          lines.push(`TEL;TYPE=CELL:${escapeVCard(phone)}`);
-        }
-        if (email) {
-          lines.push(`EMAIL:${escapeVCard(email)}`);
-        }
-        if (website) {
-          lines.push(`URL:${escapeVCard(website)}`);
-        }
-        lines.push('END:VCARD');
-        return {
-          payload: lines.join('\n'),
-          summary: displayName ? `Contact card for ${truncate(displayName, 32)}` : 'Contact card'
-        };
-      }
-    };
 
-    function getPayloadForCurrentType() {
-      const builder = typeBuilders[currentType];
-      if (!builder) {
-        return { payload: textInput.value, summary: '' };
-      }
-      return builder();
-    }
+        if (typeof QRCode === 'undefined' || typeof QRCode.toCanvas !== 'function') {
+          return;
+        }
 
-    function setActiveType(type) {
-      if (currentType === type) return;
-      currentType = type;
-      typeTabs.forEach((tab) => {
-        const isActive = tab.dataset.typeTab === type;
-        tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
-        tab.tabIndex = isActive ? 0 : -1;
-      });
-      typePanels.forEach((panel) => {
-        const isActive = panel.dataset.typePanel === type;
-        panel.classList.toggle('active', isActive);
-        panel.hidden = !isActive;
-        panel.setAttribute('aria-hidden', (!isActive).toString());
-      });
-      showStatus('', 'info');
-      generateQRCode();
-    }
+        window.__qrGeneratorInitialized = true;
 
-    function syncHexInputs() {
-      fgHex.value = fgPicker.value.toUpperCase();
-      bgHex.value = bgPicker.value.toUpperCase();
-    }
+          const form = document.getElementById('qrForm');
+          const textInput = document.getElementById('qrText');
+          const sizeInput = document.getElementById('qrSize');
+          const marginInput = document.getElementById('qrMargin');
+          const correctionInput = document.getElementById('qrCorrection');
+          const fgPicker = document.getElementById('qrForeground');
+          const bgPicker = document.getElementById('qrBackground');
+          const fgHex = document.getElementById('qrForegroundHex');
+          const bgHex = document.getElementById('qrBackgroundHex');
+          const canvas = document.getElementById('qrCanvas');
+          const previewDetails = document.getElementById('previewDetails');
+          const statusMessage = document.getElementById('statusMessage');
+          const downloadBtn = document.getElementById('downloadBtn');
+          const copyBtn = document.getElementById('copyBtn');
+          const previewFrame = document.getElementById('previewCanvas');
+          const typeTabs = document.querySelectorAll('[data-type-tab]');
+          const typePanels = document.querySelectorAll('[data-type-panel]');
+          const tabList = Array.from(typeTabs);
+          const urlValue = document.getElementById('urlValue');
+          const textValue = document.getElementById('textValue');
+          const emailAddress = document.getElementById('emailAddress');
+          const emailSubject = document.getElementById('emailSubject');
+          const emailBody = document.getElementById('emailBody');
+          const phoneNumber = document.getElementById('phoneNumber');
+          const smsNumber = document.getElementById('smsNumber');
+          const smsMessage = document.getElementById('smsMessage');
+          const wifiSsid = document.getElementById('wifiSsid');
+          const wifiEncryption = document.getElementById('wifiEncryption');
+          const wifiPassword = document.getElementById('wifiPassword');
+          const wifiHidden = document.getElementById('wifiHidden');
+          const contactFirst = document.getElementById('contactFirst');
+          const contactLast = document.getElementById('contactLast');
+          const contactCompany = document.getElementById('contactCompany');
+          const contactPhone = document.getElementById('contactPhone');
+          const contactEmail = document.getElementById('contactEmail');
+          const contactWebsite = document.getElementById('contactWebsite');
 
-    function parseHex(value, fallback) {
-      const normalized = value.trim().replace(/^#?/, '#');
-      const hexRegex = /^#([0-9a-fA-F]{6})$/;
-      return hexRegex.test(normalized) ? normalized.toUpperCase() : fallback;
-    }
+          let currentType = document.querySelector('[data-type-panel].active')?.dataset.typePanel || 'url';
 
-    function showStatus(message, type = 'info') {
-      statusMessage.textContent = message;
-      statusMessage.className = `status ${type}`;
-      if (message) {
-        statusMessage.setAttribute('aria-hidden', 'false');
-      } else {
-        statusMessage.setAttribute('aria-hidden', 'true');
-      }
-    }
+          typeTabs.forEach((tab) => {
+            const isActive = tab.dataset.typeTab === currentType;
+            tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
+            tab.tabIndex = isActive ? 0 : -1;
+          });
 
-    async function generateQRCode(event) {
-      if (event) {
-        event.preventDefault();
-      }
-      const { payload, summary, error } = getPayloadForCurrentType();
-      if (error) {
-        showStatus(error, 'error');
-        downloadBtn.disabled = true;
-        copyBtn.disabled = true;
-        latestDataURL = '';
-        previewDetails.textContent = '';
-        return;
-      }
-      const value = payload.trim();
-      if (!value) {
-        showStatus('Enter content to encode.', 'error');
-        downloadBtn.disabled = true;
-        copyBtn.disabled = true;
-        latestDataURL = '';
-        previewDetails.textContent = '';
-        return;
-      }
-      textInput.value = value;
-      const size = Math.min(Math.max(parseInt(sizeInput.value, 10) || 320, 120), 1024);
-      const margin = Math.min(Math.max(parseInt(marginInput.value, 10) || 4, 0), 32);
-      const correction = correctionInput.value;
-      const fgColor = parseHex(fgHex.value, fgPicker.value);
-      const bgColor = parseHex(bgHex.value, bgPicker.value);
+          typePanels.forEach((panel) => {
+            const isActive = panel.classList.contains('active');
+            panel.hidden = !isActive;
+            panel.setAttribute('aria-hidden', (!isActive).toString());
+          });
 
-      fgPicker.value = fgColor;
-      bgPicker.value = bgColor;
-      fgHex.value = fgColor;
-      bgHex.value = bgColor;
+          let latestDataURL = '';
+          const correctionLevels = {
+            L: 'low',
+            M: 'medium',
+            Q: 'quartile',
+            H: 'high'
+          };
 
-      if (typeof QRCode === 'undefined' || typeof QRCode.toCanvas !== 'function') {
-        showStatus('QR code library failed to load. Please refresh the page to try again.', 'error');
-        downloadBtn.disabled = true;
-        copyBtn.disabled = true;
-        latestDataURL = '';
-        return;
-      }
-      try {
-        await QRCode.toCanvas(canvas, value, {
-          width: size,
-          margin: margin,
-          errorCorrectionLevel: correction,
-          color: {
-            dark: fgColor,
-            light: bgColor
+          function truncate(value, length = 42) {
+            if (!value) return '';
+            return value.length > length ? `${value.slice(0, length - 1)}…` : value;
           }
+
+          function escapeHTML(value) {
+            if (!value) return '';
+            const map = {
+              '&': '&amp;',
+              '<': '&lt;',
+              '>': '&gt;'
+            };
+            map['"'] = '&quot;';
+            map["'"] = '&#39;';
+            return value.replace(/[&<>"']/g, (char) => map[char]);
+          }
+
+          function normalizePhone(value) {
+            return value.replace(/[^+\d]/g, '');
+          }
+
+          function escapeWifi(value) {
+            return (value || '').replace(/([\\;,:"])/g, '\\$1');
+          }
+
+          function escapeVCard(value) {
+            return (value || '').replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/,/g, '\\,').replace(/;/g, '\\;');
+          }
+
+          const wifiSecurityLabels = {
+            WPA: 'WPA/WPA2',
+            WEP: 'WEP',
+            nopass: 'Open'
+          };
+
+          const typeBuilders = {
+            url: () => {
+              const raw = urlValue.value.trim();
+              if (!raw) {
+                return { error: 'Enter a destination URL to encode.' };
+              }
+              const hasScheme = /^[a-z][\w+.-]*:/i.test(raw);
+              const prefixed = hasScheme || raw.startsWith('//') ? raw : `https://${raw}`;
+              return {
+                payload: prefixed,
+                summary: `URL → ${truncate(prefixed)}`
+              };
+            },
+            text: () => {
+              const raw = textValue.value.trim();
+              if (!raw) {
+                return { error: 'Add the text you want to encode.' };
+              }
+              return {
+                payload: raw,
+                summary: `Text message (${raw.length} characters)`
+              };
+            },
+            email: () => {
+              const address = emailAddress.value.trim();
+              if (!address) {
+                return { error: 'Provide the email address to reach.' };
+              }
+              const params = new URLSearchParams();
+              if (emailSubject.value.trim()) {
+                params.append('subject', emailSubject.value.trim());
+              }
+              if (emailBody.value.trim()) {
+                params.append('body', emailBody.value.trim());
+              }
+              const query = params.toString();
+              return {
+                payload: `mailto:${address}${query ? `?${query}` : ''}`,
+                summary: `Email link to ${address}`
+              };
+            },
+            phone: () => {
+              const number = normalizePhone(phoneNumber.value.trim());
+              if (!number) {
+                return { error: 'Add the phone number to dial.' };
+              }
+              return {
+                payload: `tel:${number}`,
+                summary: `Phone call to ${number}`
+              };
+            },
+            sms: () => {
+              const number = normalizePhone(smsNumber.value.trim());
+              if (!number) {
+                return { error: 'Add the SMS recipient number.' };
+              }
+              const params = new URLSearchParams();
+              if (smsMessage.value.trim()) {
+                params.append('body', smsMessage.value.trim());
+              }
+              const query = params.toString();
+              return {
+                payload: `sms:${number}${query ? `?${query}` : ''}`,
+                summary: `SMS to ${number}${smsMessage.value.trim() ? ' with preset message' : ''}`
+              };
+            },
+            wifi: () => {
+              const ssid = wifiSsid.value.trim();
+              const security = wifiEncryption.value;
+              const password = wifiPassword.value.trim();
+              if (!ssid) {
+                return { error: 'Enter the Wi-Fi network name (SSID).' };
+              }
+              if (security !== 'nopass' && !password) {
+                return { error: 'Add the Wi-Fi password or switch security to None.' };
+              }
+              const escapedSsid = escapeWifi(ssid);
+              const escapedPassword = escapeWifi(password);
+              const hidden = wifiHidden.checked ? 'true' : 'false';
+              const payloadParts = [`WIFI:T:${security};S:${escapedSsid};`];
+              if (security !== 'nopass') {
+                payloadParts.push(`P:${escapedPassword};`);
+              }
+              payloadParts.push(`H:${hidden};`);
+              payloadParts.push(';');
+              return {
+                payload: payloadParts.join(''),
+                summary: `Wi-Fi network "${truncate(ssid, 26)}" (${wifiSecurityLabels[security] || security})`
+              };
+            },
+            contact: () => {
+              const first = contactFirst.value.trim();
+              const last = contactLast.value.trim();
+              const company = contactCompany.value.trim();
+              const phone = contactPhone.value.trim();
+              const email = contactEmail.value.trim();
+              const website = contactWebsite.value.trim();
+              if (!first && !last && !company) {
+                return { error: 'Add a name or company for the contact card.' };
+              }
+              const lines = ['BEGIN:VCARD', 'VERSION:3.0'];
+              lines.push(`N:${escapeVCard(last)};${escapeVCard(first)};;;`);
+              const fullName = `${first} ${last}`.trim();
+              const displayName = fullName || company;
+              lines.push(`FN:${escapeVCard(displayName)}`);
+              if (company) {
+                lines.push(`ORG:${escapeVCard(company)}`);
+              }
+              if (phone) {
+                lines.push(`TEL;TYPE=CELL:${escapeVCard(phone)}`);
+              }
+              if (email) {
+                lines.push(`EMAIL:${escapeVCard(email)}`);
+              }
+              if (website) {
+                lines.push(`URL:${escapeVCard(website)}`);
+              }
+              lines.push('END:VCARD');
+              return {
+                payload: lines.join('\n'),
+                summary: displayName ? `Contact card for ${truncate(displayName, 32)}` : 'Contact card'
+              };
+            }
+          };
+
+          function getPayloadForCurrentType() {
+            const builder = typeBuilders[currentType];
+            if (!builder) {
+              return { payload: textInput.value, summary: '' };
+            }
+            return builder();
+          }
+
+          function setActiveType(type) {
+            if (currentType === type) return;
+            currentType = type;
+            typeTabs.forEach((tab) => {
+              const isActive = tab.dataset.typeTab === type;
+              tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
+              tab.tabIndex = isActive ? 0 : -1;
+            });
+            typePanels.forEach((panel) => {
+              const isActive = panel.dataset.typePanel === type;
+              panel.classList.toggle('active', isActive);
+              panel.hidden = !isActive;
+              panel.setAttribute('aria-hidden', (!isActive).toString());
+            });
+            showStatus('', 'info');
+            generateQRCode();
+          }
+
+          function syncHexInputs() {
+            fgHex.value = fgPicker.value.toUpperCase();
+            bgHex.value = bgPicker.value.toUpperCase();
+          }
+
+          function parseHex(value, fallback) {
+            const normalized = value.trim().replace(/^#?/, '#');
+            const hexRegex = /^#([0-9a-fA-F]{6})$/;
+            return hexRegex.test(normalized) ? normalized.toUpperCase() : fallback;
+          }
+
+          function showStatus(message, type = 'info') {
+            statusMessage.textContent = message;
+            statusMessage.className = `status ${type}`;
+            if (message) {
+              statusMessage.setAttribute('aria-hidden', 'false');
+            } else {
+              statusMessage.setAttribute('aria-hidden', 'true');
+            }
+          }
+
+          async function generateQRCode(event) {
+            if (event) {
+              event.preventDefault();
+            }
+            const { payload, summary, error } = getPayloadForCurrentType();
+            if (error) {
+              showStatus(error, 'error');
+              downloadBtn.disabled = true;
+              copyBtn.disabled = true;
+              latestDataURL = '';
+              previewDetails.textContent = '';
+              return;
+            }
+            const value = payload.trim();
+            if (!value) {
+              showStatus('Enter content to encode.', 'error');
+              downloadBtn.disabled = true;
+              copyBtn.disabled = true;
+              latestDataURL = '';
+              previewDetails.textContent = '';
+              return;
+            }
+            textInput.value = value;
+            const size = Math.min(Math.max(parseInt(sizeInput.value, 10) || 320, 120), 1024);
+            const margin = Math.min(Math.max(parseInt(marginInput.value, 10) || 4, 0), 32);
+            const correction = correctionInput.value;
+            const fgColor = parseHex(fgHex.value, fgPicker.value);
+            const bgColor = parseHex(bgHex.value, bgPicker.value);
+
+            fgPicker.value = fgColor;
+            bgPicker.value = bgColor;
+            fgHex.value = fgColor;
+            bgHex.value = bgColor;
+
+            if (typeof QRCode === 'undefined' || typeof QRCode.toCanvas !== 'function') {
+              showStatus('QR code library failed to load. Please refresh the page to try again.', 'error');
+              downloadBtn.disabled = true;
+              copyBtn.disabled = true;
+              latestDataURL = '';
+              return;
+            }
+            try {
+              await QRCode.toCanvas(canvas, value, {
+                width: size,
+                margin: margin,
+                errorCorrectionLevel: correction,
+                color: {
+                  dark: fgColor,
+                  light: bgColor
+                }
+              });
+              latestDataURL = canvas.toDataURL('image/png');
+              downloadBtn.disabled = false;
+              const copySupported = 'clipboard' in navigator && 'write' in navigator.clipboard && 'ClipboardItem' in window;
+              copyBtn.disabled = !copySupported;
+              const charCount = value.length;
+              const safeSummary = summary ? escapeHTML(summary) : 'Custom data';
+              previewDetails.innerHTML = `<strong>${safeSummary}</strong><br>${charCount} characters • ${size}px • ${correctionLevels[correction]} error correction`;
+              showStatus('QR code updated successfully.', 'success');
+              previewFrame.style.background = bgColor;
+            } catch (error) {
+              console.error(error);
+              showStatus('Unable to generate QR code. Please adjust your settings and try again.', 'error');
+              downloadBtn.disabled = true;
+              copyBtn.disabled = true;
+              latestDataURL = '';
+            }
+          }
+
+          function downloadImage() {
+            if (!latestDataURL) return;
+            const link = document.createElement('a');
+            link.href = latestDataURL;
+            link.download = 'vectari-qr-code.png';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showStatus('PNG downloaded.', 'success');
+          }
+
+          async function copyImage() {
+            if (!latestDataURL || !navigator.clipboard?.write) return;
+            try {
+              const response = await fetch(latestDataURL);
+              const blob = await response.blob();
+              const item = new ClipboardItem({ 'image/png': blob });
+              await navigator.clipboard.write([item]);
+              showStatus('QR code copied to clipboard.', 'success');
+            } catch (error) {
+              console.error(error);
+              showStatus('Copy failed. Download instead.', 'error');
+            }
+          }
+
+          function attachHexListeners(colorInput, hexInput) {
+            colorInput.addEventListener('input', () => {
+              hexInput.value = colorInput.value.toUpperCase();
+              generateQRCode();
+            });
+            hexInput.addEventListener('blur', () => {
+              const parsed = parseHex(hexInput.value, colorInput.value);
+              hexInput.value = parsed;
+              colorInput.value = parsed;
+              generateQRCode();
+            });
+            hexInput.addEventListener('keydown', (event) => {
+              if (event.key === 'Enter') {
+                event.preventDefault();
+                hexInput.blur();
+              }
+            });
+          }
+
+          form.addEventListener('submit', generateQRCode);
+          [sizeInput, marginInput, correctionInput].forEach((input) => {
+            input.addEventListener('change', generateQRCode);
+            input.addEventListener('input', () => {
+              showStatus('', 'info');
+            });
+          });
+
+          attachHexListeners(fgPicker, fgHex);
+          attachHexListeners(bgPicker, bgHex);
+
+          downloadBtn.addEventListener('click', downloadImage);
+          copyBtn.addEventListener('click', copyImage);
+
+          typeTabs.forEach((tab) => {
+            tab.addEventListener('click', () => setActiveType(tab.dataset.typeTab));
+            tab.addEventListener('keydown', (event) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                setActiveType(tab.dataset.typeTab);
+              }
+              if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+                event.preventDefault();
+                const currentIndex = tabList.indexOf(tab);
+                const direction = event.key === 'ArrowRight' ? 1 : -1;
+                const newIndex = (currentIndex + direction + tabList.length) % tabList.length;
+                const nextTab = tabList[newIndex];
+                nextTab.focus();
+                setActiveType(nextTab.dataset.typeTab);
+              }
+            });
+          });
+
+          form.addEventListener('input', (event) => {
+            if (event.target.closest('.type-panels')) {
+              showStatus('', 'info');
+              generateQRCode();
+            }
+          });
+
+          document.getElementById('year').textContent = new Date().getFullYear();
+          syncHexInputs();
+          generateQRCode();
+      }
+
+      window.setupQrGenerator = setupQrGenerator;
+
+      if (typeof QRCode !== 'undefined' && typeof QRCode.toCanvas === 'function') {
+        setupQrGenerator();
+      }
+    })();
+  </script>
+  <script>
+    (function() {
+      const qrLibrarySources = [
+        'https://www.mcstumble.com/tools/qr-generator/qrcode.min.js',
+        'https://fastly.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js',
+        'https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js'
+      ];
+      const statusMessage = document.getElementById('statusMessage');
+      const downloadBtn = document.getElementById('downloadBtn');
+      const copyBtn = document.getElementById('copyBtn');
+      const failureMessage = 'QR code library failed to load. Please refresh the page to try again.';
+
+      function showLoadFailure() {
+        if (statusMessage) {
+          statusMessage.textContent = failureMessage;
+          statusMessage.className = 'status error';
+          statusMessage.setAttribute('aria-hidden', 'false');
+        }
+        if (downloadBtn) {
+          downloadBtn.disabled = true;
+        }
+        if (copyBtn) {
+          copyBtn.disabled = true;
+        }
+      }
+
+      function loadScript(src) {
+        return new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = src;
+          script.async = false;
+          script.onload = () => resolve(src);
+          script.onerror = () => {
+            script.remove();
+            reject(new Error(`Failed to load QR code library from ${src}`));
+          };
+          document.head.appendChild(script);
         });
-        latestDataURL = canvas.toDataURL('image/png');
-        downloadBtn.disabled = false;
-        const copySupported = 'clipboard' in navigator && 'write' in navigator.clipboard && 'ClipboardItem' in window;
-        copyBtn.disabled = !copySupported;
-        const charCount = value.length;
-        const safeSummary = summary ? escapeHTML(summary) : 'Custom data';
-        previewDetails.innerHTML = `<strong>${safeSummary}</strong><br>${charCount} characters • ${size}px • ${correctionLevels[correction]} error correction`;
-        showStatus('QR code updated successfully.', 'success');
-        previewFrame.style.background = bgColor;
-      } catch (error) {
-        console.error(error);
-        showStatus('Unable to generate QR code. Please adjust your settings and try again.', 'error');
-        downloadBtn.disabled = true;
-        copyBtn.disabled = true;
-        latestDataURL = '';
       }
-    }
 
-    function downloadImage() {
-      if (!latestDataURL) return;
-      const link = document.createElement('a');
-      link.href = latestDataURL;
-      link.download = 'vectari-qr-code.png';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      showStatus('PNG downloaded.', 'success');
-    }
-
-    async function copyImage() {
-      if (!latestDataURL || !navigator.clipboard?.write) return;
-      try {
-        const response = await fetch(latestDataURL);
-        const blob = await response.blob();
-        const item = new ClipboardItem({ 'image/png': blob });
-        await navigator.clipboard.write([item]);
-        showStatus('QR code copied to clipboard.', 'success');
-      } catch (error) {
-        console.error(error);
-        showStatus('Copy failed. Download instead.', 'error');
-      }
-    }
-
-    function attachHexListeners(colorInput, hexInput) {
-      colorInput.addEventListener('input', () => {
-        hexInput.value = colorInput.value.toUpperCase();
-        generateQRCode();
-      });
-      hexInput.addEventListener('blur', () => {
-        const parsed = parseHex(hexInput.value, colorInput.value);
-        hexInput.value = parsed;
-        colorInput.value = parsed;
-        generateQRCode();
-      });
-      hexInput.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter') {
-          event.preventDefault();
-          hexInput.blur();
+      (async () => {
+        if (typeof QRCode !== 'undefined' && typeof QRCode.toCanvas === 'function') {
+          if (typeof window.setupQrGenerator === 'function') {
+            window.setupQrGenerator();
+          }
+          return;
         }
-      });
-    }
-
-    form.addEventListener('submit', generateQRCode);
-    [sizeInput, marginInput, correctionInput].forEach((input) => {
-      input.addEventListener('change', generateQRCode);
-      input.addEventListener('input', () => {
-        showStatus('', 'info');
-      });
-    });
-
-    attachHexListeners(fgPicker, fgHex);
-    attachHexListeners(bgPicker, bgHex);
-
-    downloadBtn.addEventListener('click', downloadImage);
-    copyBtn.addEventListener('click', copyImage);
-
-    typeTabs.forEach((tab) => {
-      tab.addEventListener('click', () => setActiveType(tab.dataset.typeTab));
-      tab.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault();
-          setActiveType(tab.dataset.typeTab);
+        for (const src of qrLibrarySources) {
+          try {
+            await loadScript(src);
+            if (typeof window.setupQrGenerator === 'function') {
+              window.setupQrGenerator();
+            }
+            return;
+          } catch (error) {
+            console.warn(`QR generator: ${error.message}`);
+          }
         }
-        if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
-          event.preventDefault();
-          const currentIndex = tabList.indexOf(tab);
-          const direction = event.key === 'ArrowRight' ? 1 : -1;
-          const newIndex = (currentIndex + direction + tabList.length) % tabList.length;
-          const nextTab = tabList[newIndex];
-          nextTab.focus();
-          setActiveType(nextTab.dataset.typeTab);
-        }
-      });
-    });
-
-    form.addEventListener('input', (event) => {
-      if (event.target.closest('.type-panels')) {
-        showStatus('', 'info');
-        generateQRCode();
-      }
-    });
-
-    document.getElementById('year').textContent = new Date().getFullYear();
-    syncHexInputs();
-    generateQRCode();
+        showLoadFailure();
+      })();
+    })();
   </script>
 </body>
 </html>
