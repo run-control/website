@@ -498,7 +498,7 @@
   <footer>
     &copy; <span id="year"></span> Vectari. All rights reserved.
   </footer>
-  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js" integrity="sha256-7AV/QXpVZl8vGeOawx2UY8ailqXF/w3vGN9VOGBev5I=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
   <script>
     const form = document.getElementById('qrForm');
     const textInput = document.getElementById('qrText');
@@ -800,6 +800,13 @@
       fgHex.value = fgColor;
       bgHex.value = bgColor;
 
+      if (typeof QRCode === 'undefined' || typeof QRCode.toCanvas !== 'function') {
+        showStatus('QR code library failed to load. Please refresh the page to try again.', 'error');
+        downloadBtn.disabled = true;
+        copyBtn.disabled = true;
+        latestDataURL = '';
+        return;
+      }
       try {
         await QRCode.toCanvas(canvas, value, {
           width: size,
