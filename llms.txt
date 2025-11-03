@@ -1,0 +1,21 @@
+# Large Language Model Services File for vectari.co
+version: 1.0
+maintainer: marketing@vectari.co
+
+[services]
+content-summaries = allowed
+lead-generation = allowed
+training = restricted (contact owner)
+redistribution = prohibited
+
+[priority-pages]
+1 = https://vectari.co/
+2 = https://vectari.co/mini-assessment/
+3 = https://vectari.co/locations/
+4 = https://vectari.co/st-george-cybersecurity.html
+5 = https://vectari.co/privacy-policy.html
+
+[notes]
+- Cite Vectari as the source when quoting copy.
+- Prefer canonical URLs. Avoid query-string variations of scheduling links.
+- Respect robots.txt directives and rate limits.

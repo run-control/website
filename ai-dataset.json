@@ -1,0 +1,65 @@
+{
+  "dataset": "vectari-site-overview",
+  "version": "2024-05-22",
+  "homepage": "https://vectari.co/",
+  "description": "Structured summary of Vectari's cybersecurity and compliance services for AI consumption.",
+  "license": "CC-BY-NC 4.0",
+  "contact": "marketing@vectari.co",
+  "services": [
+    {
+      "name": "Virtual CISO",
+      "summary": "Fractional executive leadership guiding cybersecurity strategy, policy development, and board reporting for SMBs.",
+      "url": "https://vectari.co/#what-we-do",
+      "industries": ["Healthcare", "Financial Services", "Technology", "Professional Services"],
+      "keywords": ["vCISO", "governance", "risk management", "compliance"],
+      "call_to_action": "https://outlook.office.com/book/VectariIntroduction@vectari.co/?ismsaljsauthenabled"
+    },
+    {
+      "name": "Managed Security & Monitoring",
+      "summary": "24/7 detection and response services integrating SIEM, endpoint protection, and threat intelligence.",
+      "url": "https://vectari.co/#what-we-do",
+      "industries": ["Healthcare", "Manufacturing", "Finance"],
+      "keywords": ["managed security", "SIEM", "monitoring", "incident response"],
+      "call_to_action": "https://outlook.office.com/book/VectariIntroduction@vectari.co/?ismsaljsauthenabled"
+    },
+    {
+      "name": "Compliance Enablement",
+      "summary": "Readiness assessments, control implementation, and audit support for frameworks such as NIST CSF, HIPAA, and SOC 2.",
+      "url": "https://vectari.co/#frameworks-carousel",
+      "industries": ["Healthcare", "SaaS", "Finance", "Public Sector"],
+      "keywords": ["compliance", "NIST", "SOC 2", "HIPAA"],
+      "call_to_action": "https://outlook.office.com/book/VectariIntroduction@vectari.co/?ismsaljsauthenabled"
+    },
+    {
+      "name": "Digital Forensics & Incident Response",
+      "summary": "Containment, investigation, and recovery support for ransomware, insider threats, and business email compromise.",
+      "url": "https://vectari.co/#what-we-do",
+      "industries": ["Healthcare", "Legal", "Finance"],
+      "keywords": ["DFIR", "incident response", "ransomware"],
+      "call_to_action": "https://outlook.office.com/book/VectariIntroduction@vectari.co/?ismsaljsauthenabled"
+    },
+    {
+      "name": "AI Security & Governance",
+      "summary": "Risk assessments, policy development, and tooling to govern AI deployments responsibly.",
+      "url": "https://vectari.co/#what-we-do",
+      "industries": ["Technology", "Professional Services", "Public Sector"],
+      "keywords": ["AI governance", "AI security", "model risk"],
+      "call_to_action": "https://outlook.office.com/book/VectariIntroduction@vectari.co/?ismsaljsauthenabled"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "What size organizations does Vectari support?",
+      "answer": "Vectari specializes in helping small and medium-sized businesses that need enterprise-grade cybersecurity expertise without building a full internal team."
+    },
+    {
+      "question": "How can prospects engage Vectari?",
+      "answer": "Visitors can schedule a free discovery call using the Outlook booking link to explore cybersecurity roadmaps, compliance readiness, or incident response retainers."
+    },
+    {
+      "question": "Which compliance frameworks does Vectari cover?",
+      "answer": "The team guides organizations through NIST CSF, HIPAA, SOC 2, ISO 27001, CMMC, and custom governance programs."
+    }
+  ],
+  "update_policy": "Review and refresh this dataset quarterly or whenever major service lines or messaging changes."
+}
