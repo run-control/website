@@ -86,6 +86,7 @@
   const navCta = document.getElementById("nav-cta");
   const stickyBar = document.getElementById("sticky-cta");
   const stickyCtaBtn = document.getElementById("sticky-cta-button");
+  const bodyEl = document.body;
   let assessmentStarted = false;
   let prefetchDone = false;
   const DEBUG_MODE = new URLSearchParams(window.location.search).has("debug");
@@ -488,6 +489,7 @@
   }
 
   function showGate() {
+    if (bodyEl) bodyEl.classList.add("lead-gate-active");
     form.style.display = "none";
     nextBtn.style.display = "none";
     backBtn.style.display = "none";
@@ -502,6 +504,7 @@
   }
 
   function renderResults(data, opts = {}) {
+    if (bodyEl) bodyEl.classList.remove("lead-gate-active");
     scoreValueEl.setAttribute("aria-label", `Score ${data.total} out of ${data.max}`);
     messageEl.textContent = data.message;
     scoreGradeEl.textContent = data.grade;
@@ -752,6 +755,7 @@
     backBtn.style.display = "";
     progress.hidden = false;
     results.hidden = true;
+    if (bodyEl) bodyEl.classList.remove("lead-gate-active");
     if (assessmentHeading) assessmentHeading.hidden = false;
     if (assessmentNote) assessmentNote.hidden = false;
     gapsEl.innerHTML = "";
