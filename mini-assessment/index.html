@@ -335,9 +335,17 @@
       }
       .lead-gate__frame {
         margin-top: 16px;
-        background: #ffffff;
+        background: transparent;
         border-radius: 12px;
         overflow: hidden;
+      }
+      .lead-gate__frame iframe {
+        display: block;
+        width: 100%;
+        height: 100%;
+        border: none;
+        border-radius: inherit;
+        background: transparent;
       }
       .results-content {
         text-align: center;
@@ -844,7 +852,7 @@
         <div class="lead-gate__frame">
           <iframe
             src="https://api.leadconnectorhq.com/widget/form/p3bY7qyRRaUyGi1LQ8YV"
-            style="width:100%;height:100%;border:none;border-radius:4px"
+            style="width:100%;height:100%;border:none"
             id="inline-p3bY7qyRRaUyGi1LQ8YV"
             data-layout="{'id':'INLINE'}"
             data-trigger-type="alwaysShow"
