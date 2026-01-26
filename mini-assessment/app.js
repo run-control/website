@@ -111,6 +111,12 @@
   const assessmentHeading = document.querySelector(".assessment-heading");
   const assessmentNote = document.querySelector(".assessment-note");
   let stickyObserver;
+  const baseBookingHref =
+    (config.nextSteps && config.nextSteps.ctaHref) || "";
+  if (baseBookingHref) {
+    if (navCta) navCta.href = baseBookingHref;
+    if (stickyCtaBtn) stickyCtaBtn.href = baseBookingHref;
+  }
 
   const wizard = config.wizard || {};
   const autoAdvance = !!wizard.autoAdvance;
