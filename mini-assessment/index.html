@@ -321,27 +321,14 @@
       }
       .lead-gate {
         margin-top: 32px;
-        background: var(--surface);
-        border-radius: var(--radius-card);
-        border: 1px solid var(--border);
         padding: 0;
-        box-shadow: var(--shadow);
-      }
-      .lead-gate__intro {
-        padding: 24px 24px 0;
-      }
-      .lead-gate__intro h2 {
-        margin: 0 0 8px;
-      }
-      .lead-gate__intro p {
-        margin: 0;
-        color: var(--muted);
-      }
-      .lead-gate__intro p + p {
-        margin-top: 6px;
+        background: transparent;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
       }
       .lead-gate__frame {
-        padding: 16px 24px 24px;
+        padding: 0;
         background: transparent;
         border-radius: 12px;
         overflow: hidden;
@@ -854,11 +841,6 @@
         ></div>
       </div>
       <section id="lead-gate" class="lead-gate" hidden>
-        <div class="lead-gate__intro">
-          <h2>View Your Cybersecurity Risk Snapshot</h2>
-          <p>Enter your details to view your results and allow us to follow up if you have questions or want help interpreting them.</p>
-          <p>Your results will be displayed immediately after submission.</p>
-        </div>
         <div class="lead-gate__frame">
           <iframe
             src="https://api.leadconnectorhq.com/widget/form/p3bY7qyRRaUyGi1LQ8YV"
