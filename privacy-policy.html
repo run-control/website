@@ -8,6 +8,34 @@
   <link rel="icon" type="image/png" href="static/assets/logo.png">
   <link rel="stylesheet" href="static/css/styles.css">
   <link rel="canonical" href="https://vectari.co/privacy-policy.html">
+  <style>
+    :root{--color-navy:#00172C;--color-blue:#0076d1;--color-teal:#10B5A6;--color-orange:#FF6A3D;--color-light:#f5f7fa;--color-dark-overlay:rgba(0,15,30,0);--font-family:'Inter',sans-serif;--header-h:3.5rem;}
+    @media (max-width:767px){:root{--header-h:4rem;}}
+    *,*::before,*::after{box-sizing:border-box;}
+    html,body{margin:0;padding:0;font-family:var(--font-family);color:#e5e7eb;background:#000;}
+    html{scroll-behavior:smooth;scroll-padding-top:var(--header-h);}
+    .overlay{min-height:100vh;display:flex;flex-direction:column;background:var(--color-dark-overlay);}
+    .navbar{position:sticky;top:0;background:linear-gradient(to bottom,#010c1f 0%,#00172C 100%);z-index:100;}
+    .nav-inner{display:flex;align-items:center;justify-content:space-between;max-width:1200px;margin:0 auto;padding:0.5rem 1rem;}
+    .nav-brand{display:flex;align-items:center;gap:0.5rem;color:white;font-weight:600;font-size:1.4rem;}
+    .nav-brand .logo-full{height:36px;width:auto;}
+    .nav-links{display:none;gap:1.5rem;}
+    @media (min-width:768px){.nav-links{display:flex;}}
+    .nav-links a{color:white;font-size:0.9rem;transition:opacity 0.2s;}
+    .nav-links a:hover{opacity:0.8;}
+    .cta-button{display:inline-block;padding:0.5rem 1rem;border-radius:9999px;background:var(--color-orange);color:#ffffff;font-weight:600;font-size:0.85rem;border:2px solid var(--color-orange);transition:background 0.2s;}
+    .cta-button:hover{background:transparent;color:var(--color-orange);}
+    .legal{max-width:960px;margin:0 auto;padding:3.5rem 1.5rem 4rem;color:#e5e7eb;}
+    .legal-header{text-align:center;margin-bottom:2.5rem;}
+    .legal-header h1{font-size:clamp(2.2rem,4vw,3rem);color:#ffffff;margin-bottom:0.5rem;}
+    .legal-header p{margin:0.25rem 0;color:#cbd5f5;}
+    .legal-section{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:16px;padding:1.5rem 1.75rem;margin-bottom:1.5rem;box-shadow:0 8px 20px rgba(0,0,0,0.2);}
+    .legal-section h2{color:#ffffff;margin-top:0;}
+    .legal-section p{color:#d1d5db;}
+    .legal-section ul{margin:0.75rem 0 0;padding-left:1.2rem;color:#d1d5db;}
+    .legal-section li{margin-bottom:0.5rem;}
+    .legal-contact{text-align:center;}
+  </style>
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-4HFEY2Y8K7"></script>
   <script>
@@ -19,84 +47,121 @@
 </head>
 <body>
   <div class="overlay">
+    <header class="navbar">
+      <div class="nav-inner">
+        <div class="nav-brand">
+          <img src="static/assets/logo-bar.png" alt="Vectari logo" class="logo-full">
+        </div>
+        <nav class="nav-links">
+          <a href="/#problems">Challenges</a>
+          <a href="/#what-we-do">Services</a>
+          <a href="/#frameworks-carousel">Compliance</a>
+        </nav>
+        <a href="https://outlook.office.com/book/VectariIntroduction@vectari.co/?ismsaljsauthenabled" class="cta-button">Schedule a Call</a>
+      </div>
+    </header>
     <section class="legal">
-      <h1>Privacy Policy</h1>
-      <p>Last updated: March 8, 2025</p>
-      <p>
-        Your privacy is important to us. This policy explains how Vectari collects, uses, and protects your
-        information when you visit our website or communicate with us.
-      </p>
+      <div class="legal-header">
+        <h1>Privacy Policy</h1>
+        <p>Last updated: March 8, 2025</p>
+        <p>
+          Your privacy is important to us. This policy explains how Vectari collects, uses, and protects your
+          information when you visit our website or communicate with us.
+        </p>
+      </div>
 
-      <h2>Information We Collect</h2>
-      <ul>
-        <li>Contact information you provide, such as name, email address, and phone number.</li>
-        <li>Message content and communication preferences shared through forms, email, or phone.</li>
-        <li>Technical data such as IP address, browser type, device information, and page interactions.</li>
-      </ul>
+      <div class="legal-section">
+        <h2>Information We Collect</h2>
+        <ul>
+          <li>Contact details you provide, such as name, email address, and phone number.</li>
+          <li>Message content and communication preferences shared through forms, email, or phone.</li>
+          <li>Technical data such as IP address, browser type, device information, and page interactions.</li>
+        </ul>
+      </div>
 
-      <h2>How We Use Your Information</h2>
-      <ul>
-        <li>Respond to inquiries and provide requested information about our services.</li>
-        <li>Communicate with prospective and current clients via phone, SMS, or email.</li>
-        <li>Improve our website, services, and customer experience.</li>
-        <li>Comply with legal obligations and protect our rights.</li>
-      </ul>
+      <div class="legal-section">
+        <h2>How We Use Your Information</h2>
+        <ul>
+          <li>Respond to inquiries and provide requested information about our services.</li>
+          <li>Communicate with prospective and current clients via phone, SMS, or email.</li>
+          <li>Improve our website, services, and customer experience.</li>
+          <li>Comply with legal obligations and protect our rights.</li>
+        </ul>
+      </div>
 
-      <h2>Communications, Phone, and SMS</h2>
-      <p>
-        We use our business phone number +1 855-458-0199 to connect with potential clients and clients. By
-        providing your phone number, you consent to receive calls and texts from Vectari. Message and data
-        rates may apply. You can opt out of SMS at any time by replying STOP, or request assistance by
-        replying HELP.
-      </p>
+      <div class="legal-section">
+        <h2>Communications, Phone, and SMS</h2>
+        <p>
+          We use our business phone number +1 855-680-0411 to connect with potential clients and clients. By
+          providing your phone number, you consent to receive calls and texts from Vectari. Message and data
+          rates may apply. You can opt out of SMS at any time by replying STOP, or request assistance by
+          replying HELP.
+        </p>
+      </div>
 
-      <h2>Service Providers</h2>
-      <p>
-        We use trusted service providers to help us manage customer communications, forms, scheduling, and
-        related operations. Your information may be stored and processed by these providers as needed to
-        deliver our services and respond to requests.
-      </p>
+      <div class="legal-section">
+        <h2>Service Providers</h2>
+        <p>
+          We use trusted service providers to help us manage customer communications, forms, scheduling, and
+          related operations. Your information may be stored and processed by these providers as needed to
+          deliver our services and respond to requests.
+        </p>
+      </div>
 
-      <h2>Cookies and Analytics</h2>
-      <p>
-        We use cookies and analytics tools to understand how visitors use our site. You can adjust your
-        browser settings to disable cookies, but some features may not function properly.
-      </p>
+      <div class="legal-section">
+        <h2>Cookies and Analytics</h2>
+        <p>
+          We use cookies and analytics tools to understand how visitors use our site. You can adjust your
+          browser settings to disable cookies, but some features may not function properly.
+        </p>
+      </div>
 
-      <h2>How We Share Information</h2>
-      <p>
-        We do not sell your personal information. We may share information with trusted service providers,
-        professional advisors, and legal authorities when required by law.
-      </p>
+      <div class="legal-section">
+        <h2>How We Share Information</h2>
+        <p>
+          We do not sell your personal information. We may share information with trusted service providers,
+          professional advisors, and legal authorities when required by law.
+        </p>
+      </div>
 
-      <h2>Data Retention</h2>
-      <p>
-        We retain information only as long as necessary to fulfill the purposes described in this policy,
-        resolve disputes, and comply with legal requirements.
-      </p>
+      <div class="legal-section">
+        <h2>Data Retention</h2>
+        <p>
+          We retain information only as long as necessary to fulfill the purposes described in this policy,
+          resolve disputes, and comply with legal requirements.
+        </p>
+      </div>
 
-      <h2>Your Choices</h2>
-      <ul>
-        <li>Opt out of marketing communications by following the instructions in our messages.</li>
-        <li>Request access, correction, or deletion of your information by contacting us.</li>
-      </ul>
+      <div class="legal-section">
+        <h2>Your Choices</h2>
+        <ul>
+          <li>Opt out of marketing communications by following the instructions in our messages.</li>
+          <li>Request access, correction, or deletion of your information by contacting us.</li>
+        </ul>
+      </div>
 
-      <h2>Security</h2>
-      <p>
-        We use reasonable administrative, technical, and physical safeguards to protect your information.
-        No method of transmission or storage is completely secure.
-      </p>
+      <div class="legal-section">
+        <h2>Security</h2>
+        <p>
+          We use reasonable administrative, technical, and physical safeguards to protect your information.
+          No method of transmission or storage is completely secure.
+        </p>
+      </div>
 
-      <h2>Changes to This Policy</h2>
-      <p>
-        We may update this privacy policy from time to time. Updates will be posted on this page with a new
-        “Last updated” date.
-      </p>
+      <div class="legal-section">
+        <h2>Changes to This Policy</h2>
+        <p>
+          We may update this privacy policy from time to time. Updates will be posted on this page with a new
+          “Last updated” date.
+        </p>
+      </div>
 
-      <h2>Contact Us</h2>
-      <p>
-        If you have questions about this policy, contact us at +1 855-458-0199.
-      </p>
+      <div class="legal-section legal-contact">
+        <h2>Contact Us</h2>
+        <p>
+          If you have questions about this policy, contact us at +1 855-680-0411.
+        </p>
+      </div>
     </section>
     <footer class="footer">
       <p><a href="/privacy-policy.html">Privacy Policy</a> · <a href="/terms.html">Terms</a></p>

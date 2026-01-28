@@ -70,6 +70,7 @@
   const progressText = document.getElementById("progress-text");
   const progressBar = document.getElementById("progress-bar");
   const results = document.getElementById("results");
+  const gateSection = document.getElementById("lead-gate");
   const messageEl = document.getElementById("result-message");
   const gapsTitleEl = document.getElementById("gaps-title");
   const gapsEl = document.getElementById("gaps");
@@ -85,6 +86,7 @@
   const navCta = document.getElementById("nav-cta");
   const stickyBar = document.getElementById("sticky-cta");
   const stickyCtaBtn = document.getElementById("sticky-cta-button");
+  const bodyEl = document.body;
   let assessmentStarted = false;
   let prefetchDone = false;
   const DEBUG_MODE = new URLSearchParams(window.location.search).has("debug");
@@ -110,16 +112,44 @@
   const assessmentHeading = document.querySelector(".assessment-heading");
   const assessmentNote = document.querySelector(".assessment-note");
   let stickyObserver;
+  const baseBookingHref =
+    (config.nextSteps && config.nextSteps.ctaHref) || "";
+  if (baseBookingHref) {
+    if (navCta) navCta.href = baseBookingHref;
+    if (stickyCtaBtn) stickyCtaBtn.href = baseBookingHref;
+  }
 
   const wizard = config.wizard || {};
   const autoAdvance = !!wizard.autoAdvance;
   const useHistory = !!wizard.history;
   const advanceDelay = wizard.delay || 220;
+  const STORAGE_KEY = "miniAssessmentResults";
+  const searchParams = new URLSearchParams(window.location.search);
+  const shouldRevealResults = searchParams.get("results") === "1";
 
   let autoTimer;
   let isAdvancing = false;
 
   if (autoAdvance) nextBtn.style.display = "none";
+
+  const getStoredResults = () => {
+    const raw = sessionStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    try {
+      return JSON.parse(raw);
+    } catch (err) {
+      console.warn("Failed to parse stored assessment results.", err);
+      return null;
+    }
+  };
+
+  const storeResults = (data) => {
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  };
+
+  const clearStoredResults = () => {
+    sessionStorage.removeItem(STORAGE_KEY);
+  };
 
   const header = document.querySelector(".navbar");
   window.addEventListener("scroll", () => {
@@ -336,8 +366,13 @@
         startIdx = parsed - 1;
       }
     }
+    const storedResults = shouldRevealResults ? getStoredResults() : null;
+    if (storedResults) {
+      renderResults(storedResults, { skipHistory: true, skipTracking: true });
+    } else {
       showQuestion(startIdx, { replace: true, skipScroll: true, skipFocus: true });
     }
+  }
 
   function renderChart(counts, animate = true) {
     const total = fieldsets.length;
@@ -384,7 +419,8 @@
     }
     requestAnimationFrame(step);
   }
-  function complete(opts = {}) {
+
+  function buildResultsData() {
     let total = 0;
     const gapsBySeverity = { 0: [], 1: [], 2: [] };
     fieldsets.forEach((wrap, i) => {
@@ -414,7 +450,6 @@
     else if (total <= 10) grade = "Critical";
     else if (total <= 20) grade = "Fair";
     else grade = "Good";
-    scoreGradeEl.textContent = grade;
 
     const baseHref =
       (config.nextSteps && config.nextSteps.ctaHref) || "#";
@@ -429,9 +464,6 @@
       url.searchParams.set("quiz_session_id", quizSessionId);
       return url.toString();
     };
-    navCta.href = buildLink("nav_top");
-    stickyCtaBtn.href = buildLink("sticky_bottom");
-
     const counts = {
       0: gapsBySeverity[0].length,
       1: gapsBySeverity[1].length,
@@ -440,6 +472,44 @@
         fieldsets.length -
         (gapsBySeverity[0].length + gapsBySeverity[1].length + gapsBySeverity[2].length),
     };
+
+    return {
+      total,
+      max,
+      grade,
+      message: messageEl.textContent,
+      counts,
+      gapsBySeverity,
+      quizSessionId,
+      links: {
+        nav: buildLink("nav_top"),
+        sticky: buildLink("sticky_bottom"),
+      },
+    };
+  }
+
+  function showGate() {
+    if (bodyEl) bodyEl.classList.add("lead-gate-active");
+    form.style.display = "none";
+    nextBtn.style.display = "none";
+    backBtn.style.display = "none";
+    progress.hidden = true;
+    if (assessmentHeading) assessmentHeading.hidden = true;
+    if (assessmentNote) assessmentNote.hidden = true;
+    results.hidden = true;
+    if (gateSection) {
+      gateSection.hidden = false;
+      gateSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }
+
+  function renderResults(data, opts = {}) {
+    if (bodyEl) bodyEl.classList.remove("lead-gate-active");
+    scoreValueEl.setAttribute("aria-label", `Score ${data.total} out of ${data.max}`);
+    messageEl.textContent = data.message;
+    scoreGradeEl.textContent = data.grade;
+    navCta.href = data.links.nav;
+    stickyCtaBtn.href = data.links.sticky;
 
     gapsEl.innerHTML = "";
     if (gapsTitleEl) gapsEl.appendChild(gapsTitleEl);
@@ -451,7 +521,7 @@
     const order = [0, 1, 2];
     let totalGaps = 0;
     order.forEach((sev) => {
-      const list = gapsBySeverity[sev];
+      const list = data.gapsBySeverity[sev];
       if (!list.length) return;
       const group = document.createElement("section");
       group.className = `gap-group severity-${sev}`;
@@ -500,6 +570,7 @@
     backBtn.style.display = "none";
     progress.hidden = true;
     results.hidden = false;
+    if (gateSection) gateSection.hidden = true;
     if (assessmentHeading) assessmentHeading.hidden = true;
     if (assessmentNote) assessmentNote.hidden = true;
     results.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -534,22 +605,24 @@
       });
     };
     if (prefers) {
-      renderChart(counts, false);
-      scoreValueEl.textContent = `${total}/${max}`;
+      renderChart(data.counts, false);
+      scoreValueEl.textContent = `${data.total}/${data.max}`;
       revealRest();
     } else {
       setTimeout(() => {
-        renderChart(counts, true);
-        animateScore(total, max);
+        renderChart(data.counts, true);
+        animateScore(data.total, data.max);
       }, 400);
       setTimeout(revealRest, 1400);
     }
-    trackEvent("assessment_complete", {
-      score: total,
-      critical_gaps: gapsBySeverity[0].length,
-      major_gaps: gapsBySeverity[1].length,
-      minor_gaps: gapsBySeverity[2].length,
-    });
+    if (!opts.skipTracking) {
+      trackEvent("assessment_complete", {
+        score: data.total,
+        critical_gaps: data.gapsBySeverity[0].length,
+        major_gaps: data.gapsBySeverity[1].length,
+        minor_gaps: data.gapsBySeverity[2].length,
+      });
+    }
     if (useHistory && opts.updateHistory !== false) {
       const url = new URL(window.location);
       url.searchParams.set("step", "results");
@@ -583,12 +656,22 @@
     }
 
     const track = (loc) => {
-      const params = { location: loc, score: total };
-      if (grade) params.grade = grade;
+      const params = { location: loc, score: data.total };
+      if (data.grade) params.grade = data.grade;
       trackEvent("booking_link_click", params);
     };
     navCta.addEventListener("click", () => track("nav_top"));
     stickyCtaBtn.addEventListener("click", () => track("sticky_bottom"));
+  }
+
+  function complete(opts = {}) {
+    const data = buildResultsData();
+    storeResults(data);
+    if (gateSection && !shouldRevealResults) {
+      showGate();
+      return;
+    }
+    renderResults(data, opts);
   }
 
   function gotoNext() {
@@ -655,6 +738,7 @@
       self.crypto && crypto.randomUUID
         ? crypto.randomUUID()
         : Math.random().toString(36).slice(2);
+    clearStoredResults();
     assessmentStarted = false;
     form.reset();
     fieldsets.forEach((wrap) => {
@@ -671,6 +755,7 @@
     backBtn.style.display = "";
     progress.hidden = false;
     results.hidden = true;
+    if (bodyEl) bodyEl.classList.remove("lead-gate-active");
     if (assessmentHeading) assessmentHeading.hidden = false;
     if (assessmentNote) assessmentNote.hidden = false;
     gapsEl.innerHTML = "";
@@ -696,6 +781,12 @@
     stickyBar.classList.remove("show");
     header.classList.remove("hidden");
     if (stickyObserver) stickyObserver.disconnect();
+    if (gateSection) gateSection.hidden = true;
+    if (shouldRevealResults) {
+      const url = new URL(window.location);
+      url.searchParams.delete("results");
+      history.replaceState({ step: 0 }, "", url);
+    }
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
 })();

@@ -156,6 +156,9 @@
         padding: 24px 24px calc(72px + env(safe-area-inset-bottom));
         margin: 0 auto;
       }
+      .lead-gate-active .container {
+        padding-top: 8px;
+      }
       h2,
       h3 {
         margin: 0 0 12px;
@@ -315,6 +318,43 @@
       }
       #results[hidden] {
         display: none;
+      }
+      #lead-gate[hidden] {
+        display: none;
+      }
+      .lead-gate {
+        margin-top: 0;
+        margin-top: 4px;
+        padding: 0;
+        background: transparent;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+      }
+      .lead-gate__frame {
+        padding: 0;
+        background: transparent;
+        border-radius: 0;
+        overflow: hidden;
+        box-shadow: none;
+      }
+      .lead-gate__frame > .msgsndr-iframe,
+      .lead-gate__frame > .form-embed {
+        box-shadow: none !important;
+      }
+      .lead-gate__frame iframe {
+        display: block;
+        width: 100%;
+        height: 100%;
+        border: none !important;
+        border-radius: 0 !important;
+        background: transparent;
+        box-shadow: none !important;
+        filter: none !important;
+        -webkit-filter: none !important;
+        outline: none !important;
+        filter: none;
+        outline: none;
       }
       .results-content {
         text-align: center;
@@ -815,6 +855,27 @@
           aria-live="polite"
         ></div>
       </div>
+      <section id="lead-gate" class="lead-gate" hidden>
+        <div class="lead-gate__frame">
+          <iframe
+            src="https://api.leadconnectorhq.com/widget/form/1UTDSSlrqX921Jd3q0ZD"
+            style="width:100%;height:100%;border:none;border-radius:0px"
+            id="inline-1UTDSSlrqX921Jd3q0ZD"
+            data-layout="{'id':'INLINE'}"
+            data-trigger-type="alwaysShow"
+            data-trigger-value=""
+            data-activation-type="alwaysActivated"
+            data-activation-value=""
+            data-deactivation-type="neverDeactivate"
+            data-deactivation-value=""
+            data-form-name="Embedded assessment form"
+            data-height="664"
+            data-layout-iframe-id="inline-1UTDSSlrqX921Jd3q0ZD"
+            data-form-id="1UTDSSlrqX921Jd3q0ZD"
+            title="Embedded assessment form"
+          ></iframe>
+        </div>
+      </section>
       <section id="results" hidden tabindex="-1">
         <div id="score-block" class="results-content">
           <h2 class="score-heading fade-line">Your Cybersecurity Risk Score</h2>
@@ -868,5 +929,6 @@
     </div>
     <script defer src="config.js"></script>
     <script defer src="app.js"></script>
+    <script src="https://link.msgsndr.com/js/form_embed.js"></script>
   </body>
 </html>
