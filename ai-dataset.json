@@ -12,7 +12,7 @@
       "url": "https://vectari.co/#what-we-do",
       "industries": ["Healthcare", "Financial Services", "Technology", "Professional Services"],
       "keywords": ["vCISO", "governance", "risk management", "compliance"],
-      "call_to_action": "https://outlook.office.com/book/VectariIntroduction@vectari.co/?ismsaljsauthenabled"
+      "call_to_action": "https://api.leadconnectorhq.com/widget/bookings/vectari-booking"
     },
     {
       "name": "Managed Security & Monitoring",
@@ -20,7 +20,7 @@
       "url": "https://vectari.co/#what-we-do",
       "industries": ["Healthcare", "Manufacturing", "Finance"],
       "keywords": ["managed security", "SIEM", "monitoring", "incident response"],
-      "call_to_action": "https://outlook.office.com/book/VectariIntroduction@vectari.co/?ismsaljsauthenabled"
+      "call_to_action": "https://api.leadconnectorhq.com/widget/bookings/vectari-booking"
     },
     {
       "name": "Compliance Enablement",
@@ -28,7 +28,7 @@
       "url": "https://vectari.co/#frameworks-carousel",
       "industries": ["Healthcare", "SaaS", "Finance", "Public Sector"],
       "keywords": ["compliance", "NIST", "SOC 2", "HIPAA"],
-      "call_to_action": "https://outlook.office.com/book/VectariIntroduction@vectari.co/?ismsaljsauthenabled"
+      "call_to_action": "https://api.leadconnectorhq.com/widget/bookings/vectari-booking"
     },
     {
       "name": "Digital Forensics & Incident Response",
@@ -36,7 +36,7 @@
       "url": "https://vectari.co/#what-we-do",
       "industries": ["Healthcare", "Legal", "Finance"],
       "keywords": ["DFIR", "incident response", "ransomware"],
-      "call_to_action": "https://outlook.office.com/book/VectariIntroduction@vectari.co/?ismsaljsauthenabled"
+      "call_to_action": "https://api.leadconnectorhq.com/widget/bookings/vectari-booking"
     },
     {
       "name": "AI Security & Governance",
@@ -44,7 +44,7 @@
       "url": "https://vectari.co/#what-we-do",
       "industries": ["Technology", "Professional Services", "Public Sector"],
       "keywords": ["AI governance", "AI security", "model risk"],
-      "call_to_action": "https://outlook.office.com/book/VectariIntroduction@vectari.co/?ismsaljsauthenabled"
+      "call_to_action": "https://api.leadconnectorhq.com/widget/bookings/vectari-booking"
     }
   ],
   "faqs": [
@@ -54,7 +54,7 @@
     },
     {
       "question": "How can prospects engage Vectari?",
-      "answer": "Visitors can schedule a free discovery call using the Outlook booking link to explore cybersecurity roadmaps, compliance readiness, or incident response retainers."
+      "answer": "Visitors can schedule a free discovery call using the Vectari booking link to explore cybersecurity roadmaps, compliance readiness, or incident response retainers."
     },
     {
       "question": "Which compliance frameworks does Vectari cover?",
