@@ -42,7 +42,7 @@ window.ASSESSMENT_CONFIG = {
     ctaLabel:
       "Get your top 3 risks fixed in 30 days <small>(free custom plan)</small>",
     ctaHref:
-      "https://outlook.office.com/book/VectariIntroduction@vectari.co/?ismsaljsauthenabled",
+      "https://api.leadconnectorhq.com/widget/bookings/vectari-booking",
   },
   wizard: {
     autoAdvance: true,
